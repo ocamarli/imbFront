@@ -74,7 +74,7 @@ function App() {
       case 2:
         return <AgregarPlantilla onDarkModeChange={handleDarkModeChange} auth={auth}/>;
       case 3:
-        return <AgregarUsuario />;
+        return <AgregarUsuario onDarkModeChange={handleDarkModeChange} auth={auth}/>;
       default:
         return <>HHH</>;
     }
@@ -120,12 +120,12 @@ function App() {
                 <Route
                   path="/AgregarPlantilla"
                   element={
-                    <AgregarPlantilla type={PageTypes.AgregarPlantilla}  />
+                    <ProtectedRoute type={PageTypes.AgregarPlantilla}  />
                   }
                 />
                 <Route
                   path="/AgregarUsuario"
-                  element={<AgregarUsuario type={PageTypes.AgregarUsuario} />}
+                  element={<ProtectedRoute type={PageTypes.AgregarUsuario} />}
                 />
               </Routes>
             </ThemeProvider>
