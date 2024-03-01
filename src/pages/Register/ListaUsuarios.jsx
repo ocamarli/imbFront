@@ -7,7 +7,7 @@ import {Grid,  Paper, Divider, List, ListItem, ListItemText, IconButton, Avatar,
 import EditIcon from "@mui/icons-material/ModeEdit";
 import AddIcon from "@mui/icons-material/Add";
 import { obtenerUsuarios } from "../../api/axios";
-
+import {CircularProgress} from "@mui/material";
 
 const handleClickAgregarUsuario = () => {
     window.open(
@@ -18,7 +18,7 @@ const handleClickAgregarUsuario = () => {
   };
 const ListaUsuarios = (props) => {
 
-  const [ setIsLoading] = useState(false);
+  const [ isLoading, setIsLoading] = useState(false);
   const [usuarios, setUsuarios] = useState([]);
   const { onResponse } = props;
   const cObtenerUsuarios = useCallback(async () => {
@@ -44,6 +44,11 @@ const ListaUsuarios = (props) => {
   return (
     <Grid container padding={2}  sx={{ height: "calc(100vh)"}}>
       <Grid item xs={12}>
+            {isLoading && ( // Agrega el loader condicionalmente
+                    <Grid item xs={12} align="center">
+                      <CircularProgress size={50} />
+                    </Grid>
+                  )}
         <HeaderContent></HeaderContent>
         <Paper style={{ padding: 10 }}>
           <Grid container spacing={0}>

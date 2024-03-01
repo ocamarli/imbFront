@@ -127,7 +127,6 @@ const AgregarPlantilla = (props) => {
         const json = await obtenerParametros(tkn);
         console.log(json);
         setParametros(json.parameters || []);
-        onResponse(json);
         setIsLoading(false);
       } else {
         setParametros([]);
@@ -135,7 +134,6 @@ const AgregarPlantilla = (props) => {
       }
     } catch (error) {
       setIsLoading(false);
-      onResponse({ status: false, msg: error });
       console.error(error);
     }
   }, [setIsLoading, setParametros, onResponse]);
@@ -387,7 +385,7 @@ const AgregarPlantilla = (props) => {
                 </Grid>
               </Grid>
               <Grid item xs={12}>
-              <ComponentePestana  tabs={tabs} ></ComponentePestana>
+              <ComponentePestana onResponse={onResponse} tabs={tabs} ></ComponentePestana>
               </Grid>       
             </Grid>
           </form>

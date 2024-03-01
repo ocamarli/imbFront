@@ -1,6 +1,10 @@
 import { useForm } from "react-hook-form";
+import { useState } from "react";
 import {
   TextField,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
   Button,
   FormControl,
   Grid,
@@ -28,6 +32,19 @@ const onSubmit = (data) => {
 };
 
 const AgregarUsuario = () => {
+  const handleCheckboxChange = (event) => {
+    const { name, checked } = event.target;
+    setAutorizaciones((prevState) => ({
+      ...prevState,
+      [name]: checked,
+    }));
+  };
+  const [autorizaciones, setAutorizaciones] = useState({
+    superusuario: false,
+    refrigeracion: false,
+    laboratorio: false,
+    servicios: false,
+  });
   const {
     register,
 
@@ -82,7 +99,7 @@ const AgregarUsuario = () => {
                     <FormHelperText error>
                       Este campo es requerido
                     </FormHelperText>
-                  )}                  
+                  )}
                 </FormControl>
               </Grid>
               <Grid item xs={6}>
@@ -136,12 +153,58 @@ const AgregarUsuario = () => {
                   placeholder="Contraseña"
                   variant="outlined"
                   error={errors.pwo ? true : false}
-                  helperText={
-                    errors.pwo ? "Este campo es requerido" : ""
-                  }
+                  helperText={errors.pwo ? "Este campo es requerido" : ""}
                 />
               </Grid>
-
+              <Grid item xs={6}>
+                <Typography variant="h6" gutterBottom>
+                  Autorizaciones
+                </Typography>
+                <FormControl component="fieldset">
+                  <FormGroup row>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={autorizaciones.superusuario}
+                          onChange={handleCheckboxChange}
+                          name="superusuario"
+                        />
+                      }
+                      label="Superusuario"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={autorizaciones.refrigeracion}
+                          onChange={handleCheckboxChange}
+                          name="refrigeracion"
+                        />
+                      }
+                      label="Refrigeración"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={autorizaciones.laboratorio}
+                          onChange={handleCheckboxChange}
+                          name="laboratorio"
+                        />
+                      }
+                      label="Laboratorio"
+                    />
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={autorizaciones.servicios}
+                          onChange={handleCheckboxChange}
+                          name="servicios"
+                        />
+                      }
+                      label="Servicios"
+                    />
+                  </FormGroup>
+                </FormControl>
+              </Grid>
               <Grid item xs={12}>
                 <Grid container sx={{ justifyContent: "flex-end" }} spacing={2}>
                   <Grid item xs={6}>
@@ -152,17 +215,6 @@ const AgregarUsuario = () => {
                       fullWidth
                     >
                       Agregar usuario
-                    </Button>
-                  </Grid>
-
-                  <Grid item xs={6}>
-                    <Button
-                      variant="contained"
-                      type="submit"
-                      fullWidth
-                      sx={{ backgroundColor: "#dddddd" }}
-                    >
-                      Accept
                     </Button>
                   </Grid>
                 </Grid>
