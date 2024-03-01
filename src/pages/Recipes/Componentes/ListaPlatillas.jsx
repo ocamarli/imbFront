@@ -49,7 +49,7 @@ const ListaPlantillas = () => {
       familia: "Familia A",
       hardware: "Hardware 1",
       estatus: "Activo",
-      plantillas: 3,
+      plantillas: 4,
     },
     {
       id: 2,
