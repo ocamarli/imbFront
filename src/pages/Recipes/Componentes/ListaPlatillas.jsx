@@ -21,7 +21,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import AddIcon from "@mui/icons-material/Add";
 const handleClickAgregarPlantilla = () => {
     window.open(
-      "/AgregarPlantilla",
+      "./AgregarPlantilla",
       "_blank",
       "width=auto,height=auto"
     );

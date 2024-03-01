@@ -11,7 +11,7 @@ import {CircularProgress} from "@mui/material";
 
 const handleClickAgregarUsuario = () => {
     window.open(
-      "/AgregarUsuario",
+      "https://black-field-0c24d120f.4.azurestaticapps.net/AgregarUsuario",
       "_blank",
       "width=auto,height=auto"
     );
