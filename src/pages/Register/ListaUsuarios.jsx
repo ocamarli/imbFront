@@ -12,7 +12,7 @@ import {CircularProgress} from "@mui/material";
 const handleClickAgregarUsuario = () => {
     window.open(
       "/AgregarUsuario",
-      "_blank",
+      "_self",
       "width=auto,height=auto"
     );
   };
