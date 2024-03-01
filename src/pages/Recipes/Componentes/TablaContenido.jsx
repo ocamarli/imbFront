@@ -1,14 +1,11 @@
-import {TextField,  Button,  FormControl,  Grid,  Paper,  FormGroup,  FormControlLabel,
-    Checkbox,  CircularProgress,  Select,  MenuItem,  Typography,  InputLabel} from "@mui/material";
-import { styled, useTheme } from "@mui/material/styles";
+import {TextField,  FormControl,  Grid, CircularProgress,  Select,  MenuItem} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useState, useEffect, useCallback } from "react";
 import { obtenerParametros } from "../../../api/axios";
 const TablaContenido = (props) => {
-  const [activeTab, setActiveTab] = useState(0);
   const [parametros, setParametros] = useState([]);
-  const theme = useTheme();
-  const { onResponse, auth } = props;
+
+  const { onResponse} = props;
   const [isLoading, setIsLoading] = useState(false);
   const fetchparametros = useCallback(async () => {
     try {
@@ -32,18 +29,10 @@ const TablaContenido = (props) => {
     }
   }, [setIsLoading, setParametros, onResponse]);
 
-  const handleClose = useCallback(async () => {
-    await fetchparametros();
-  }, [fetchparametros]);
-
   useEffect(() => {
     fetchparametros();
   }, [fetchparametros]);
-  const handleTabChange = (index) => {
-    setActiveTab(index);
 
-  };
-  
   const columns = [
     { field: "id", headerName: "ID", flex: 0.4 },
     {
@@ -93,7 +82,6 @@ const TablaContenido = (props) => {
   function transformarDatos(parametros) {
     console.log(parametros);
     return parametros.map((parametro) => {
-      let tipoCampoData;
       let unidadValor;
       let rango;
       let logicaFuncionamiento;

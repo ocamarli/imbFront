@@ -1,8 +1,8 @@
-import { useForm } from "react-hook-form";
-import { TextField, Button, FormControl, Grid, Paper } from "@mui/material";
+
+import {  Grid, Paper } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import { format } from 'date-fns';
-import { styled, useTheme } from "@mui/material/styles";
+import { useTheme } from "@mui/material/styles";
 const HeaderContent = () => {
   // Obtener la fecha actual
   const date = new Date();

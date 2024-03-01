@@ -1,6 +1,5 @@
-import CardParameter from "./components/CardParameter";
 import AddParameter from "./components/AddParameter";
-import { Button, Dialog, Typography, Box, IconButton } from "@mui/material";
+import { Dialog, Typography,IconButton } from "@mui/material";
 import React, { useState, useEffect, useCallback } from "react";
 import store from "../../store";
 import { Provider } from "react-redux";
@@ -59,14 +58,15 @@ function transformarDatos(parametros) {
     let logicaFuncionamiento
     if (parametro.tipo_campo === "rango") {
       unidadValor = parametro.unidad
-      rango = `${parametro.valor_min}${parametro.unidad} - ${parametro.valor_max}${parametro.unidad}`;
+      rango = parametro.valor_min + parametro.unidad + " - " + parametro.valor_max + parametro.unidad;
     } else if (parametro.tipo_campo === "opciones") {
       unidadValor = "N.A"
       rango =  parametro.opciones.map((opcion, index) => `${index + 1} |`).join(" ");
-      rango = "| " + `${rango}`
+      rango = "| " + rango
       logicaFuncionamiento =  parametro.opciones.map((opcion, index) => `${opcion.valor}-${opcion.nombre}`).join(", ");
     } else {
       tipoCampoData = "Tipo de campo no reconocido";
+      console.log(tipoCampoData)
     }
 
     return {
@@ -81,6 +81,7 @@ function transformarDatos(parametros) {
   });
 }
 function Parameters(props) {
+  
   const { onResponse } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false); // Define el estado "open" en el componente padre

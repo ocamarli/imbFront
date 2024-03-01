@@ -1,73 +1,24 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { useForm } from "react-hook-form";
 import Typography from "@mui/material/Typography";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import { setRegister } from "../../api/axios";
 import HeaderContent from "../HeaderContent";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { format } from "date-fns";
 import { ListItemAvatar } from "@mui/material";
-
-import {
-  TextField,  Button,  FormControl,  Grid,  Paper,  Box,
-  Divider, List, ListItem, ListItemText, TableBody, TableHead,
-  TableCell, Table, TableContainer, TableRow, IconButton, Avatar,
+import {Grid,  Paper, Divider, List, ListItem, ListItemText, IconButton, Avatar,
 } from "@mui/material";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import FolderIcon from "@mui/icons-material/Folder";
-import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/ModeEdit";
-import CancelIcon from "@mui/icons-material/Cancel";
 import AddIcon from "@mui/icons-material/Add";
 import { obtenerUsuarios } from "../../api/axios";
-function generate(element) {
-  return [0, 1, 2].map((value) =>
-    React.cloneElement(element, {
-      key: value,
-    })
-  );
-}
-const handleCloseRegister = async (data) => {
-  const response = await setRegister(
-    data,
-    JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token
-  );
-  console.log(response);
-};
+
+
 const handleClickAgregarUsuario = () => {
-    const newWindow = window.open(
+    window.open(
       "/AgregarUsuario",
       "_blank",
       "width=auto,height=auto"
     );
   };
-const onSubmit = (data) => {
-  console.log(data);
-  handleCloseRegister(data);
-};
-const handleEdit = (data) => {
-  console.log(data);
-};
-const handleCancel = (data) => {
-  console.log(data);
-};
-const handleDelete = (data) => {
-  console.log(data);
-};
-const handleClickOpenSalesDay = () => {
-  const newWindow = window.open(
-    "/VentaDiaria",
-    "_blank",
-    "width=auto,height=auto"
-  );
-};
 const ListaUsuarios = (props) => {
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [ setIsLoading] = useState(false);
   const [usuarios, setUsuarios] = useState([]);
   const { onResponse } = props;
   const cObtenerUsuarios = useCallback(async () => {
@@ -84,31 +35,11 @@ const ListaUsuarios = (props) => {
       setIsLoading(false);
       onResponse({ status: false, msg: "Error" });
     }
-  }, [onResponse]);
+  }, [onResponse,setIsLoading]);
 
   useEffect(() => {
     cObtenerUsuarios();
   }, [cObtenerUsuarios]);
-
-
-  const [activeTab, setActiveTab] = useState("activas"); // Estado para controlar la pestaña activa
-  const handleTabChange = (tab) => {
-    setActiveTab(tab);
-  };
-
-  // Obtener la fecha actual
-  const date = new Date();
-
-  // Formatear la fecha en el formato deseado
-  const formatDate = format(date, "d-MMM-yyyy");
-  const [selectedDate, setSelectedDate] = useState(null);
-  const {
-    trigger,
-    setValue,
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
 
   return (
     <Grid container padding={2}  sx={{ height: "calc(100vh)"}}>

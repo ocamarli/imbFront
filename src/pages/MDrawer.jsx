@@ -34,13 +34,10 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import Parameters from "./Parameters/Parameters";
 import Home from "./Home/Home";
 import "./MenuCss.css";
-import RegisterPage from "./Register/AgregarUsuario";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
-import Recipes from "./Recipes/Recipe";
 import imgHeader from "./imberaLogoMenu.png";
 import { alpha } from "@mui/material/";
-import AgregarPlantilla from "./Recipes/AgregarPlantilla";
 import ListaPlantillas from "./Recipes/Componentes/ListaPlatillas";
 import ListaUsuarios from "./Register/ListaUsuarios";
 const drawerWidth = 250;
@@ -111,12 +108,7 @@ export default function PersistentDrawerLeft(props) {
     setOpenAlert(false);
   };
 
-  const selectRegister = () => {
-    setSelectedComponent(<AgregarPlantilla />);
-  };
-  const seleccionarAgregarPlantilla = () => {
-    setSelectedComponent(<AgregarPlantilla />);
-  };
+
   const seleccionarListaUsuarios = () => {
     setSelectedComponent(<ListaUsuarios
       onResponse={(json) => {
@@ -148,11 +140,6 @@ export default function PersistentDrawerLeft(props) {
           setOpenAlert(true);
         }}
       />
-    );
-  };
-  const selectRecipe = () => {
-    setSelectedComponent(
-      <ListaPlantillas></ListaPlantillas>
     );
   };
 

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import { Paper, Button, Grid, CircularProgress } from "@mui/material";
-import { styled, useTheme } from "@mui/material/styles";
-const ComponentePestana = ({ tabs, isLoading }) => {
+import { Paper, Button, Grid } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
+const ComponentePestana = ({ tabs}) => {
   const [activeTab, setActiveTab] = useState(0);
   const theme = useTheme();
   const handleTabChange = (index) => {

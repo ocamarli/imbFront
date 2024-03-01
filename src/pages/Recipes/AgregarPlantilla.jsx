@@ -1,22 +1,13 @@
 import { useForm } from "react-hook-form";
 import React, { useState, useEffect, useCallback } from "react";
-import { styled, useTheme } from "@mui/material/styles";
 import {TextField,  Button,  FormControl,  Grid,  Paper,  FormGroup,  FormControlLabel,
-  Checkbox,  CircularProgress,  Select,  MenuItem,  Typography,  InputLabel} from "@mui/material";
-
-import { setRegister } from "../../api/axios";
-import HeaderContent from "../HeaderContent";
-import { DataGrid } from "@mui/x-data-grid";
-import { obtenerParametros } from "../../api/axios";
+  Checkbox, Select,  MenuItem,  Typography,  InputLabel,CircularProgress} from "@mui/material";
 import { crearReceta } from "../../api/axios";
-import LockOpenIcon from '@mui/icons-material/LockOpen';
-import LockIcon from '@mui/icons-material/Lock';
 import ComponentePestana from "../../components/ComponentePestana";
-import TablaContenido from "./Componentes/TablaContenido";
-
-
+import { obtenerParametros } from "../../api/axios";
+import HeaderContent from "../HeaderContent";
 const AgregarPlantilla = (props) => {
-  const theme = useTheme();
+
   const { onResponse, auth } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [parametros, setParametros] = useState([]);
@@ -157,8 +148,14 @@ const AgregarPlantilla = (props) => {
     fetchparametros();
   }, [fetchparametros]);
   return (
+    
     <Grid container padding={1}>
       <Grid item xs={12}>
+      {isLoading && ( // Agrega el loader condicionalmente
+                    <Grid item xs={12} align="center">
+                      <CircularProgress size={50} />
+                    </Grid>
+                  )}
         <HeaderContent></HeaderContent>
         <Paper style={{ padding: 10 }}>
           <form onSubmit={handleSubmit(onSubmit)}>

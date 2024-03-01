@@ -1,28 +1,12 @@
-import React, { useState, useCallback, useEffect } from "react";
-
-import { useForm } from "react-hook-form";
+import React, { useState } from "react";
 import {
-  TextField,
   Button,
-  FormControl,
   Grid,
   Paper,
-  Box,
 } from "@mui/material";
 import Typography from "@mui/material/Typography";
-import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
-import { setRegister } from "../../../api/axios";
 import HeaderContent from "../../HeaderContent";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DatePicker } from "@mui/x-date-pickers/DatePicker";
-import { format } from "date-fns";
 import {
-  List,
-  ListItem,
-  ListItemText,
   TableBody,
   TableHead,
   TableCell,
@@ -31,38 +15,18 @@ import {
   TableRow,
   IconButton,
 } from "@mui/material";
-import ListItemIcon from "@mui/material/ListItemIcon";
-import FolderIcon from "@mui/icons-material/Folder";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/ModeEdit";
 import CancelIcon from "@mui/icons-material/Cancel";
 import AddIcon from "@mui/icons-material/Add";
-function generate(element) {
-  return [0, 1, 2].map((value) =>
-    React.cloneElement(element, {
-      key: value,
-    })
-  );
-}
 const handleClickAgregarPlantilla = () => {
-    const newWindow = window.open(
+    window.open(
       "/AgregarPlantilla",
       "_blank",
       "width=auto,height=auto"
     );
   };
-const handleCloseRegister = async (data) => {
-  const response = await setRegister(
-    data,
-    JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token
-  );
-  console.log(response);
-};
 
-const onSubmit = (data) => {
-  console.log(data);
-  handleCloseRegister(data);
-};
 const handleEdit = (data) => {
   console.log(data);
 };
@@ -115,20 +79,6 @@ const ListaPlantillas = () => {
       plantillas: 4,
     },
   ];
-
-  // Obtener la fecha actual
-  const date = new Date();
-
-  // Formatear la fecha en el formato deseado
-  const formatDate = format(date, "d-MMM-yyyy");
-  const [selectedDate, setSelectedDate] = useState(null);
-  const {
-    trigger,
-    setValue,
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
 
   return (
     <Grid container padding={2}>

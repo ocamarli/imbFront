@@ -3,7 +3,7 @@ import CircularProgress from "@mui/material/CircularProgress";
 // Importa la imagen que desees mostrar
 
 const SplashPage = () => {
-  const [isLoading, setIsLoading] = useState(true);
+  const [ setIsLoading] = useState(true);
 
   useEffect(() => {
     // Simula un tiempo de carga
@@ -12,7 +12,7 @@ const SplashPage = () => {
     }, 2000);
 
     return () => clearTimeout(timeout);
-  }, []);
+  }, [setIsLoading]);
 
   return (
     <div style={{ position: "relative", width: "100%", height: "100vh" }}>
@@ -29,7 +29,7 @@ const SplashPage = () => {
 
       <img
         src={"/IMBERA_VERTICAL.png"}
-
+        alt="Logo IMBERA"
       />
     </div>
   );
