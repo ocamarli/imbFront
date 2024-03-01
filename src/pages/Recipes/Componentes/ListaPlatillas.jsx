@@ -21,7 +21,7 @@ import CancelIcon from "@mui/icons-material/Cancel";
 import AddIcon from "@mui/icons-material/Add";
 const handleClickAgregarPlantilla = () => {
     window.open(
-      "./AgregarPlantilla",
+      "https://black-field-0c24d120f.4.azurestaticapps.net/AgregarPlantilla",
       "_blank",
       "width=auto,height=auto"
     );
