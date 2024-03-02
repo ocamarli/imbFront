@@ -15,7 +15,9 @@ const handleClickAgregarUsuario = () => {
       "_self",
       "width=auto,height=auto"
     );
+    window.location.reload();    
   };
+
 const ListaUsuarios = (props) => {
 
   const [ isLoading, setIsLoading] = useState(false);
