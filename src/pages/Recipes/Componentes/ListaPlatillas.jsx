@@ -77,7 +77,7 @@ const ListaPlantillas = (props) => {
   return (
     <Grid container padding={2}>
       <Grid item xs={12}>
-        <HeaderContent></HeaderContent>
+        <HeaderContent titulo="Lista de plantillas"></HeaderContent>
         <Paper style={{ padding: 20 }}>
           <Grid container spacing={3}>
             <Grid item xs={8} sx={{ display: "flex", justifyContent: "left" }}>

@@ -1,13 +1,27 @@
 import { useForm } from "react-hook-form";
 import React, { useState, useEffect, useCallback } from "react";
-import {TextField,  Button,  FormControl,  Grid,  Paper,  FormGroup,  FormControlLabel,
-  Checkbox, Select,  MenuItem,  Typography,  InputLabel,CircularProgress} from "@mui/material";
+import {
+  TextField,
+  Button,
+  FormControl,
+  Grid,
+  Paper,
+  FormGroup,
+  FormControlLabel,
+  Checkbox,
+  Select,
+  MenuItem,
+  Typography,
+  InputLabel,
+  CircularProgress,
+} from "@mui/material";
 import { crearReceta } from "../../api/axios";
 import ComponentePestana from "../../components/ComponentePestana";
 import { obtenerParametros } from "../../api/axios";
 import HeaderContent from "../HeaderContent";
+import LockIcon from "@mui/icons-material/Lock";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
 const AgregarPlantilla = (props) => {
-
   const { onResponse, auth } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [parametros, setParametros] = useState([]);
@@ -18,6 +32,11 @@ const AgregarPlantilla = (props) => {
     laboratorio: false,
     servicios: false,
   });
+  const [bloqueado, setBloqueado] = useState(false);
+
+  const alternarBloqueo = () => {
+    setBloqueado(!bloqueado);
+  };
   const dataActivas = [
     {
       id: 1,
@@ -36,7 +55,7 @@ const AgregarPlantilla = (props) => {
       plantillas: 5,
     },
   ];
-  
+
   const dataObsoletas = [
     {
       id: 3,
@@ -61,7 +80,7 @@ const AgregarPlantilla = (props) => {
       label: "Parametros programación",
       content: (
         <ComponentePestana
-          data={dataActivas }
+          data={dataActivas}
           // Otros props que necesites pasar al componente de tabla
         />
       ),
@@ -146,14 +165,13 @@ const AgregarPlantilla = (props) => {
     fetchparametros();
   }, [fetchparametros]);
   return (
-    
     <Grid container padding={1}>
       <Grid item xs={12}>
-      {isLoading && ( // Agrega el loader condicionalmente
-                    <Grid item xs={12} align="center">
-                      <CircularProgress size={50} />
-                    </Grid>
-                  )}
+        {isLoading && ( // Agrega el loader condicionalmente
+          <Grid item xs={12} align="center">
+            <CircularProgress size={50} />
+          </Grid>
+        )}
         <HeaderContent></HeaderContent>
         <Paper style={{ padding: 10 }}>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -270,18 +288,7 @@ const AgregarPlantilla = (props) => {
                   }
                 />
               </Grid>
-              <Grid item xs={6}>
-                <InputLabel>Bloquear</InputLabel>
-                <TextField
-                  {...register("bloquear", { required: true })}
-                  size="small"
-                  fullWidth
-                  placeholder="Bloquear"
-                  variant="outlined"
-                  error={errors.bloquear ? true : false}
-                  helperText={errors.bloquear ? "Este campo es requerido" : ""}
-                />
-              </Grid>
+
               <Grid item xs={6}>
                 <InputLabel>Autoriza</InputLabel>
                 <TextField
@@ -295,8 +302,23 @@ const AgregarPlantilla = (props) => {
                 />
               </Grid>
               <Grid item xs={6}>
-
+                <InputLabel>Bloquear</InputLabel>
+                <Button
+                  {...register("bloquear", { required: true })}
+                  size="small"
+                  onClick={alternarBloqueo}
+                  variant="contained"
+                  style={{
+                    backgroundColor: bloqueado ? "red" : "blue",
+                  }}
+                  startIcon={bloqueado ? <LockIcon /> : <LockOpenIcon />}
+                  error={errors.bloquear ? true : false}
+                  helperText={errors.bloquear ? "Este campo es requerido" : ""}
+                >
+                  {bloqueado ? "Bloqueado" : "Desbloqueado"}
+                </Button>
               </Grid>
+              <Grid item xs={6}></Grid>
               <Grid item xs={6}>
                 <Typography variant="h6" gutterBottom>
                   Autorizaciones
@@ -385,13 +407,15 @@ const AgregarPlantilla = (props) => {
                 </Grid>
               </Grid>
               <Grid item xs={12}>
-              <ComponentePestana onResponse={onResponse} tabs={tabs} ></ComponentePestana>
-              </Grid>       
+                <ComponentePestana
+                  onResponse={onResponse}
+                  tabs={tabs}
+                ></ComponentePestana>
+              </Grid>
             </Grid>
           </form>
         </Paper>
       </Grid>
-
     </Grid>
   );
 };

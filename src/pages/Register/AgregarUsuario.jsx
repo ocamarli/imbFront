@@ -114,38 +114,6 @@ const AgregarUsuario = () => {
                 />
               </Grid>
               <Grid item xs={6}>
-                <Typography>Permisos</Typography>
-                <FormControl variant="outlined" sx={{ width: "100%" }}>
-                  <Select
-                    {...register("permisos", { required: true })}
-                    error={errors.permisos ? true : false}
-                    defaultValue="" // Asegúrate de dejar este defaultValue vacío
-                    displayEmpty // Esta propiedad garantiza que el elemento seleccionado muestre el placeholder cuando esté vacío
-                    renderValue={(selected) => {
-                      if (!selected) {
-                        return (
-                          <em style={{ color: "rgba(0, 0, 0, 0.54)" }}>
-                            Selecciona un permiso
-                          </em>
-                        );
-                      }
-                      return selected;
-                    }}
-                  >
-                    <MenuItem disabled value="">
-                      <em>Selecciona un permiso</em>
-                    </MenuItem>
-                    <MenuItem value={"permiso1"}>Administrador</MenuItem>
-                    <MenuItem value={"permiso2"}>Monitor</MenuItem>
-                  </Select>
-                  {errors.permisos && (
-                    <FormHelperText error>
-                      Este campo es requerido
-                    </FormHelperText>
-                  )}
-                </FormControl>
-              </Grid>
-              <Grid item xs={6}>
                 <InputLabel>Contraseña</InputLabel>
                 <TextField
                   {...register("pwo", { required: true })}

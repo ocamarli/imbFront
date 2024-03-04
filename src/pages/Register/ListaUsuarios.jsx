@@ -2,16 +2,16 @@ import React, { useState, useCallback, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import HeaderContent from "../HeaderContent";
 import { ListItemAvatar } from "@mui/material";
-import {Grid,  Paper, Divider, List, ListItem, ListItemText, IconButton, Avatar,
+import {Grid, Divider, List, ListItem, ListItemText, IconButton, Avatar,
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/ModeEdit";
 import AddIcon from "@mui/icons-material/Add";
 import { obtenerUsuarios } from "../../api/axios";
 import {CircularProgress} from "@mui/material";
 import AgregarUsuario from "./AgregarUsuario";
-
+import { useTheme } from "@mui/material/styles";
 const ListaUsuarios = (props) => {
-
+  const theme = useTheme();
   const [ isLoading, setIsLoading] = useState(false);
   const [usuarios, setUsuarios] = useState([]);
   const { onResponse,setSelectedComponent } = props;
@@ -48,8 +48,7 @@ const ListaUsuarios = (props) => {
                       <CircularProgress size={50} />
                     </Grid>
                   )}
-        <HeaderContent></HeaderContent>
-        <Paper style={{ padding: 10 }}>
+        <HeaderContent titulo="Lista de usuarios"></HeaderContent>
           <Grid container spacing={0}>
             <Grid
               item
@@ -60,13 +59,13 @@ const ListaUsuarios = (props) => {
                 alignItems: "center",
               }}
             >
-              <Typography variant="h6">Agregar usuario nuevo</Typography>
+              <Typography variant="h6" mt={4}>Agregar usuario nuevo</Typography>
               <IconButton
                 variant={"contained"}
                 sx={{
                   borderRadius: "50%",
-                  backgroundColor: "green",
-                  color: "white",
+                  backgroundColor: theme.palette.secondary.main,
+                  color: theme.palette.secondary.contrastText,
                   marginLeft: "10px",
                 }}
                 onClick={handleClickAgregarUsuario}
@@ -142,7 +141,6 @@ const ListaUsuarios = (props) => {
               </List>
             </Grid>
           </Grid>
-        </Paper>
       </Grid>
     </Grid>
   );
