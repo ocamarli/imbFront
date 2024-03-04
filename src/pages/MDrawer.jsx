@@ -111,13 +111,16 @@ export default function PersistentDrawerLeft(props) {
 
   const seleccionarListaUsuarios = () => {
     setSelectedComponent(<ListaUsuarios
+      setSelectedComponent={setSelectedComponent}
       onResponse={(json) => {
         setResponse(json);
         setOpenAlert(true);
       }}/>);
   }; 
   const seleccionarListaPlantillas = () => {
-    setSelectedComponent(<ListaPlantillas/>);
+    setSelectedComponent(<ListaPlantillas
+      setSelectedComponent={setSelectedComponent}
+      />);
   };  
   const selectHome = () => {
     setSelectedComponent(<Home />);

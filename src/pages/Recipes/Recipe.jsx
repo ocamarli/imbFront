@@ -8,7 +8,7 @@ import { useEffect } from "react";
 import { Grid, Paper, CircularProgress, Button } from "@mui/material";
 
 function Recipes(props) {
-  const { onResponse } = props;
+  const { onResponse , setSelectedComponent} = props;
   const [isLoading, setIsLoading] = useState(false);
   const [recipes, setRecipes] = useState([]);
 

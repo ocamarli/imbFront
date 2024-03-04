@@ -1,9 +1,5 @@
 import React, { useState } from "react";
-import {
-  Button,
-  Grid,
-  Paper,
-} from "@mui/material";
+import { Button, Grid, Paper } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import HeaderContent from "../../HeaderContent";
 import {
@@ -19,13 +15,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/ModeEdit";
 import CancelIcon from "@mui/icons-material/Cancel";
 import AddIcon from "@mui/icons-material/Add";
-const handleClickAgregarPlantilla = () => {
-    window.open(
-      "https://black-field-0c24d120f.4.azurestaticapps.net/AgregarPlantilla",
-      "_blank",
-      "width=auto,height=auto"
-    );
-  };
+import AgregarPlantilla from "../AgregarPlantilla";
 
 const handleEdit = (data) => {
   console.log(data);
@@ -37,8 +27,12 @@ const handleDelete = (data) => {
   console.log(data);
 };
 
-const ListaPlantillas = () => {
+const ListaPlantillas = (props) => {
+  const { setSelectedComponent } = props;
   const [activeTab, setActiveTab] = useState("activas"); // Estado para controlar la pestaña activa
+  const handleClickAgregarPlantilla = () => {
+    setSelectedComponent(<AgregarPlantilla></AgregarPlantilla>);
+  };
   const handleTabChange = (tab) => {
     setActiveTab(tab);
   };
@@ -86,25 +80,56 @@ const ListaPlantillas = () => {
         <HeaderContent></HeaderContent>
         <Paper style={{ padding: 20 }}>
           <Grid container spacing={3}>
+            <Grid item xs={8} sx={{ display: "flex", justifyContent: "left" }}>
+              <Button
+                variant={"contained"}
+                onClick={() => handleTabChange("activas")}
+                style={{
+                  backgroundColor:
+                    activeTab === "activas" ? "green" : "#cccccc",
+                  color: "white",
+                  cursor: "pointer",
+                }}
+              >
+                Plantillas Activas
+              </Button>
+              <Button
+                variant={"contained"}
+                onClick={() => handleTabChange("obsoletas")}
+                style={{
+                  backgroundColor:
+                    activeTab === "obsoletas" ? "orange" : "#cccccc",
+                  color: "white",
+                  cursor: "pointer",
+                }}
+              >
+                Plantillas Obsoletas
+              </Button>
+            </Grid>
 
-          <Grid item xs={8} sx={{ display: 'flex', justifyContent: 'left' }}>
-        <Button variant={"contained"} onClick={() => handleTabChange('activas')} style={{  backgroundColor: activeTab === 'activas' ? 'green' : '#cccccc', color: 'white',  cursor: 'pointer' }}>Plantillas Activas</Button>
-        <Button variant={"contained"} onClick={() => handleTabChange('obsoletas')} style={{ backgroundColor: activeTab === 'obsoletas' ? 'orange' : '#cccccc', color: 'white', cursor: 'pointer' }}>Plantillas Obsoletas</Button>
-      </Grid>
-    
-      <Grid item xs={4} sx={{ display: 'flex', justifyContent: 'right', alignItems: 'center' }}>
-      <Typography variant="h6">
-          Agregar una plantilla
-        </Typography>        
-        <IconButton
-        variant={"contained"}
-          sx={{ borderRadius: '50%', backgroundColor: 'green', color: 'white', marginLeft: '10px' }}
-          onClick={handleClickAgregarPlantilla}
-        >
-          <AddIcon />
-        </IconButton>
-
-      </Grid>
+            <Grid
+              item
+              xs={4}
+              sx={{
+                display: "flex",
+                justifyContent: "right",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="h6">Agregar una plantilla</Typography>
+              <IconButton
+                variant={"contained"}
+                sx={{
+                  borderRadius: "50%",
+                  backgroundColor: "green",
+                  color: "white",
+                  marginLeft: "10px",
+                }}
+                onClick={handleClickAgregarPlantilla}
+              >
+                <AddIcon />
+              </IconButton>
+            </Grid>
 
             <Grid item xs={12}>
               <TableContainer
