@@ -12,7 +12,7 @@ import { useNavigate } from "react-router-dom";
 import AgregarUsuario from "./AgregarUsuario";
 
 const ListaUsuarios = (props) => {
-  const navigate=useNavigate();
+
   const [ isLoading, setIsLoading] = useState(false);
   const [usuarios, setUsuarios] = useState([]);
   const { onResponse,setSelectedComponent } = props;
