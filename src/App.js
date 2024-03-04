@@ -29,10 +29,15 @@ function App() {
       mode: darkMode ? "dark" : "light",
       primary: {
         main: "#143C64",
-        light: "#fafafa",
+        light: "#436383",
+        dark:"#0E2A46",
+        contrastText:"#ffffff"
       },
       secondary: {
         main: "#28a745",
+        light:"#53B86A",
+        dark:"#1C7430",
+        contrastText:"#ffffff"
       },      
     },
   });
