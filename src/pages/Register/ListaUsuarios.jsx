@@ -8,20 +8,28 @@ import EditIcon from "@mui/icons-material/ModeEdit";
 import AddIcon from "@mui/icons-material/Add";
 import { obtenerUsuarios } from "../../api/axios";
 import {CircularProgress} from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
-const handleClickAgregarUsuario = () => {
-    window.open(
-      "/AgregarUsuario",
-      "_self",
-      "width=auto,height=auto"
-    );
-  };
 
 const ListaUsuarios = (props) => {
-
+  const navigate=useNavigate();
   const [ isLoading, setIsLoading] = useState(false);
   const [usuarios, setUsuarios] = useState([]);
   const { onResponse } = props;
+  
+  const handleOpenNewWindow = () => {
+    const url = '/AgregarUsuario'; // Define la URL a la que deseas navegar
+    const nuevaVentana = window.open(url, '_blank'); // Abre una nueva ventana con la URL en blanco
+    if (nuevaVentana) {
+      nuevaVentana.focus(); // Enfoca la nueva ventana
+    } else {
+      // Maneja el caso de que el navegador bloquee la apertura de nuevas ventanas
+      navigate(url); // Navega a la URL normalmente si no se puede abrir una nueva ventana
+    }
+  };
+  const handleClickAgregarUsuario = () => {
+    handleOpenNewWindow();
+    };
   const cObtenerUsuarios = useCallback(async () => {
     try {
       setIsLoading(true);

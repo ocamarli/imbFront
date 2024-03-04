@@ -10,17 +10,20 @@ import Test from "./Test";
 import { Box } from "@mui/material";
 import AgregarUsuario from "./pages/Register/AgregarUsuario.jsx";
 import AgregarPlantilla from "./pages/Recipes/AgregarPlantilla.jsx";
-
 function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-
+  const PageTypes = {
+    MDrawer: 0,
+    Test: 1,
+    AgregarPlantilla: 2,
+    AgregarUsuario: 3,
+  };
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
     }, 1200);
   }, []);
-
   const theme = createTheme({
     palette: {
       mode: darkMode ? "dark" : "light",
@@ -30,29 +33,36 @@ function App() {
       },
       secondary: {
         main: "#28a745",
-      },
+      },      
     },
   });
 
-  const AuthRoute = () => {
-    const token = sessionStorage.getItem("ACCSSTKN");
+  const handleDarkModeChange = () => {
+    setDarkMode(!darkMode);
+  };
 
-    if (token && !isTokenExpired(token)) {
-      return <Navigate to="/Menu" replace />;
+  const AuthRoute = () => {
+    if (sessionStorage.getItem("ACCSSTKN") !== null) {
+      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+      if (!validateToken(tkn))
+        return <Login onDarkModeChange={handleDarkModeChange} />;
+      else return <Navigate to="/Menu" replace />;
     } else {
       return <Login onDarkModeChange={handleDarkModeChange} />;
     }
   };
 
   const ProtectedRoute = ({ type }) => {
-    const token = sessionStorage.getItem("ACCSSTKN");
+    const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+    if (tkn !== undefined) {
+      if (!validateToken(tkn)) {
+        return <Navigate to="/" replace />;
+      }
+      const decodedTkn = decodeToken(tkn);
+      console.log(decodedTkn);
 
-    if (token && !isTokenExpired(token)) {
-      const decodedToken = decodeToken(token);
-      return <FilterRoutes type={type} auth={JSON.parse(decodedToken.sub)} />;
-    } else {
-      return <Navigate to="/" replace />;
-    }
+      return <FilterRoutes type={type} auth={JSON.parse(decodedTkn.sub)} />;
+    } else return <Navigate to="/" replace />;
   };
 
   const FilterRoutes = ({ type, auth }) => {
@@ -62,20 +72,20 @@ function App() {
       case 1:
         return <Test onDarkModeChange={handleDarkModeChange} auth={auth} />;
       case 2:
-        return <AgregarPlantilla onDarkModeChange={handleDarkModeChange} auth={auth} />;
+        return <AgregarPlantilla onDarkModeChange={handleDarkModeChange} auth={auth}/>;
       case 3:
-        return <AgregarUsuario onDarkModeChange={handleDarkModeChange} auth={auth} />;
+        return <AgregarUsuario onDarkModeChange={handleDarkModeChange} auth={auth}/>;
       default:
-        return null;
+        return <>HHH</>;
     }
   };
 
-  const isTokenExpired = (token) => {
-    return isExpired(token);
-  };
-
-  const handleDarkModeChange = () => {
-    setDarkMode(!darkMode);
+  const validateToken = (tkn) => {
+    if (isExpired(tkn)) {
+      return false;
+    } else {
+      return true;
+    }
   };
 
   return (
@@ -89,7 +99,7 @@ function App() {
             alignItems: "center",
           }}
         >
-          <SplashPage />
+         <SplashPage />
         </Box>
       ) : (
         <BrowserRouter>
@@ -97,11 +107,26 @@ function App() {
             <ThemeProvider theme={theme}>
               <CssBaseline />
               <Routes>
-                <Route path="/" element={<AuthRoute />} />
-                <Route path="/Menu" element={<ProtectedRoute type={0} />} />
-                <Route path="/Test" element={<ProtectedRoute type={1} />} />
-                <Route path="/AgregarPlantilla" element={<ProtectedRoute type={2} />} />
-                <Route path="/AgregarUsuario" element={<ProtectedRoute type={3} />} />
+                <Route path="/" element={<AuthRoute />}></Route>
+                <Route
+                  path="/Menu"
+                  element={<ProtectedRoute type={PageTypes.MDrawer} />}
+                ></Route>
+                <Route
+                  path="/Test"
+                  element={<ProtectedRoute type={PageTypes.Test} />}
+                />
+
+                <Route
+                  path="/AgregarPlantilla"
+                  element={
+                    <ProtectedRoute type={PageTypes.AgregarPlantilla}  />
+                  }
+                />
+                <Route
+                  path="/AgregarUsuario"
+                  element={<ProtectedRoute type={PageTypes.AgregarUsuario} />}
+                />
               </Routes>
             </ThemeProvider>
           </div>
