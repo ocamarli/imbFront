@@ -8,7 +8,6 @@ import EditIcon from "@mui/icons-material/ModeEdit";
 import AddIcon from "@mui/icons-material/Add";
 import { obtenerUsuarios } from "../../api/axios";
 import {CircularProgress} from "@mui/material";
-import { useNavigate } from "react-router-dom";
 import AgregarUsuario from "./AgregarUsuario";
 
 const ListaUsuarios = (props) => {
