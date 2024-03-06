@@ -23,6 +23,7 @@ const api = {
   },
 };
 /*
+ baseuri: "https://imbvikkonapi.azurewebsites.net/api/v1/",
  "https://vikkonapi.azurewebsites.net/api/v1/"
 function Encode2Url(obj) {
   var str = [];

@@ -9,29 +9,34 @@ import {
   FormControl,
   Grid,
   Paper,
-  FormHelperText,
 } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
-import MenuItem from "@mui/material/MenuItem";
-import Select from "@mui/material/Select";
 import { setRegister } from "../../api/axios";
 import HeaderContent from "../HeaderContent";
 
-const handleCloseRegister = async (data) => {
-  const response = await setRegister(
-    data,
-    JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token
-  );
-  console.log(response);
-};
-
-const onSubmit = (data) => {
-  console.log(data);
-  handleCloseRegister(data);
-};
-
 const AgregarUsuario = () => {
+  const onSubmit = (data) => {
+    console.log("submit");
+    console.log(data);
+    handleCloseRegister(data);
+  };
+
+  const handleCloseRegister = async (data) => {
+    let newData;
+    console.log(data);
+    console.log(autorizaciones);
+
+    newData = { ...data, permisos:autorizaciones };
+    console.log(newData);
+    console.log(autorizaciones);
+    data=newData
+    const response = await setRegister(
+      data,
+      JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token
+    );
+    console.log(response);
+  };
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
     setAutorizaciones((prevState) => ({
@@ -71,38 +76,6 @@ const AgregarUsuario = () => {
                 />
               </Grid>
               <Grid item xs={6}>
-                <Typography>Puesto</Typography>
-                <FormControl variant="outlined" sx={{ width: "100%" }}>
-                  <Select
-                    {...register("puesto", { required: true })}
-                    error={errors.puesto ? true : false}
-                    defaultValue="" // Asegúrate de dejar este defaultValue vacío
-                    displayEmpty // Esta propiedad garantiza que el elemento seleccionado muestre el placeholder cuando esté vacío
-                    renderValue={(selected) => {
-                      if (!selected) {
-                        return (
-                          <em style={{ color: "rgba(0, 0, 0, 0.54)" }}>
-                            Selecciona un puesto
-                          </em>
-                        );
-                      }
-                      return selected;
-                    }}
-                  >
-                    <MenuItem disabled value="">
-                      <em>Selecciona un puesto</em>
-                    </MenuItem>
-                    <MenuItem value={"administrador"}>Administrador</MenuItem>
-                    <MenuItem value={"monitor"}>Monitor</MenuItem>
-                  </Select>
-                  {errors.puesto && (
-                    <FormHelperText error>
-                      Este campo es requerido
-                    </FormHelperText>
-                  )}
-                </FormControl>
-              </Grid>
-              <Grid item xs={6}>
                 <Typography>Correo electrónico</Typography>
                 <TextField
                   {...register("correo", { required: true })}
@@ -124,7 +97,7 @@ const AgregarUsuario = () => {
                   helperText={errors.pwo ? "Este campo es requerido" : ""}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <Typography variant="h6" gutterBottom>
                   Autorizaciones
                 </Typography>
@@ -175,7 +148,7 @@ const AgregarUsuario = () => {
               </Grid>
               <Grid item xs={12}>
                 <Grid container sx={{ justifyContent: "flex-end" }} spacing={2}>
-                  <Grid item xs={6}>
+                  <Grid item xs={12}>
                     <Button
                       variant="contained"
                       type="submit"

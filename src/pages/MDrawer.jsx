@@ -25,7 +25,6 @@ import Avatar from "@mui/material/Avatar";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
 import Brightness7Icon from "@mui/icons-material/Brightness7";
 import ExitToAppIcon from "@mui/icons-material/ExitToApp";
-import Template from "./Template/Template";
 import { useNavigate } from "react-router-dom";
 import HomeIcon from "@mui/icons-material/Home";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
@@ -108,20 +107,22 @@ export default function PersistentDrawerLeft(props) {
     setOpenAlert(false);
   };
 
-
   const seleccionarListaUsuarios = () => {
-    setSelectedComponent(<ListaUsuarios
-      setSelectedComponent={setSelectedComponent}
-      onResponse={(json) => {
-        setResponse(json);
-        setOpenAlert(true);
-      }}/>);
-  }; 
+    setSelectedComponent(
+      <ListaUsuarios
+        setSelectedComponent={setSelectedComponent}
+        onResponse={(json) => {
+          setResponse(json);
+          setOpenAlert(true);
+        }}
+      />
+    );
+  };
   const seleccionarListaPlantillas = () => {
-    setSelectedComponent(<ListaPlantillas
-      setSelectedComponent={setSelectedComponent}
-      />);
-  };  
+    setSelectedComponent(
+      <ListaPlantillas setSelectedComponent={setSelectedComponent} />
+    );
+  };
   const selectHome = () => {
     setSelectedComponent(<Home />);
   };
@@ -135,16 +136,7 @@ export default function PersistentDrawerLeft(props) {
       />
     );
   };
-  const selectTemplate = () => {
-    setSelectedComponent(
-      <Template
-        onResponse={(json) => {
-          setResponse(json);
-          setOpenAlert(true);
-        }}
-      />
-    );
-  };
+
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -181,7 +173,12 @@ export default function PersistentDrawerLeft(props) {
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
       <AppBar position="fixed" open={open} sx={{ height: "60px" }}>
-        <Toolbar style={{ backgroundColor: theme.palette.primary.main, color: "white" }}>
+        <Toolbar
+          style={{
+            backgroundColor: theme.palette.primary.main,
+            color: "white",
+          }}
+        >
           <IconButton
             color="inherit"
             aria-label="open drawer"
@@ -194,8 +191,18 @@ export default function PersistentDrawerLeft(props) {
           <Box sx={{ flexGrow: 1 }} />
 
           <IconButton color="inherit" sx={{ ml: 2 }}>
-          <Typography variant="subtitle1">
-              {auth !== null ? auth?.nombre+"("+auth.puesto+")" : "Usuario"}
+            <Typography >
+              {auth !== null ? (
+                <React.Fragment>
+                  {auth.nombre} (
+                  {Object.keys(auth.permisos)
+                    .filter((permiso) => auth.permisos[permiso])
+                    .join(", ")}
+                  )
+                </React.Fragment>
+              ) : (
+                "Usuario"
+              )}
             </Typography>
             <Avatar sx={{ ml: 2 }} />
           </IconButton>
@@ -248,13 +255,6 @@ export default function PersistentDrawerLeft(props) {
               <ListItemText primary="Página principal" />
             </ListItemButton>
 
-            <ListItemButton onClick={selectTemplate}>
-              <ListItemIcon>
-                <DescriptionIcon sx={iconsStyle} />
-              </ListItemIcon>
-              <ListItemText primary="Template" />
-            </ListItemButton>
-
             <ListItemButton onClick={seleccionarListaPlantillas}>
               <ListItemIcon>
                 <FormatListNumberedIcon sx={iconsStyle} />
@@ -288,7 +288,7 @@ export default function PersistentDrawerLeft(props) {
             height: "60px",
           }}
         >
-          <Divider/>
+          <Divider />
           <List>
             <ListItemButton color="inherit" onClick={toggleDarkMode}>
               <ListItemIcon>
@@ -313,7 +313,6 @@ export default function PersistentDrawerLeft(props) {
       <Main
         open={open}
         sx={{
-
           height: "100vh",
         }}
       >
