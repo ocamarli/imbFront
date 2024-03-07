@@ -49,115 +49,123 @@ const ListaUsuarios = (props) => {
   return (
     <Grid container padding={2} sx={{ height: "calc(100vh)" }}>
       <Grid item xs={12}>
-        {isLoading && ( // Agrega el loader condicionalmente
+        {isLoading ? ( // Agrega el loader condicionalmente
           <Grid item xs={12} align="center">
             <CircularProgress size={50} />
           </Grid>
-        )}
-        <HeaderContent titulo="Lista de usuarios"></HeaderContent>
-        <Grid container spacing={0}>
-          <Grid
-            item
-            xs={12}
-            sx={{
-              display: "flex",
-              justifyContent: "right",
-              alignItems: "center",
-            }}
-          >
-            <Typography variant="h6" mt={4}>
-              Agregar usuario nuevo
-            </Typography>
-            <IconButton
-              variant={"contained"}
-              sx={{
-                borderRadius: "50%",
-                backgroundColor: theme.palette.secondary.main,
-                color: theme.palette.secondary.contrastText,
-                marginLeft: "10px",
-              }}
-              onClick={handleClickAgregarUsuario}
-            >
-              <AddIcon />
-            </IconButton>
-          </Grid>
+        ) : (
+          <Grid>
+            ( <HeaderContent titulo="Lista de usuarios"></HeaderContent>
+            <Grid container spacing={0}>
+              <Grid
+                item
+                xs={12}
+                sx={{
+                  display: "flex",
+                  justifyContent: "right",
+                  alignItems: "center",
+                }}
+              >
+                <Typography variant="h6" mt={4}>
+                  Agregar usuario nuevo
+                </Typography>
+                <IconButton
+                  variant={"contained"}
+                  sx={{
+                    borderRadius: "50%",
+                    backgroundColor: theme.palette.secondary.main,
+                    color: theme.palette.secondary.contrastText,
+                    marginLeft: "10px",
+                  }}
+                  onClick={handleClickAgregarUsuario}
+                >
+                  <AddIcon />
+                </IconButton>
+              </Grid>
 
-          <Grid item xs={12}>
-            <List
-              sx={{
-                height: "100vh",
-                width: "100%",
-                bgcolor: "background.paper",
-              }}
-            >
-              {usuarios.map((usuario, index) => (
-                <React.Fragment key={index}>
-                  <ListItem alignItems="flex-start">
-                    <Grid container>
-                      <Grid item xs={10}>
+              <Grid item xs={12}>
+                <List
+                  sx={{
+                    height: "100vh",
+                    width: "100%",
+                    bgcolor: "background.paper",
+                  }}
+                >
+                  {usuarios.map((usuario, index) => (
+                    <React.Fragment key={index}>
+                      <ListItem alignItems="flex-start">
                         <Grid container>
+                          <Grid item xs={10}>
+                            <Grid container>
+                              <Grid
+                                item
+                                sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "left",
+                                }}
+                              >
+                                <ListItemAvatar>
+                                  <Avatar
+                                    alt={usuario.nombre}
+                                    src={`/static/images/avatar/${
+                                      index + 1
+                                    }.jpg`}
+                                  />
+                                </ListItemAvatar>
+                              </Grid>
+                              <Grid item>
+                                <ListItemText
+                                  primary={usuario.nombre}
+                                  secondary={
+                                    <React.Fragment>
+                                      <Typography
+                                        sx={{ display: "inline" }}
+                                        component="span"
+                                        variant="body2"
+                                        color="text.primary"
+                                      >
+                                        {usuario.correo}
+                                        <br />
+                                      </Typography>
+                                      {Object.entries(usuario.permisos).map(
+                                        ([permiso, tienePermiso]) =>
+                                          tienePermiso && (
+                                            <span key={permiso}>
+                                              {permiso},{" "}
+                                            </span>
+                                          )
+                                      )}
+                                    </React.Fragment>
+                                  }
+                                />
+                              </Grid>
+                            </Grid>
+                          </Grid>
                           <Grid
                             item
+                            xs={2}
                             sx={{
                               display: "flex",
                               alignItems: "center",
-                              justifyContent: "left",
+                              justifyContent: "flex-end",
                             }}
                           >
-                            <ListItemAvatar>
-                              <Avatar
-                                alt={usuario.nombre}
-                                src={`/static/images/avatar/${index + 1}.jpg`}
-                              />
-                            </ListItemAvatar>
-                          </Grid>
-                          <Grid item>
-                            <ListItemText
-                              primary={usuario.nombre}
-                              secondary={
-                                <React.Fragment>
-                                  <Typography
-                                    sx={{ display: "inline" }}
-                                    component="span"
-                                    variant="body2"
-                                    color="text.primary"
-                                  >
-                                    {usuario.correo}
-                                    <br />
-                                  </Typography>
-                                  {Object.entries(usuario.permisos).map(
-                                    ([permiso, tienePermiso]) =>
-                                      tienePermiso && (
-                                        <span key={permiso}>{permiso}, </span>
-                                      )
-                                  )}
-                                </React.Fragment>
-                              }
-                            />
+                            <EditIcon />
                           </Grid>
                         </Grid>
-                      </Grid>
-                      <Grid
-                        item
-                        xs={2}
-                        sx={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "flex-end",
-                        }}
-                      >
-                        <EditIcon />
-                      </Grid>
-                    </Grid>
-                  </ListItem>
-                  {index !== usuarios.length - 1 && (
-                    <Divider variant="inset" component="li" />
-                  )}
-                </React.Fragment>
-              ))}
-            </List>
+                      </ListItem>
+                      {index !== usuarios.length - 1 && (
+                        <Divider variant="inset" component="li" />
+                      )}
+                    </React.Fragment>
+                  ))}
+                </List>
+              </Grid>
+            </Grid>
+            )
           </Grid>
-        </Grid>
+        )}
       </Grid>
     </Grid>
   );

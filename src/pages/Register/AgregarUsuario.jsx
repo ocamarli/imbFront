@@ -14,14 +14,14 @@ import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
 import { setRegister } from "../../api/axios";
 import HeaderContent from "../HeaderContent";
-
+import RespuestaSnackbar from "../../components/RespuestaSnackbar";
 const AgregarUsuario = () => {
   const onSubmit = (data) => {
     console.log("submit");
     console.log(data);
     handleCloseRegister(data);
   };
-
+  const [response, setResponse] = useState(null);
   const handleCloseRegister = async (data) => {
     let newData;
     console.log(data);
@@ -36,6 +36,7 @@ const AgregarUsuario = () => {
       JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token
     );
     console.log(response);
+    setResponse(response)
   };
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
@@ -164,6 +165,8 @@ const AgregarUsuario = () => {
           </form>
         </Paper>
       </Grid>
+       {/* Renderiza el componente de Snackbar */}
+       {response && <RespuestaSnackbar response={response} onClose={() => setResponse(null)}/>}
     </Grid>
   );
 };

@@ -57,19 +57,6 @@ const columns = [
     flex: 2,
     editable: true,
   },
-
-  {
-    field: "tipo_parameto",
-    headerName: "Tipo de parámetro",
-    flex: 1,
-    editable: true,
-  },
-  {
-    field: "grupo",
-    headerName: "Grupo",
-    flex: 1,
-    editable: true,
-  },
 ];
 
 const TablaDatos = (props) => {

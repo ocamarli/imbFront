@@ -139,12 +139,12 @@ const ListaPlantillas = (props) => {
                 <Table>
                   <TableHead>
                     <TableRow>
-                      <TableCell>ID</TableCell>
-                      <TableCell>AUTOR</TableCell>
-                      <TableCell>FAMILIA</TableCell>
-                      <TableCell>HARDWARE</TableCell>
-                      <TableCell>ESTATUS</TableCell>
-                      <TableCell>PLANTILLAS</TableCell>
+                      <TableCell>Id</TableCell>
+                      <TableCell>Autor</TableCell>
+                      <TableCell>Familia</TableCell>
+                      <TableCell>Hardware</TableCell>
+                      <TableCell>Estatus</TableCell>
+                      <TableCell>Plantillas</TableCell>
                       <TableCell>Eliminar</TableCell>
                       <TableCell>Editar</TableCell>
                       <TableCell>Cancelar</TableCell>

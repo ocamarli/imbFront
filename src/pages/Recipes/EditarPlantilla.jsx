@@ -1,5 +1,6 @@
 import { useForm } from "react-hook-form";
 import React, { useState, useEffect, useCallback } from "react";
+import { useTheme } from "@mui/material/styles";
 import {
   TextField,
   Button,
@@ -16,13 +17,18 @@ import { crearReceta } from "../../api/axios";
 import TablaDatos from "../../components/TablaDatos";
 import { obtenerParametros } from "../../api/axios";
 import HeaderContent from "../HeaderContent";
-const AgregarPlantilla = (props) => {
+import LockIcon from "@mui/icons-material/Lock";
+import LockOpenIcon from "@mui/icons-material/LockOpen";
+const EditarPlantilla = (props) => {
   const { onResponse, auth } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [parametros, setParametros] = useState([]);
+  const theme = useTheme();
+  const [bloqueado, setBloqueado] = useState(false);
 
-
-
+  const alternarBloqueo = () => {
+    setBloqueado(!bloqueado);
+  };
 
   console.log("auth");
   console.log(auth);
@@ -193,19 +199,36 @@ const AgregarPlantilla = (props) => {
                   helperText={errors.autoriza ? "Este campo es requerido" : ""}
                 />
               </Grid>
-
+              <Grid item xs={12}>
+                <InputLabel>Bloquear</InputLabel>
+                <Button
+                  {...register("congelar", { required: true })}
+                  size="small"
+                  onClick={alternarBloqueo}
+                  variant="contained"
+                  style={{
+                    backgroundColor: bloqueado
+                      ? theme.palette.grey[400]
+                      : theme.palette.primary.light,
+                  }}
+                  startIcon={bloqueado ? <LockIcon /> : <LockOpenIcon />}
+                  error={errors.congelar ? true : false}
+                  helperText={errors.congelar ? "Este campo es requerido" : ""}
+                >
+                  {bloqueado ? "Congelado" : "Congelar"}
+                </Button>
+              </Grid>
               <Grid item xs={6}></Grid>
 
-              <Grid item xs={3}>
+              <Grid item xs={12}>
                 <Grid container sx={{ justifyContent: "flex-end" }} spacing={2}>
                   <Grid item xs={12}>
                     <Button variant="contained" fullWidth type="submit">
-                      Crear plantilla
+                      Crear Receta
                     </Button>
                   </Grid>
                 </Grid>
               </Grid>
-
               <Grid item xs={12}>
                 <Typography variant="h6">Parametros</Typography>
               </Grid>
@@ -213,15 +236,6 @@ const AgregarPlantilla = (props) => {
                 <TablaDatos
                   onResponse={onResponse}
                 ></TablaDatos>
-              </Grid>
-              <Grid item xs={3}>
-                <Grid container sx={{ justifyContent: "flex-end" }} spacing={2}>
-                  <Grid item xs={12}>
-                    <Button variant="contained" fullWidth type="submit">
-                      Crear y congelar plantilla
-                    </Button>
-                  </Grid>
-                </Grid>
               </Grid>
             </Grid>
           </form>
@@ -233,4 +247,4 @@ const AgregarPlantilla = (props) => {
   );
 };
 
-export default AgregarPlantilla;
+export default EditarPlantilla;
