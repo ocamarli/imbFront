@@ -14,6 +14,7 @@ export async function authenticate(data) {
 export async function setRegister(data, token) {
   try {
     const response = await postData(ENV.setRegister(), data, token);
+    console.log(response.status)
     if (response.status === 200) {
       return await response.json();
     } else {

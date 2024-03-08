@@ -24,7 +24,7 @@ const ListaUsuarios = (props) => {
   const { onResponse, setSelectedComponent } = props;
 
   const handleClickAgregarUsuario = () => {
-    setSelectedComponent(<AgregarUsuario></AgregarUsuario>);
+    setSelectedComponent(<AgregarUsuario ></AgregarUsuario>);
   };
   const cObtenerUsuarios = useCallback(async () => {
     try {

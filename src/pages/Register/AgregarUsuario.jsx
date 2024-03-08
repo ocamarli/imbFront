@@ -14,14 +14,20 @@ import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
 import { setRegister } from "../../api/axios";
 import HeaderContent from "../HeaderContent";
-import RespuestaSnackbar from "../../components/RespuestaSnackbar";
+import RespuestaModal from "../../components/RespuestaModal";
 const AgregarUsuario = () => {
   const onSubmit = (data) => {
     console.log("submit");
     console.log(data);
     handleCloseRegister(data);
   };
-  const [response, setResponse] = useState(null);
+
+  const cerrarModal = () => {
+    setEstaActivo(false); // Restablecer el estado a false cuando se cierra el modal
+  };
+  const [estaActivo, setEstaActivo] = useState(false);
+  const [mensaje, setMensaje] = useState("");
+  const [ setResponse] = useState(null);
   const handleCloseRegister = async (data) => {
     let newData;
     console.log(data);
@@ -36,7 +42,10 @@ const AgregarUsuario = () => {
       JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token
     );
     console.log(response);
+    console.log(response.status);
     setResponse(response)
+    setEstaActivo(true);
+    setMensaje(response.msg);
   };
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
@@ -47,9 +56,9 @@ const AgregarUsuario = () => {
   };
   const [autorizaciones, setAutorizaciones] = useState({
     superusuario: false,
+    electrico: false,
     refrigeracion: false,
     laboratorio: false,
-    servicios: false,
   });
   const {
     register,
@@ -137,12 +146,12 @@ const AgregarUsuario = () => {
                     <FormControlLabel
                       control={
                         <Checkbox
-                          checked={autorizaciones.servicios}
+                          checked={autorizaciones.electrico}
                           onChange={handleCheckboxChange}
-                          name="servicios"
+                          name="electrico"
                         />
                       }
-                      label="Servicios"
+                      label="Eléctrico"
                     />
                   </FormGroup>
                 </FormControl>
@@ -166,7 +175,7 @@ const AgregarUsuario = () => {
         </Paper>
       </Grid>
        {/* Renderiza el componente de Snackbar */}
-       {response && <RespuestaSnackbar response={response} onClose={() => setResponse(null)}/>}
+       <RespuestaModal activo={estaActivo} mensaje={mensaje}  onClose={cerrarModal}/>
     </Grid>
   );
 };
