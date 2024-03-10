@@ -85,7 +85,7 @@ export default function Login() {
           }}
         >
           <Grid item xs={12}>
-            <img src={"https://black-field-0c24d120f.4.azurestaticapps.ne…tic/media/imberaLogoMenu.png"} alt="Logo" />
+            <img src={"imberaLogo.png"} alt="Logo" />
           </Grid>
           <Typography component="h1" variant="h5" sx={{ mt: 4,mb:2 }}>
             Iniciar Sesión

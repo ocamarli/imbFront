@@ -2,36 +2,38 @@ import React, { useState, useEffect } from "react";
 import Modal from "@mui/material/Modal";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
+import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
+import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import Button from "@mui/material/Button";
 
-const RespuestaModal = ({ activo, mensaje, onClose }) => {
+const RespuestaModal = (props) => {
+  const { activo, respuesta, autoCierre, onClose } = props
   const [abierto, setAbierto] = useState(activo);
 
   useEffect(() => {
     setAbierto(activo);
-
-    // Si el modal está activo, configurar un temporizador para cerrarlo después de cierto tiempo
-    if (activo) {
+    if (activo && autoCierre) {
       const temporizador = setTimeout(() => {
         setAbierto(false);
         if (onClose) {
-          onClose(); // Llamar a la función onClose para notificar que el modal se ha cerrado automáticamente
+          onClose();
         }
-      }, 1300); // Tiempo en milisegundos antes de que el modal se cierre automáticamente
-
-      // Limpiar el temporizador al desmontar el componente o cuando el modal se cierre manualmente
+      }, 1300);
       return () => clearTimeout(temporizador);
     }
-  }, [activo, onClose]);
+  }, [activo, autoCierre, onClose]);
+
+  const handleCerrarModal = () => {
+    setAbierto(false);
+    if (onClose) {
+      onClose();
+    }
+  };
 
   return (
     <Modal
       open={abierto}
-      onClose={() => {
-        setAbierto(false);
-        if (onClose) {
-          onClose(); // Llamar a la función onClose para notificar que el modal se ha cerrado manualmente
-        }
-      }}
+      onClose={handleCerrarModal}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
@@ -41,19 +43,30 @@ const RespuestaModal = ({ activo, mensaje, onClose }) => {
           top: "50%",
           left: "50%",
           transform: "translate(-50%, -50%)",
-          width: 400,
+          width: 300,
           bgcolor: "background.paper",
           border: "2px solid #000",
           boxShadow: 24,
           p: 4,
+          textAlign: "center",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
         }}
       >
-        <Typography id="modal-modal-title" variant="h6" component="h2">
-          Respuesta
+        {respuesta.status ? (
+          <CheckCircleOutlineIcon sx={{ color: "green", marginBottom: 2 }} fontSize="large" />
+        ) : (
+          <ErrorOutlineIcon sx={{ color: "red", marginBottom: 2 }} fontSize="large" />
+        )}
+        <Typography id="modal-modal-description" variant="body1" component="div" sx={{ marginBottom: 2 }}>
+          {respuesta.msg}
         </Typography>
-        <Typography id="modal-modal-description" sx={{ mt: 2 }}>
-          {mensaje}
-        </Typography>
+        {!autoCierre && (
+          <Button onClick={handleCerrarModal} variant="contained" sx={{ width: "100%" }}>
+            Cerrar
+          </Button>
+        )}
       </Box>
     </Modal>
   );

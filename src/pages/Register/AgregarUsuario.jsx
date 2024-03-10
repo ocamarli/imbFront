@@ -16,6 +16,7 @@ import { setRegister } from "../../api/axios";
 import HeaderContent from "../HeaderContent";
 import RespuestaModal from "../../components/RespuestaModal";
 const AgregarUsuario = () => {
+
   const onSubmit = (data) => {
     console.log("submit");
     console.log(data);
@@ -26,8 +27,7 @@ const AgregarUsuario = () => {
     setEstaActivo(false); // Restablecer el estado a false cuando se cierra el modal
   };
   const [estaActivo, setEstaActivo] = useState(false);
-  const [mensaje, setMensaje] = useState("");
-  const [ setResponse] = useState(null);
+  const [respuestaModal, setRespuestaModal] = useState(false);
   const handleCloseRegister = async (data) => {
     let newData;
     console.log(data);
@@ -43,9 +43,8 @@ const AgregarUsuario = () => {
     );
     console.log(response);
     console.log(response.status);
-    setResponse(response)
     setEstaActivo(true);
-    setMensaje(response.msg);
+    setRespuestaModal(response);
   };
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
@@ -157,8 +156,8 @@ const AgregarUsuario = () => {
                 </FormControl>
               </Grid>
               <Grid item xs={12}>
-                <Grid container sx={{ justifyContent: "flex-end" }} spacing={2}>
-                  <Grid item xs={12}>
+                <Grid container sx={{ justifyContent: "space-around" }} spacing={2}>
+                  <Grid item xs={4}>
                     <Button
                       variant="contained"
                       type="submit"
@@ -175,7 +174,7 @@ const AgregarUsuario = () => {
         </Paper>
       </Grid>
        {/* Renderiza el componente de Snackbar */}
-       <RespuestaModal activo={estaActivo} mensaje={mensaje}  onClose={cerrarModal}/>
+       <RespuestaModal activo={estaActivo} respuesta={respuestaModal} autoCierre={false} onClose={cerrarModal}/>
     </Grid>
   );
 };

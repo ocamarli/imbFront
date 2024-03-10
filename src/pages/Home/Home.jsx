@@ -11,11 +11,11 @@ const SvgComponent = (props) => {
       alignItems="center"
       justifyItems="center"
       justifyContent="center"
+      mt={"20%"}
+      
 sx={{opacity:".7"}}
     >
-
-
-
+            <img src={"imberaLogo.png"} alt="Logo" />
     </Grid>
   );
 };

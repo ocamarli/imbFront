@@ -17,14 +17,15 @@ import { obtenerUsuarios } from "../../api/axios";
 import { CircularProgress } from "@mui/material";
 import AgregarUsuario from "./AgregarUsuario";
 import { useTheme } from "@mui/material/styles";
+import UsuarioAutorizado from "../../components/UsuarioAutorizado";
 const ListaUsuarios = (props) => {
   const theme = useTheme();
   const [isLoading, setIsLoading] = useState(false);
   const [usuarios, setUsuarios] = useState([]);
-  const { onResponse, setSelectedComponent } = props;
+  const { onResponse, setSelectedComponent, auth } = props;
 
   const handleClickAgregarUsuario = () => {
-    setSelectedComponent(<AgregarUsuario ></AgregarUsuario>);
+    setSelectedComponent(<AgregarUsuario></AgregarUsuario>);
   };
   const cObtenerUsuarios = useCallback(async () => {
     try {
@@ -55,34 +56,38 @@ const ListaUsuarios = (props) => {
           </Grid>
         ) : (
           <Grid>
-            ( <HeaderContent titulo="Lista de usuarios"></HeaderContent>
+            <HeaderContent titulo="Lista de usuarios"></HeaderContent>
             <Grid container spacing={0}>
-              <Grid
-                item
-                xs={12}
-                sx={{
-                  display: "flex",
-                  justifyContent: "right",
-                  alignItems: "center",
-                }}
+              <UsuarioAutorizado
+                usuario={auth}
+                permisosRequeridos={["superusuario"]}
               >
-                <Typography variant="h6" mt={4}>
-                  Agregar usuario nuevo
-                </Typography>
-                <IconButton
-                  variant={"contained"}
+                <Grid
+                  item
+                  xs={12}
                   sx={{
-                    borderRadius: "50%",
-                    backgroundColor: theme.palette.secondary.main,
-                    color: theme.palette.secondary.contrastText,
-                    marginLeft: "10px",
+                    display: "flex",
+                    justifyContent: "right",
+                    alignItems: "center",
                   }}
-                  onClick={handleClickAgregarUsuario}
                 >
-                  <AddIcon />
-                </IconButton>
-              </Grid>
-
+                  <Typography variant="h6" mt={4}>
+                    Agregar usuario nuevo
+                  </Typography>
+                  <IconButton
+                    variant={"contained"}
+                    sx={{
+                      borderRadius: "50%",
+                      backgroundColor: theme.palette.secondary.main,
+                      color: theme.palette.secondary.contrastText,
+                      marginLeft: "10px",
+                    }}
+                    onClick={handleClickAgregarUsuario}
+                  >
+                    <AddIcon />
+                  </IconButton>
+                </Grid>
+              </UsuarioAutorizado>
               <Grid item xs={12}>
                 <List
                   sx={{
@@ -163,7 +168,6 @@ const ListaUsuarios = (props) => {
                 </List>
               </Grid>
             </Grid>
-            )
           </Grid>
         )}
       </Grid>

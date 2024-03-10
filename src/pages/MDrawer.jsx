@@ -39,6 +39,7 @@ import imgHeader from "./imberaLogoMenu.png";
 import { alpha } from "@mui/material/";
 import ListaPlantillas from "./Recipes/Componentes/ListaPlatillas";
 import ListaUsuarios from "./Register/ListaUsuarios";
+import UsuarioAutorizado from "../components/UsuarioAutorizado";
 const drawerWidth = 250;
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
@@ -109,13 +110,16 @@ export default function PersistentDrawerLeft(props) {
 
   const seleccionarListaUsuarios = () => {
     setSelectedComponent(
+
       <ListaUsuarios
+        auth={auth}      
         setSelectedComponent={setSelectedComponent}
         onResponse={(json) => {
           setResponse(json);
           setOpenAlert(true);
         }}
       />
+
     );
   };
   const seleccionarListaPlantillas = () => {
@@ -269,13 +273,15 @@ export default function PersistentDrawerLeft(props) {
               <ListItemText primary="Parametros" />
             </ListItemButton>
             <Divider />
-
+            <UsuarioAutorizado usuario={auth} permisosRequeridos={["superusuario"]}>
+              
             <ListItemButton onClick={seleccionarListaUsuarios}>
               <ListItemIcon>
                 <PersonAddIcon sx={iconsStyle} />
               </ListItemIcon>
               <ListItemText>Usuarios</ListItemText>
             </ListItemButton>
+            </UsuarioAutorizado>
           </List>
         </FormControl>
 
