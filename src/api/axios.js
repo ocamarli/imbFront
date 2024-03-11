@@ -55,10 +55,10 @@ export async function setParameters(data, token) {
     return { status: false, msg: error.message };
   }
 }
-export async function crearReceta(data, token) {
+export async function crearPlantilla(data, token) {
   try {
     const response = await postData(
-     ENV.crearReceta(),
+     ENV.crearPlantilla(),
       data,
       token
     );
@@ -146,7 +146,26 @@ export async function obtenerParametros(token) {
     return { parameters: [], status: false, msg: error.message};
   }
 }
+export async function obtenerPlantillas(token) {
+  try {
+    const response = await getData(
+      ENV.obtenerPlantillas(),
+      token
+    );
 
+    if (response.status === 200) {
+      return await response.json();
+    } else {
+      return {
+        parameters: [],
+        status: false,
+        msg: "Could not retrieve parameters",
+      };
+    }
+  } catch (error) {
+    return { parameters: [], status: false, msg: error.message};
+  }
+}
 export async function getParameters(token) {
   try {
     const response = await getData(

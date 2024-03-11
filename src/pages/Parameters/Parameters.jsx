@@ -10,42 +10,12 @@ import HeaderContent from "../HeaderContent";
 import AddIcon from "@mui/icons-material/Add";
 const columns = [
   { field: "id", headerName: "ID", flex: .4 },
-  {
-    field: "rango",
-    headerName: "Rango",
-    flex: .7,
-    editable: true,
-  },
-  {
-    field: "unidad",
-    headerName: "Unidad",
-    flex: .5,
-    editable: true,
-  },
-  {
-    field: "descripcion",
-    headerName: "Descripción",
-    flex: 2,
-    editable: true,
-  },
-  {
-    field: "logicaFuncionamiento",
-    headerName: "Lógica de funcionamiento",
-    flex: 2,
-    editable: false, // Asumiendo que los datos generados no son editables
-  },
-  {
-    field: "tipo_parameto",
-    headerName: "Tipo de parámetro",
-    flex: 1,
-    editable: true,
-  },
-  {
-    field: "grupo",
-    headerName: "Grupo",
-    flex: 1,
-    editable: true,
-  },  
+  { field: "rango", headerName: "Rango", flex: .7, editable: true },
+  { field: "unidad", headerName: "Unidad", flex: .5, editable: true },
+  { field: "descripcion", headerName: "Descripción", flex: 2, editable: true},
+  { field: "logicaFuncionamiento", headerName: "Lógica de funcionamiento", flex: 2,   editable: false},
+  { field: "tipo_parameto", headerName: "Tipo de parámetro", flex: 1, editable: true},
+  { field: "grupo", headerName: "Grupo", flex: 1, editable: true},  
 
 ];
 

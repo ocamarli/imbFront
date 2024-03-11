@@ -37,7 +37,7 @@ import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import imgHeader from "./imberaLogoMenu.png";
 import { alpha } from "@mui/material/";
-import ListaPlantillas from "./Recipes/Componentes/ListaPlatillas";
+import ListaPlantillas from "./Recipes/ListaPlatillas";
 import ListaUsuarios from "./Register/ListaUsuarios";
 import UsuarioAutorizado from "../components/UsuarioAutorizado";
 const drawerWidth = 250;
@@ -124,7 +124,7 @@ export default function PersistentDrawerLeft(props) {
   };
   const seleccionarListaPlantillas = () => {
     setSelectedComponent(
-      <ListaPlantillas setSelectedComponent={setSelectedComponent} />
+      <ListaPlantillas auth={auth} setSelectedComponent={setSelectedComponent} />
     );
   };
   const selectHome = () => {
@@ -133,6 +133,7 @@ export default function PersistentDrawerLeft(props) {
   const selectParameters = () => {
     setSelectedComponent(
       <Parameters
+        auth={auth} 
         onResponse={(json) => {
           setResponse(json);
           setOpenAlert(true);

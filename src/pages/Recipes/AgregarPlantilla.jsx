@@ -12,10 +12,11 @@ import {
   InputLabel,
   CircularProgress,
 } from "@mui/material";
-import { crearReceta } from "../../api/axios";
-import TablaDatos from "../../components/TablaDatos";
+import TablaContenido from "./Componentes/TablaContenido";
 import { obtenerParametros } from "../../api/axios";
 import HeaderContent from "../HeaderContent";
+import UsuarioAutorizado from "../../components/UsuarioAutorizado";
+import { crearPlantilla } from "../../api/axios";
 const AgregarPlantilla = (props) => {
   const { onResponse, auth } = props;
   const [isLoading, setIsLoading] = useState(false);
@@ -26,7 +27,7 @@ const AgregarPlantilla = (props) => {
 
   console.log("auth");
   console.log(auth);
-  const handleCrearReceta = async (data) => {
+  const handleCrearPlantilla = async (data) => {
     const list = [];
     parametros.map((param) => {
       list.push({ id_parametro: param, valor: "", estado: false });
@@ -35,7 +36,7 @@ const AgregarPlantilla = (props) => {
 
     const newData = { ...data, parametros: list };
     console.log(newData);
-    const response = await crearReceta(
+    const response = await crearPlantilla(
       newData,
       JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token
     );
@@ -51,7 +52,7 @@ const AgregarPlantilla = (props) => {
   const onSubmit = (data) => {
     console.log("onsub");
     console.log(data);
-    handleCrearReceta(data);
+    handleCrearPlantilla(data);
   };
 
   const {
@@ -210,11 +211,10 @@ const AgregarPlantilla = (props) => {
                 <Typography variant="h6">Parametros</Typography>
               </Grid>
               <Grid item xs={12}>
-                <TablaDatos
-                  onResponse={onResponse}
-                ></TablaDatos>
+                <TablaContenido></TablaContenido>
               </Grid>
-              <Grid item xs={3}>
+              <UsuarioAutorizado usuario={auth} permisosRequeridos={["superusuario","electrico"]}>
+              <Grid item xs={3}>         
                 <Grid container sx={{ justifyContent: "flex-end" }} spacing={2}>
                   <Grid item xs={12}>
                     <Button variant="contained" fullWidth type="submit">
@@ -223,6 +223,7 @@ const AgregarPlantilla = (props) => {
                   </Grid>
                 </Grid>
               </Grid>
+              </UsuarioAutorizado>
             </Grid>
           </form>
         </Paper>

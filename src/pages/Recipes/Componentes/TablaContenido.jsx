@@ -4,7 +4,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { obtenerParametros } from "../../../api/axios";
 const TablaContenido = (props) => {
   const [parametros, setParametros] = useState([]);
-
   const { onResponse} = props;
   const [isLoading, setIsLoading] = useState(false);
   const fetchparametros = useCallback(async () => {
@@ -46,8 +45,8 @@ const TablaContenido = (props) => {
             <FormControl variant="outlined" size="small" fullWidth>
               <Select
                 value={params.value}
-                onChange={(e) => params.setValue(e.target.value)}
-                fullWidth
+                onChange={(e) => params.setValor(e.target.value)}
+          
               >
                 <MenuItem value={"Familia 1"}>Familia 1</MenuItem>
                 <MenuItem value={"Familia 1"}>Familia 2</MenuItem>
@@ -58,8 +57,8 @@ const TablaContenido = (props) => {
           return (
             <TextField
               value={params.value}
-              onChange={(e) => params.setValue(e.target.value)}
-              fullWidth
+              onChange={(e) => params.setValor(e.target.value)}
+        
             />
           );
         }
@@ -68,48 +67,49 @@ const TablaContenido = (props) => {
     {
       field: "rango",
       headerName: "Rango",
-      flex: 0.7,
-      editable: true,
+      flex:1,
+
     },
-    ,
     {
       field: "descripcion",
       headerName: "Descripción",
       flex: 2,
-      editable: true,
+
     },
   ];
   function transformarDatos(parametros) {
     console.log(parametros);
     return parametros.map((parametro) => {
-      let unidadValor;
+      let tipoCampoData="";
+      let unidadValor="";
       let rango;
-      let logicaFuncionamiento;
+      let logicaFuncionamiento="";
+      console.log(logicaFuncionamiento,tipoCampoData,unidadValor)
       if (parametro.tipo_campo === "rango") {
         unidadValor = parametro.unidad;
         rango = `${parametro.valor_min}${parametro.unidad} - ${parametro.valor_max}${parametro.unidad}`;
       } else if (parametro.tipo_campo === "opciones") {
         unidadValor = "N.A";
         rango = parametro.opciones
-          .map((opcion, index) => `${index + 1} |`)
-          .join(" ");
-        rango = "| " + `${rango}`;
+          .map((opcion, index) => `${index + 1} ,`)
+          .join("");
+        
         logicaFuncionamiento = parametro.opciones
           .map((opcion, index) => `${opcion.valor}-${opcion.nombre}`)
-          .join(", ");
+          .join(",");
+          rango = "(" + rango.slice(0, -1); 
+          rango=rango+")";
       } else {
         tipoCampoData = "Tipo de campo no reconocido";
       }
   
       return {
         id: parametro.id_parametro,
+        valor: parametro.valor,
         descripcion: parametro.descripcion || "",
         tipo_parameto: parametro.tipo_parametro || "",
         tipo_campo: parametro.tipo_campo || "",
         rango: rango,
-        unidad: unidadValor,
-        grupo: parametro.grupo || "",
-        logicaFuncionamiento: logicaFuncionamiento,
       };
     });
   }
@@ -123,7 +123,7 @@ const TablaContenido = (props) => {
             </Grid>
           )}
           {parametros.length > 0 && (
-            <Grid xs={12} spacing={1}>
+            <Grid xs={12} spacing={0}>
               <DataGrid
                 rows={transformarDatos(parametros)}
                 columns={columns}

@@ -18,8 +18,9 @@ const api = {
     parameterRecipeGet:"recipe/parameter/get",
     recipeGet:"recipe/",
     obtenerUsuarios:"usuario/obtenerUsuarios",
+    obtenerPlantillas:"plantilla/obtenerPlantillas",
     obtenerRecetas:"receta/obtenerRecetas",
-    crearReceta:"receta/crearReceta"
+    crearPlantilla:"plantilla/crearPlantilla"
   },
 };
 /*
@@ -34,8 +35,9 @@ function Encode2Url(obj) {
 */
 export const ENV = {
     obtenerUsuarios:()=>api.baseuri+api.endpoints.obtenerUsuarios,
+    obtenerPlantillas:()=>api.baseuri+api.endpoints.obtenerPlantillas,
     obtenerRecetas:()=>api.baseuri+api.endpoints.obtenerRecetas,
-    crearReceta:()=>api.baseuri+api.endpoints.crearReceta,
+    crearPlantilla:()=>api.baseuri+api.endpoints.crearPlantilla,
     login:()=> api.baseuri+api.endpoints.login,
     user:()=> api.baseuri+api.endpoints.user,
     setParameters: () => api.baseuri + api.endpoints.parametersSet,
