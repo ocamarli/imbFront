@@ -5,15 +5,16 @@ import HeaderContent from "../HeaderContent";
 import IconButton from "@mui/material/IconButton";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/ModeEdit";
-import CancelIcon from "@mui/icons-material/Cancel";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
+import LockIcon from "@mui/icons-material/Lock";
 import AddIcon from "@mui/icons-material/Add";
 import AgregarPlantilla from "./AgregarPlantilla";
 import { DataGrid } from "@mui/x-data-grid";
 import { obtenerPlantillas } from "../../api/axios";
+import ModalClonarPlantilla from "./Componentes/ModalClonarPlantila.jsx";
 function transformarDatos(plantillas) {
   console.log(plantillas);
   return plantillas.map((plantilla) => {
-
     return {
       id: plantilla.id_plantilla || "",
       nombre_plantilla: plantilla.nombre_plantilla || "",
@@ -27,8 +28,22 @@ const ListaPlantillas = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("activas"); // Estado para controlar la pestaña activa
   const [plantillas, setPlantillas] = useState([]);
+  const [modalActiva, setModalActiva] = useState(false);
+  const [respuesta, setRespuesta] = useState({
+    status: true,
+    msg: "Operación exitosa",
+  });
+  const manejarAbrirModal = () => {
+    setModalActiva(true);
+  };
+
+  const manejarCerrarModal = () => {
+    setModalActiva(false);
+  };
+
   const fetchPlantillas = useCallback(async () => {
     try {
+
       setIsLoading(true);
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
       console.log(tkn);
@@ -36,11 +51,9 @@ const ListaPlantillas = (props) => {
         const json = await obtenerPlantillas(tkn);
         console.log(json);
         setPlantillas(json.plantillas || []);
+        setRespuesta(json)
         onResponse(json);
         setIsLoading(false);
-      } else {
-        setPlantillas([]);
-        onResponse({ status: false, msg: "Unauthorized Access" });
       }
     } catch (error) {
       setIsLoading(false);
@@ -51,22 +64,26 @@ const ListaPlantillas = (props) => {
   useEffect(() => {
     fetchPlantillas();
   }, [fetchPlantillas]);
-  const handleEdit = (id) => {
+  const manejarEditar = (id) => {
     console.log("Editar plantilla con ID:", id);
   };
 
-  const handleCancel = (id) => {
-    console.log("Cancelar plantilla con ID:", id);
+  const manejarBloquear = (id) => {
+    manejarAbrirModal()
   };
 
-  const handleDelete = (id) => {
+  const manejarClonar = (id) => {
+    manejarAbrirModal()
+  };
+
+  const manejarBorrar = (id) => {
     console.log("Eliminar plantilla con ID:", id);
   };
-  const handleClickAgregarPlantilla = () => {
+  const manejarAgregarPlantilla = () => {
     setSelectedComponent(<AgregarPlantilla auth={auth}></AgregarPlantilla>);
   };
 
-  const handleTabChange = (tab) => {
+  const manejarTabChange = (tab) => {
     setActiveTab(tab);
   };
 
@@ -75,100 +92,133 @@ const ListaPlantillas = (props) => {
     { field: "familia", headerName: "Familia", width: 150 },
     { field: "hardware", headerName: "Hardware", width: 150 },
     { field: "nombre_plantilla", headerName: "Nombre", width: 150 },
-
     {
-      field: "acciones",
-      headerName: "Acciones",
-      width: 200,
+      field: "clone",
+      headerName: "Clonar",
+      width: 100,
       renderCell: (params) => (
-        <>
-          <IconButton onClick={() => handleDelete(params.row.id)}>
-            <DeleteIcon />
-          </IconButton>
-          <IconButton onClick={() => handleEdit(params.row.id)}>
-            <EditIcon />
-          </IconButton>
-          <IconButton onClick={() => handleCancel(params.row.id)}>
-            <CancelIcon />
-          </IconButton>
-        </>
+        <IconButton onClick={() => manejarClonar(params.row.id)}>
+          <FileCopyIcon />
+        </IconButton>
+      ),
+    },
+    {
+      field: "edit",
+      headerName: "Editar",
+      width: 100,
+      renderCell: (params) => (
+        <IconButton onClick={() => manejarEditar(params.row.id)}>
+          <EditIcon />
+        </IconButton>
+      ),
+    },
+    {
+      field: "block",
+      headerName: "Bloquear",
+      width: 100,
+      renderCell: (params) => (
+        <IconButton onClick={() => manejarBloquear(params.row.id)}>
+          <LockIcon />
+        </IconButton>
+      ),
+    },
+    {
+      field: "delete",
+      headerName: "Eliminar",
+      width: 100,
+      renderCell: (params) => (
+        <IconButton onClick={() => manejarBorrar(params.row.id)}>
+          <DeleteIcon />
+        </IconButton>
       ),
     },
   ];
 
   return (
-    
     <Grid container padding={2}>
-      {isLoading ?       <Grid item xs={12}>
-        <HeaderContent titulo="Lista de plantillas"></HeaderContent>
-        <Paper style={{ padding: 20 }}>
-          <Grid container spacing={3}>
-            <Grid item xs={8} sx={{ display: "flex", justifyContent: "left" }}>
-              <Button
-                variant={"contained"}
-                onClick={() => handleTabChange("activas")}
-                style={{
-                  backgroundColor:
-                    activeTab === "activas" ? "green" : "#cccccc",
-                  color: "white",
-                  cursor: "pointer",
-                }}
+      {!isLoading ? (
+        <Grid item xs={12}>
+          <HeaderContent titulo="Lista de plantillas"></HeaderContent>
+          <Paper style={{ padding: 20 }}>
+            <Grid container spacing={3}>
+              <Grid
+                item
+                xs={8}
+                sx={{ display: "flex", justifyContent: "left" }}
               >
-                Plantillas Activas
-              </Button>
-              <Button
-                variant={"contained"}
-                onClick={() => handleTabChange("obsoletas")}
-                style={{
-                  backgroundColor:
-                    activeTab === "obsoletas" ? "orange" : "#cccccc",
-                  color: "white",
-                  cursor: "pointer",
-                }}
-              >
-                Plantillas Obsoletas
-              </Button>
-            </Grid>
+                <Button
+                  variant={"contained"}
+                  onClick={() => manejarTabChange("activas")}
+                  style={{
+                    backgroundColor:
+                      activeTab === "activas" ? "green" : "#cccccc",
+                    color: "white",
+                    cursor: "pointer",
+                  }}
+                >
+                  Plantillas Activas
+                </Button>
+                <Button
+                  variant={"contained"}
+                  onClick={() => manejarTabChange("obsoletas")}
+                  style={{
+                    backgroundColor:
+                      activeTab === "obsoletas" ? "orange" : "#cccccc",
+                    color: "white",
+                    cursor: "pointer",
+                  }}
+                >
+                  Plantillas Obsoletas
+                </Button>
+              </Grid>
 
-            <Grid
-              item
-              xs={4}
-              sx={{
-                display: "flex",
-                justifyContent: "right",
-                alignItems: "center",
-              }}
-            >
-              <Typography variant="h6">Agregar una plantilla</Typography>
-              <IconButton
-                variant={"contained"}
+              <Grid
+                item
+                xs={4}
                 sx={{
-                  borderRadius: "50%",
-                  backgroundColor: "green",
-                  color: "white",
-                  marginLeft: "10px",
+                  display: "flex",
+                  justifyContent: "right",
+                  alignItems: "center",
                 }}
-                onClick={handleClickAgregarPlantilla}
               >
-                <AddIcon />
-              </IconButton>
-            </Grid>
+                <Typography variant="h6">Agregar una plantilla</Typography>
+                <IconButton
+                  variant={"contained"}
+                  sx={{
+                    borderRadius: "50%",
+                    backgroundColor: "green",
+                    color: "white",
+                    marginLeft: "10px",
+                  }}
+                  onClick={manejarAgregarPlantilla}
+                >
+                  <AddIcon />
+                </IconButton>
+              </Grid>
 
-            <Grid item xs={12}>
-              <div style={{ height: 400, width: "100%" }}>
-                <DataGrid
-                  /*rows={activeTab === "activas" ? dataActivas : dataObsoletas}*/
-                  rows={transformarDatos(plantillas)}
-                  columns={columns}
-                  pageSize={5}
-                  rowsPerPageOptions={[5, 10, 20]}
-                />
-              </div>
+              <Grid item xs={12}>
+                <div style={{ height: 400, width: "100%" }}>
+                  <DataGrid
+                    /*rows={activeTab === "activas" ? dataActivas : dataObsoletas}*/
+                    rows={transformarDatos(plantillas)}
+                    columns={columns}
+                    pageSize={5}
+                    rowsPerPageOptions={[5, 10, 20]}
+                  />
+                </div>
+              </Grid>
+              <ModalClonarPlantilla
+            activo={modalActiva}
+            respuesta={respuesta}
+            autoCierre={false}
+            onClose={manejarCerrarModal}
+          ></ModalClonarPlantilla>
             </Grid>
-          </Grid>
-        </Paper>
-      </Grid> : <></> }
-
+          </Paper>
+        </Grid>
+      ) : (
+        <></>
+      )}
     </Grid>
   );
 };

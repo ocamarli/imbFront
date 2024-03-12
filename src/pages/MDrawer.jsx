@@ -124,7 +124,10 @@ export default function PersistentDrawerLeft(props) {
   };
   const seleccionarListaPlantillas = () => {
     setSelectedComponent(
-      <ListaPlantillas auth={auth} setSelectedComponent={setSelectedComponent} />
+      <ListaPlantillas         onResponse={(json) => {
+        setResponse(json);
+        setOpenAlert(true);
+      }} auth={auth} setSelectedComponent={setSelectedComponent} />
     );
   };
   const selectHome = () => {

@@ -54,13 +54,13 @@ const ListaUsuarios = (props) => {
           <Grid item xs={12} align="center">
             <CircularProgress size={50} />
           </Grid>
-        ) : (
+        ) : 
           <Grid>
-            <HeaderContent titulo="Lista de usuarios"></HeaderContent>
+             <HeaderContent titulo="Lista de usuarios"></HeaderContent>
             <Grid container spacing={0}>
               <UsuarioAutorizado
                 usuario={auth}
-                permisosRequeridos={["superusuario"]}
+                permisosRequeridos={["refrigeracion"]}
               >
                 <Grid
                   item
@@ -168,8 +168,8 @@ const ListaUsuarios = (props) => {
                 </List>
               </Grid>
             </Grid>
-          </Grid>
-        )}
+            </Grid>
+        }
       </Grid>
     </Grid>
   );

@@ -22,15 +22,12 @@ const AgregarPlantilla = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [parametros, setParametros] = useState([]);
 
-
-
-
   console.log("auth");
   console.log(auth);
   const handleCrearPlantilla = async (data) => {
     const list = [];
     parametros.map((param) => {
-      list.push({ id_parametro: param, valor: "", estado: false });
+      list.push({ parametro: param, valor: "", estado: false });
       return null;
     });
 

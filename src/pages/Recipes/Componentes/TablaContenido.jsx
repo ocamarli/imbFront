@@ -4,7 +4,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import { obtenerParametros } from "../../../api/axios";
 const TablaContenido = (props) => {
   const [parametros, setParametros] = useState([]);
-  const { onResponse} = props;
   const [isLoading, setIsLoading] = useState(false);
   const fetchparametros = useCallback(async () => {
     try {
@@ -15,18 +14,18 @@ const TablaContenido = (props) => {
         const json = await obtenerParametros(tkn);
         console.log(json);
         setParametros(json.parameters || []);
-        onResponse(json);
+       
         setIsLoading(false);
       } else {
         setParametros([]);
-        onResponse({ status: false, msg: "Unauthorized Access" });
+
       }
     } catch (error) {
       setIsLoading(false);
-      onResponse({ status: false, msg: error });
+
       console.error(error);
     }
-  }, [setIsLoading, setParametros, onResponse]);
+  }, [setIsLoading, setParametros]);
 
   useEffect(() => {
     fetchparametros();
