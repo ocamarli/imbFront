@@ -3,7 +3,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { Grid, TextField, Box, Modal } from "@mui/material";
 const ModalClonarPlantilla = (props) => {
-  const { activo,  autoCierre, onClose } = props;
+  const { activo, plantillaAClonar ,autoCierre, onClose } = props;
   const [abierto, setAbierto] = useState(activo);
   const [texto2, setTexto2] = useState("");
 
@@ -62,8 +62,17 @@ const ModalClonarPlantilla = (props) => {
               component="div"
               sx={{ marginBottom: 2 }}
             >
-             Colocar el nombre de la plantilla a generar
+             Colocar nombre a plantilla a generar
             </Typography>
+            <Typography
+              id="modal-modal-description"
+              variant="body1"
+              component="div"
+              fontWeight={600}
+              sx={{ marginBottom: 2 }}
+            >
+             {"Platilla a clonar ("+plantillaAClonar+")"}
+            </Typography>            
           </Grid>
           <Grid item xs={12}>
             <TextField

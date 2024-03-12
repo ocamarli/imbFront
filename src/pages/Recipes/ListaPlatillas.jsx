@@ -29,12 +29,13 @@ const ListaPlantillas = (props) => {
   const [activeTab, setActiveTab] = useState("activas"); // Estado para controlar la pestaña activa
   const [plantillas, setPlantillas] = useState([]);
   const [modalActiva, setModalActiva] = useState(false);
+  const [plantillaAClonar, setPlantillaAClonar] = useState(false);
   const [respuesta, setRespuesta] = useState({
     status: true,
     msg: "Operación exitosa",
   });
-  const manejarAbrirModal = () => {
-    setModalActiva(true);
+  const manejarAbrirModal = (nombrePlantilla) => {
+
   };
 
   const manejarCerrarModal = () => {
@@ -72,8 +73,10 @@ const ListaPlantillas = (props) => {
     manejarAbrirModal()
   };
 
-  const manejarClonar = (id) => {
-    manejarAbrirModal()
+  const manejarClonar = (nombrePlantilla) => {
+    console.log(nombrePlantilla)
+    setPlantillaAClonar(nombrePlantilla);
+    setModalActiva(true);
   };
 
   const manejarBorrar = (id) => {
@@ -97,7 +100,7 @@ const ListaPlantillas = (props) => {
       headerName: "Clonar",
       width: 100,
       renderCell: (params) => (
-        <IconButton onClick={() => manejarClonar(params.row.id)}>
+        <IconButton onClick={() => manejarClonar(params.row.nombre_plantilla)}>
           <FileCopyIcon />
         </IconButton>
       ),
@@ -208,6 +211,7 @@ const ListaPlantillas = (props) => {
                 </div>
               </Grid>
               <ModalClonarPlantilla
+              plantillaAClonar={plantillaAClonar}
             activo={modalActiva}
             respuesta={respuesta}
             autoCierre={false}
