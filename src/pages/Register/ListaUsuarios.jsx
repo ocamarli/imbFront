@@ -60,7 +60,7 @@ const ListaUsuarios = (props) => {
             <Grid container spacing={0}>
               <UsuarioAutorizado
                 usuario={auth}
-                permisosRequeridos={["refrigeracion"]}
+                permisosRequeridos={["superusuario"]}
               >
                 <Grid
                   item
