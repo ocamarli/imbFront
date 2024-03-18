@@ -30,7 +30,7 @@ import HomeIcon from "@mui/icons-material/Home";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import DescriptionIcon from "@mui/icons-material/Description";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import Parameters from "./Parameters/Parameters";
+import ListaParametros from "./Parameters/ListaParametros";
 import Home from "./Home/Home";
 import "./MenuCss.css";
 import Snackbar from "@mui/material/Snackbar";
@@ -40,6 +40,7 @@ import { alpha } from "@mui/material/";
 import ListaPlantillas from "./Recipes/ListaPlatillas";
 import ListaUsuarios from "./Register/ListaUsuarios";
 import UsuarioAutorizado from "../components/UsuarioAutorizado";
+import ListaGaes from "./Gaes/ListaGaes";
 const drawerWidth = 250;
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
@@ -130,12 +131,20 @@ export default function PersistentDrawerLeft(props) {
       }} auth={auth} setSelectedComponent={setSelectedComponent} />
     );
   };
+  const seleccionarListaGaes = () => {
+    setSelectedComponent(
+      <ListaGaes         onResponse={(json) => {
+        setResponse(json);
+        setOpenAlert(true);
+      }} auth={auth} setSelectedComponent={setSelectedComponent} />
+    );
+  };  
   const selectHome = () => {
     setSelectedComponent(<Home />);
   };
   const selectParameters = () => {
     setSelectedComponent(
-      <Parameters
+      <ListaParametros
         auth={auth} 
         onResponse={(json) => {
           setResponse(json);
@@ -276,6 +285,12 @@ export default function PersistentDrawerLeft(props) {
               </ListItemIcon>
               <ListItemText primary="Parametros" />
             </ListItemButton>
+            <ListItemButton onClick={seleccionarListaGaes}>
+              <ListItemIcon>
+                <DescriptionIcon sx={iconsStyle} />
+              </ListItemIcon>
+              <ListItemText primary="Gaes" />
+            </ListItemButton>            
             <Divider />
             <UsuarioAutorizado usuario={auth} permisosRequeridos={["superusuario"]}>
               

@@ -8,29 +8,25 @@ import EditIcon from "@mui/icons-material/ModeEdit";
 import FileCopyIcon from "@mui/icons-material/FileCopy";
 import LockIcon from "@mui/icons-material/Lock";
 import AddIcon from "@mui/icons-material/Add";
-import AgregarPlantilla from "./AgregarPlantilla";
+import AgregarGae from "./AgregarGae.jsx";
 import { DataGrid } from "@mui/x-data-grid";
-import { obtenerPlantillas } from "../../api/axios";
-import ModalClonarPlantilla from "./Componentes/ModalClonarPlantila.jsx";
-import EditarPlantilla from "./EditarPlantilla.jsx";
-function transformarDatos(plantillas) {
-  console.log(plantillas);
-  return plantillas.map((plantilla,index) => {
+import { obtenerGaes } from "../../api/axios";
+import ModalClonarPlantilla from "../Recipes/Componentes/ModalClonarPlantila.jsx";
+function transformarDatos(gaes) {
+  console.log(gaes);
+  return gaes.map((gae) => {
     return {
-      id: index + 1 || "",
-      nombrePlantilla: plantilla.nombrePlantilla || "",
-      firmware: plantilla.firmware || "",
-      hardware: plantilla.hardware || "",
-      creadoPor: plantilla.creadoPor || "",
-      _id: plantilla._id || "",
+      id: gae.id_gae || "",
+      nombre: gae.nombre || "",
+      codigo: gae.codigo || "",
     };
   });
 }
-const ListaPlantillas = (props) => {
+const ListaGaes = (props) => {
   const { setSelectedComponent, auth, onResponse } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("activas"); // Estado para controlar la pestaña activa
-  const [plantillas, setPlantillas] = useState([]);
+  const [gaes, setGaes] = useState([]);
   const [modalActiva, setModalActiva] = useState(false);
   const [plantillaAClonar, setPlantillaAClonar] = useState(false);
   const [respuesta, setRespuesta] = useState({
@@ -45,16 +41,16 @@ const ListaPlantillas = (props) => {
     setModalActiva(false);
   };
 
-  const fetchPlantillas = useCallback(async () => {
+  const fetchGaes = useCallback(async () => {
     try {
 
       setIsLoading(true);
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
       console.log(tkn);
       if (tkn !== undefined) {
-        const json = await obtenerPlantillas(tkn);
+        const json = await obtenerGaes(tkn);
         console.log(json);
-        setPlantillas(json.plantillas || []);
+        setGaes(json.gaes || []);
         setRespuesta(json)
         onResponse(json);
         setIsLoading(false);
@@ -64,12 +60,11 @@ const ListaPlantillas = (props) => {
       onResponse({ status: false, msg: error });
       console.error(error);
     }
-  }, [setIsLoading, setPlantillas, onResponse]);
+  }, [setIsLoading, setGaes, onResponse]);
   useEffect(() => {
-    fetchPlantillas();
-  }, [fetchPlantillas]);
+    fetchGaes();
+  }, [fetchGaes]);
   const manejarEditar = (id) => {
-    setSelectedComponent( <EditarPlantilla idPlantilla={id} setSelectedComponent={setSelectedComponent} onResponse={onResponse} auth={auth}></EditarPlantilla>)
     console.log("Editar plantilla con ID:", id);
   };
 
@@ -87,7 +82,7 @@ const ListaPlantillas = (props) => {
     console.log("Eliminar plantilla con ID:", id);
   };
   const manejarAgregarPlantilla = () => {
-    setSelectedComponent(<AgregarPlantilla setSelectedComponent={setSelectedComponent} auth={auth}></AgregarPlantilla>);
+    setSelectedComponent(<AgregarGae auth={auth}></AgregarGae>);
   };
 
   const manejarTabChange = (tab) => {
@@ -95,59 +90,17 @@ const ListaPlantillas = (props) => {
   };
 
   const columns = [
-    { field: "id", headerName: "ID",},
-    { field: "nombrePlantilla", headerName: "Nombre", },
-    { field: "firmware", headerName: "Firmware", },
-    { field: "hardware", headerName: "Hardware", },
-    { field: "creadoPor", headerName: "Creado por", },
+    { field: "id", headerName: "ID", width: 90 },
+    { field: "nombre", headerName: "Nombre", width: 150 },
+    { field: "codigo", headerName: "Código", width: 150 },
 
-    {
-      field: "clone",
-      headerName: "Clonar",
-
-      renderCell: (params) => (
-        <IconButton onClick={() => manejarClonar(params.row.nombre_plantilla)}>
-          <FileCopyIcon />
-        </IconButton>
-      ),
-    },
-    {
-      field: "edit",
-      headerName: "Editar",
-
-      renderCell: (params) => (
-        <IconButton onClick={() => manejarEditar(params.row._id)}>
-          <EditIcon />
-        </IconButton>
-      ),
-    },
-    {
-      field: "block",
-      headerName: "Congelar",
-
-      renderCell: (params) => (
-        <IconButton onClick={() => manejarBloquear(params.row.id)}>
-          <LockIcon />
-        </IconButton>
-      ),
-    },
-    {
-      field: "delete",
-      headerName: "Eliminar",
-
-      renderCell: (params) => (
-        <IconButton onClick={() => manejarBorrar(params.row.id)}>
-          <DeleteIcon />
-        </IconButton>
-      ),
-    },
   ];
 
   return (
     <Grid container padding={2}>
       {!isLoading ? (
         <Grid item xs={12}>
-          <HeaderContent titulo="Lista de plantillas"></HeaderContent>
+          <HeaderContent titulo="Lista de gaes"></HeaderContent>
           <Paper style={{ padding: 20 }}>
             <Grid container spacing={3}>
               <Grid
@@ -155,30 +108,6 @@ const ListaPlantillas = (props) => {
                 xs={8}
                 sx={{ display: "flex", justifyContent: "left" }}
               >
-                <Button
-                  variant={"contained"}
-                  onClick={() => manejarTabChange("activas")}
-                  style={{
-                    backgroundColor:
-                      activeTab === "activas" ? "green" : "#cccccc",
-                    color: "white",
-                    cursor: "pointer",
-                  }}
-                >
-                  Plantillas Activas
-                </Button>
-                <Button
-                  variant={"contained"}
-                  onClick={() => manejarTabChange("obsoletas")}
-                  style={{
-                    backgroundColor:
-                      activeTab === "obsoletas" ? "orange" : "#cccccc",
-                    color: "white",
-                    cursor: "pointer",
-                  }}
-                >
-                  Plantillas Obsoletas
-                </Button>
               </Grid>
 
               <Grid
@@ -190,7 +119,7 @@ const ListaPlantillas = (props) => {
                   alignItems: "center",
                 }}
               >
-                <Typography variant="h6">Agregar una plantilla</Typography>
+                <Typography variant="h6">Agregar código gae</Typography>
                 <IconButton
                   variant={"contained"}
                   sx={{
@@ -206,12 +135,12 @@ const ListaPlantillas = (props) => {
               </Grid>
 
               <Grid item xs={12}>
-                <div style={{ width: "100%" }}>
+                <div style={{ height: 400, width: "100%" }}>
                   <DataGrid
                     /*rows={activeTab === "activas" ? dataActivas : dataObsoletas}*/
-                    rows={transformarDatos(plantillas)}
+                    rows={transformarDatos(gaes)}
                     columns={columns}
-                    pageSize={50}
+                    pageSize={5}
                     rowsPerPageOptions={[5, 10, 20]}
                   />
                 </div>
@@ -233,4 +162,4 @@ const ListaPlantillas = (props) => {
   );
 };
 
-export default ListaPlantillas;
+export default ListaGaes;

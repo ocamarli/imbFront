@@ -15,7 +15,7 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import AddOptions from "./AddOptions";
 import ItemOptions from "./ItemOptions";
 import Typography from "@mui/material/Typography";
-import { setParameters } from "../../../api/axios";
+import { crearParametro } from "../../../api/axios";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";
@@ -68,7 +68,7 @@ const AddParameter = ({ open, handleClose }) => {
     }
     console.log("newData", newData);
 
-    const response = await setParameters(
+    const response = await crearParametro(
       newData,
       JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token
     );

@@ -38,10 +38,10 @@ export async function setFileTemplate(data, token) {
     return { status: false, msg: error.message };
   }
 }
-export async function setParameters(data, token) {
+export async function crearParametro(data, token) {
   try {
     const response = await postData(
-      ENV.setParameters(),
+      ENV.crearParametro(),
       data,
       token
     );
@@ -67,6 +67,23 @@ export async function crearPlantilla(data, token) {
       return await response.json();
     } else {
       return { status: false, msg: "No se pudo guardar la receta." };
+    }
+  } catch (error) {
+    return { status: false, msg: error.message };
+  }
+}
+export async function crearGae(data, token) {
+  try {
+    const response = await postData(
+     ENV.crearGae(),
+      data,
+      token
+    );
+    console.log(data)
+    if (response.status === 200) {
+      return await response.json();
+    } else {
+      return { status: false, msg: "No se pudo guardar gae." };
     }
   } catch (error) {
     return { status: false, msg: error.message };
@@ -106,6 +123,26 @@ export async function setParametersTemplate(data, token) {
     return { status: false, msg: error.message };
   }
 }
+export async function obtenerGaes(token) {
+  try {
+    const response = await getData(
+      ENV.obtenerGaes(),
+      token
+    );
+
+    if (response.status === 200) {
+      return await response.json();
+    } else {
+      return {
+        gaes: [],
+        status: false,
+        msg: "No se pudo obtener la información de los gaes.",
+      };
+    }
+  } catch (error) {
+    return { gaes: [], status: false, msg: error.message};
+  }
+}
 export async function obtenerUsuarios(token) {
   try {
     const response = await getData(
@@ -129,7 +166,7 @@ export async function obtenerUsuarios(token) {
 export async function obtenerParametros(token) {
   try {
     const response = await getData(
-      ENV.getParameters(),
+      ENV.obtenerParametros(),
       token
     );
 
@@ -159,7 +196,27 @@ export async function obtenerPlantillas(token) {
       return {
         parameters: [],
         status: false,
-        msg: "Could not retrieve parameters",
+        msg: "No se pudo obtener información de las plantillas.",
+      };
+    }
+  } catch (error) {
+    return { parameters: [], status: false, msg: error.message};
+  }
+}
+export async function obtenerPlantilla(token,idPlantilla) {
+  try {
+    const response = await getData(
+      ENV.obtenerPlantilla(idPlantilla),
+      token
+    );
+
+    if (response.status === 200) {
+      return await response.json();
+    } else {
+      return {
+        parameters: [],
+        status: false,
+        msg: "No se pudo obtener información de las plantillas."
       };
     }
   } catch (error) {
@@ -268,10 +325,10 @@ export async function getParametersTemplate(id_template,token) {
     return { parameters: [], status: false, msg: error.message};
   }
 }
-export async function updateParameterRecipe(data,token) {
+export async function actualizarParametroPlantilla(data,token) {
   try {
     const response = await postData(
-    ENV.updateParameterRecipe(),
+    ENV.actualizarParametroPlantilla(),
       {data},
       token
     );

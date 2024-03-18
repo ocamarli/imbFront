@@ -50,7 +50,7 @@ function transformarDatos(parametros) {
     };
   });
 }
-function Parameters(props) {
+function ListaParametros(props) {
   
   const { onResponse } = props;
   const [isLoading, setIsLoading] = useState(false);
@@ -166,4 +166,4 @@ function Parameters(props) {
     </Provider>
   );
 }
-export default Parameters;
+export default ListaParametros;

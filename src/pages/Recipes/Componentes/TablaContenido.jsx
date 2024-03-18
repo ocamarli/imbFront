@@ -1,9 +1,19 @@
-import {TextField,  FormControl,  Grid, CircularProgress,  Select,  MenuItem} from "@mui/material";
+import {
+  TextField,
+  FormControl,
+  Grid,
+  CircularProgress,
+  Select,
+  MenuItem,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useState, useEffect, useCallback } from "react";
 import { obtenerParametros } from "../../../api/axios";
+import { obtenerGaes } from "../../../api/axios";
 const TablaContenido = (props) => {
+  const {idPlantilla}=props
   const [parametros, setParametros] = useState([]);
+  const [gaes, setGaes] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const fetchparametros = useCallback(async () => {
     try {
@@ -14,11 +24,10 @@ const TablaContenido = (props) => {
         const json = await obtenerParametros(tkn);
         console.log(json);
         setParametros(json.parameters || []);
-       
+
         setIsLoading(false);
       } else {
         setParametros([]);
-
       }
     } catch (error) {
       setIsLoading(false);
@@ -26,10 +35,32 @@ const TablaContenido = (props) => {
       console.error(error);
     }
   }, [setIsLoading, setParametros]);
+  const fetchGaes = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+      console.log(tkn);
+      if (tkn !== undefined) {
+        const json = await obtenerGaes(tkn);
+        console.log(json);
+        setGaes(json.gaes || []);
+
+        setIsLoading(false);
+      } else {
+        setGaes([]);
+      }
+    } catch (error) {
+      setIsLoading(false);
+
+      console.error(error);
+    }
+  }, [setIsLoading, setGaes]);  
 
   useEffect(() => {
+    console.log(idPlantilla)
     fetchparametros();
-  }, [fetchparametros]);
+    fetchGaes();
+  }, [fetchparametros,fetchGaes]);
 
   const columns = [
     { field: "id", headerName: "ID", flex: 0.4 },
@@ -44,11 +75,13 @@ const TablaContenido = (props) => {
             <FormControl variant="outlined" size="small" fullWidth>
               <Select
                 value={params.value}
-                onChange={(e) => params.setValor(e.target.value)}
-          
+                onChange={(e) => console.log(e.target.value, params.id)}
               >
-                <MenuItem value={"Familia 1"}>Familia 1</MenuItem>
-                <MenuItem value={"Familia 1"}>Familia 2</MenuItem>
+          {gaes.map((gae) => (
+            <MenuItem key={gae.id} value={gae.valor}>
+              {gae.valor}
+            </MenuItem>
+          ))}
               </Select>
             </FormControl>
           );
@@ -56,8 +89,8 @@ const TablaContenido = (props) => {
           return (
             <TextField
               value={params.value}
-              onChange={(e) => params.setValor(e.target.value)}
-        
+              onChange={(e) => console.log(e.target.value)}
+              fullWidth
             />
           );
         }
@@ -66,42 +99,46 @@ const TablaContenido = (props) => {
     {
       field: "rango",
       headerName: "Rango",
-      flex:1,
-
+      flex: 1,
     },
     {
       field: "descripcion",
       headerName: "Descripción",
       flex: 2,
-
     },
   ];
   function transformarDatos(parametros) {
     console.log(parametros);
     return parametros.map((parametro) => {
-      let tipoCampoData="";
-      let unidadValor="";
+      let tipoCampoData = "";
+      let unidadValor = "";
       let rango;
-      let logicaFuncionamiento="";
-      console.log(logicaFuncionamiento,tipoCampoData,unidadValor)
+      let logicaFuncionamiento = "";
+      console.log(logicaFuncionamiento, tipoCampoData, unidadValor);
       if (parametro.tipo_campo === "rango") {
         unidadValor = parametro.unidad;
-        rango = `${parametro.valor_min}${parametro.unidad} - ${parametro.valor_max}${parametro.unidad}`;
+        rango =
+          parametro.valor_min +
+          "" +
+          parametro.unidad +
+          "-" +
+          parametro.valor_max +
+          parametro.unidad;
       } else if (parametro.tipo_campo === "opciones") {
         unidadValor = "N.A";
         rango = parametro.opciones
           .map((opcion, index) => `${index + 1} ,`)
           .join("");
-        
+
         logicaFuncionamiento = parametro.opciones
-          .map((opcion, index) => `${opcion.valor}-${opcion.nombre}`)
+          .map((opcion, index) => opcion.valor + "-" + opcion.nombre)
           .join(",");
-          rango = "(" + rango.slice(0, -1); 
-          rango=rango+")";
+        rango = "(" + rango.slice(0, -1);
+        rango = rango + ")";
       } else {
         tipoCampoData = "Tipo de campo no reconocido";
       }
-  
+
       return {
         id: parametro.id_parametro,
         valor: parametro.valor,
@@ -141,7 +178,8 @@ const TablaContenido = (props) => {
             </Grid>
           )}
         </Grid>
-      </Grid>    </Grid>
+      </Grid>{" "}
+    </Grid>
   );
 };
 

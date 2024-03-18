@@ -1,37 +1,26 @@
 import { useForm } from "react-hook-form";
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  TextField,
-  Button,
-  FormControl,
-  Grid,
-  Paper,
-  Select,
-  MenuItem,
-  Typography,
-  InputLabel,
-  CircularProgress,
-} from "@mui/material";
-import TablaContenido from "./Componentes/TablaContenido";
+import Home from "@mui/icons-material/Home";
+import {TextField,Button,FormControl,Grid,Paper,
+  Select,MenuItem,Typography,CircularProgress,} from "@mui/material";
 import { obtenerParametros } from "../../api/axios";
 import HeaderContent from "../HeaderContent";
 import UsuarioAutorizado from "../../components/UsuarioAutorizado";
+import EditarPlantilla from "./EditarPlantilla";
 import { crearPlantilla } from "../../api/axios";
 const AgregarPlantilla = (props) => {
-  const { onResponse, auth } = props;
+  const {setSelectedComponent, onResponse, auth } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [parametros, setParametros] = useState([]);
+  const [idPlantilla, setIdPlantilla] = useState("");
 
-  console.log("auth");
-  console.log(auth);
   const handleCrearPlantilla = async (data) => {
     const list = [];
     parametros.map((param) => {
-      list.push({ parametro: param, valor: "", estado: false });
+      list.push({ id_parametro: param.id_parametro, valor: "", estado: false });
       return null;
     });
-
-    const newData = { ...data, parametros: list };
+    const newData = { ...data, parametros: list ,creadoPor:auth.correo,numeroProgramaciones:0};
     console.log(newData);
     const response = await crearPlantilla(
       newData,
@@ -39,14 +28,15 @@ const AgregarPlantilla = (props) => {
     );
     console.log("response", response);
     if (response.status) {
-      console.log("YES");
-
-      handleClose();
+      console.log("reponse idP");
+      console.log(response.idPlantilla)
+      setSelectedComponent( <EditarPlantilla idPlantilla={response.idPlantilla} setSelectedComponent={setSelectedComponent} onResponse={onResponse} auth={auth}></EditarPlantilla>)
+      
     } else {
       console.log("Error");
     }
   };
-  const onSubmit = (data) => {
+  const onSubmit =(data) => {
     console.log("onsub");
     console.log(data);
     handleCrearPlantilla(data);
@@ -91,38 +81,38 @@ const AgregarPlantilla = (props) => {
             <CircularProgress size={50} />
           </Grid>
         ):(<Grid>
-                  <HeaderContent></HeaderContent>
+                  <HeaderContent ></HeaderContent>
         <Paper style={{ padding: 10 }}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={1}>
             <Grid item xs={6}>
                 <Typography>Nombre de plantilla</Typography>
                 <TextField
-                  {...register("nombre_plantilla", { required: true })}
+                  {...register("nombrePlantilla", { required: true })}
                   size="small"
                   fullWidth
                   placeholder="Nombre plantilla"
                   variant="outlined"
-                  error={errors.nombre_plantilla ? true : false}
+                  error={errors.nombrePlantilla ? true : false}
                   helperText={
-                    errors.nombre_plantilla ? "Este campo es requerido" : ""
+                    errors.nombrePlantilla ? "Este campo es requerido" : ""
                   }
                 />
               </Grid>
               <Grid item xs={6}>
-                <Typography>Familia</Typography>
+                <Typography>Firmware</Typography>
                 <FormControl variant="outlined" sx={{ width: "100%" }}>
                   <Select
-                    {...register("familia", { required: true })}
+                    {...register("firmware", { required: true })}
                     size="small"
-                    error={errors.familia ? true : false}
+                    error={errors.firmware ? true : false}
                     defaultValue="" // Asegúrate de dejar este defaultValue vacío
                     displayEmpty // Esta propiedad garantiza que el elemento seleccionado muestre el placeholder cuando esté vacío
                     renderValue={(selected) => {
                       if (!selected) {
                         return (
                           <em style={{ color: "rgba(0, 0, 0, 0.54)" }}>
-                            Selecciona una familia
+                            Selecciona una firmware
                           </em>
                         );
                       }
@@ -130,10 +120,10 @@ const AgregarPlantilla = (props) => {
                     }}
                   >
                     <MenuItem disabled value="">
-                      <em>Selecciona una familia</em>
+                      <em>Selecciona una firmware</em>
                     </MenuItem>
-                    <MenuItem value={"Familia 1"}>Familia 1</MenuItem>
-                    <MenuItem value={"Familia 1"}>Familia 2</MenuItem>
+                    <MenuItem value={"Firmware 1"}>Firmware 1</MenuItem>
+                    <MenuItem value={"Firmware 2"}>Firmware 2</MenuItem>
                   </Select>
                 </FormControl>
               </Grid>
@@ -179,18 +169,6 @@ const AgregarPlantilla = (props) => {
                   }
                 />
               </Grid>
-              <Grid item xs={6}>
-                <InputLabel>Autoriza</InputLabel>
-                <TextField
-                  {...register("autoriza", { required: true })}
-                  size="small"
-                  fullWidth
-                  placeholder="Autoriza"
-                  variant="outlined"
-                  error={errors.autoriza ? true : false}
-                  helperText={errors.autoriza ? "Este campo es requerido" : ""}
-                />
-              </Grid>
 
               <Grid item xs={6}></Grid>
 
@@ -198,29 +176,22 @@ const AgregarPlantilla = (props) => {
                 <Grid container sx={{ justifyContent: "flex-end" }} spacing={2}>
                   <Grid item xs={12}>
                     <Button variant="contained" fullWidth type="submit">
-                      Crear plantilla
+                      Guardar cambios y salir
+                    </Button>
+                  </Grid>
+                </Grid>
+              </Grid>
+              
+              <Grid item xs={3}>         
+                <Grid container sx={{ justifyContent: "flex-end" }} spacing={2}>
+                  <Grid item xs={12}>
+                    <Button variant="contained" fullWidth type="submit">
+                      Guardar cambios y congelar
                     </Button>
                   </Grid>
                 </Grid>
               </Grid>
 
-              <Grid item xs={12}>
-                <Typography variant="h6">Parametros</Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <TablaContenido></TablaContenido>
-              </Grid>
-              <UsuarioAutorizado usuario={auth} permisosRequeridos={["superusuario","electrico"]}>
-              <Grid item xs={3}>         
-                <Grid container sx={{ justifyContent: "flex-end" }} spacing={2}>
-                  <Grid item xs={12}>
-                    <Button variant="contained" fullWidth type="submit">
-                      Crear y congelar plantilla
-                    </Button>
-                  </Grid>
-                </Grid>
-              </Grid>
-              </UsuarioAutorizado>
             </Grid>
           </form>
         </Paper>
