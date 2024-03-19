@@ -23,32 +23,43 @@ const columns = [
 
 function transformarDatos(parametros) {
   console.log(parametros);
-  return parametros.map(parametro => {
-    let tipoCampoData;
-    let unidadValor
-    let rango
-    let logicaFuncionamiento
+  return parametros.map((parametro) => {
+    let tipoCampoData = "";
+    let unidadValor = "";
+    let rango;
+    let logicaFuncionamiento = "";
+    console.log(logicaFuncionamiento, tipoCampoData, unidadValor);
     if (parametro.tipo_campo === "rango") {
-      unidadValor = parametro.unidad
-      rango = parametro.valor_min + parametro.unidad + " - " + parametro.valor_max + parametro.unidad;
+      unidadValor = parametro.unidad;
+      rango =
+        parametro.valor_min +
+        "" +
+        parametro.unidad +
+        "-" +
+        parametro.valor_max +
+        parametro.unidad;
     } else if (parametro.tipo_campo === "opciones") {
-      unidadValor = "N.A"
-      rango =  parametro.opciones.map((opcion, index) => `${index + 1} |`).join(" ");
-      rango = "| " + rango
-      logicaFuncionamiento =  parametro.opciones.map((opcion, index) => `${opcion.valor}-${opcion.nombre}`).join(", ");
+      unidadValor = "N.A";
+      rango = parametro.opciones
+        .map((opcion, index) => `${index + 1} ,`)
+        .join("");
+
+      logicaFuncionamiento = parametro.opciones
+        .map((opcion, index) => opcion.valor + "-" + opcion.nombre)
+        .join(",");
+      rango = "(" + rango.slice(0, -1);
+      rango = rango + ")";
     } else {
       tipoCampoData = "Tipo de campo no reconocido";
-      console.log(tipoCampoData)
     }
 
     return {
       id: parametro.id_parametro,
+      valor: parametro.valor,
       descripcion: parametro.descripcion || "",
       tipo_parameto: parametro.tipo_parametro || "",
-      rango:  rango,
-      unidad: unidadValor,
-      grupo: parametro.grupo || "",
-      logicaFuncionamiento: logicaFuncionamiento
+      tipo_campo: parametro.tipo_campo || "",
+      rango: rango,
     };
   });
 }
