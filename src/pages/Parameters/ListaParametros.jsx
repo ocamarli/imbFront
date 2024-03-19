@@ -4,10 +4,12 @@ import React, { useState, useEffect, useCallback } from "react";
 import store from "../../store";
 import { Provider } from "react-redux";
 import { obtenerParametros } from "../../api/axios";
-import { Grid, Paper, CircularProgress } from "@mui/material";
+import { Grid, Paper, CircularProgress,Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import HeaderContent from "../HeaderContent";
 import AddIcon from "@mui/icons-material/Add";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import Home from "../Home/Home.jsx"
 const columns = [
   { field: "id", headerName: "ID", flex: .4 },
   { field: "rango", headerName: "Rango", flex: .7, editable: true },
@@ -52,7 +54,7 @@ function transformarDatos(parametros) {
 }
 function ListaParametros(props) {
   
-  const { onResponse } = props;
+  const {setSelectedComponent, onResponse } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false); // Define el estado "open" en el componente padre
   const [parametros, setParametros] = useState([]);
@@ -69,7 +71,7 @@ function ListaParametros(props) {
       if (tkn !== undefined) {
         const json = await obtenerParametros(tkn);
         console.log(json);
-        setParametros(json.parameters || []);
+        setParametros(json.parametros || []);
         onResponse(json);
         setIsLoading(false);
       } else {
@@ -84,12 +86,14 @@ function ListaParametros(props) {
   }, [setIsLoading, setParametros, onResponse]);
 
   const handleClose = useCallback(async () => {
+    
     await fetchparametros();
     setOpen(false);
   }, [fetchparametros]);
 
   useEffect(() => {
     fetchparametros();
+    
   }, [fetchparametros]);
 
   return (
@@ -162,7 +166,16 @@ function ListaParametros(props) {
             </Grid>
           </Paper>
         </Grid>
+        <Button sx={{mt:5}}
+      variant="contained"
+      color="success" 
+      onClick={() => setSelectedComponent(<Home></Home>)}
+      startIcon={<ArrowBackIcon />} 
+    >
+      Salir
+    </Button>
       </Grid>
+
     </Provider>
   );
 }

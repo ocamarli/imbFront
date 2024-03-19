@@ -5,65 +5,62 @@ import {
   CircularProgress,
   Select,
   MenuItem,
+  Typography,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useState, useEffect, useCallback } from "react";
-import { obtenerParametros } from "../../../api/axios";
 import { obtenerGaes } from "../../../api/axios";
+import { obtenerPlantilla } from "../../../api/axios";
 const TablaContenido = (props) => {
-  const {idPlantilla}=props
-  const [parametros, setParametros] = useState([]);
+  const { idPlantilla, onResponse } = props;
   const [gaes, setGaes] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const fetchparametros = useCallback(async () => {
+
+  const [plantilla, setPlantilla] = useState(null);
+
+  const fetchObtenerPlantilla = useCallback(async () => {
     try {
-      setIsLoading(true);
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
       console.log(tkn);
       if (tkn !== undefined) {
-        const json = await obtenerParametros(tkn);
+        console.log("obtenerPlantilla");
+        console.log(idPlantilla);
+        const json = await obtenerPlantilla(tkn, idPlantilla);
         console.log(json);
-        setParametros(json.parameters || []);
-
-        setIsLoading(false);
+        setPlantilla(json.plantilla || null);
       } else {
-        setParametros([]);
+        setPlantilla(null);
+        onResponse({ status: false, msg: "Acceso no autorizado" });
       }
     } catch (error) {
-      setIsLoading(false);
-
       console.error(error);
     }
-  }, [setIsLoading, setParametros]);
+  }, [idPlantilla,setPlantilla, onResponse]);
+
   const fetchGaes = useCallback(async () => {
     try {
-      setIsLoading(true);
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-      console.log(tkn);
       if (tkn !== undefined) {
         const json = await obtenerGaes(tkn);
         console.log(json);
         setGaes(json.gaes || []);
-
-        setIsLoading(false);
       } else {
         setGaes([]);
       }
     } catch (error) {
-      setIsLoading(false);
-
       console.error(error);
     }
-  }, [setIsLoading, setGaes]);  
+  }, [setGaes]);
 
   useEffect(() => {
-    console.log(idPlantilla)
-    fetchparametros();
-    fetchGaes();
-  }, [fetchparametros,fetchGaes]);
+    console.log(idPlantilla);
 
+    fetchGaes();
+  }, [idPlantilla,fetchGaes]);
+  useEffect(() => {
+    fetchObtenerPlantilla();
+  }, [fetchObtenerPlantilla]);
   const columns = [
-    { field: "id", headerName: "ID", flex: 0.4 },
+    { field: "id", headerName: "ID", flex: 0.5 },
     {
       field: "valor",
       headerName: "Valor",
@@ -74,14 +71,14 @@ const TablaContenido = (props) => {
           return (
             <FormControl variant="outlined" size="small" fullWidth>
               <Select
-                value={params.value}
+                value={""}
                 onChange={(e) => console.log(e.target.value, params.id)}
               >
-          {gaes.map((gae) => (
-            <MenuItem key={gae.id} value={gae.valor}>
-              {gae.valor}
-            </MenuItem>
-          ))}
+                {gaes.map((gae) => (
+                  <MenuItem key={gae.id} value={gae.valor}>
+                    {gae.valor}
+                  </MenuItem>
+                ))}
               </Select>
             </FormControl>
           );
@@ -150,35 +147,63 @@ const TablaContenido = (props) => {
     });
   }
   return (
-    <Grid container spacing={3}>
-      <Grid item xs={12}>
-        <Grid container spacing={1} direction="row" justifyContent="flex-start">
-          {isLoading && ( // Agrega el loader condicionalmente
-            <Grid item xs={12} align="center">
-              <CircularProgress size={50} />
-            </Grid>
-          )}
-          {parametros.length > 0 && (
-            <Grid xs={12} spacing={0}>
-              <DataGrid
-                rows={transformarDatos(parametros)}
-                columns={columns}
-                initialState={{
-                  pagination: {
-                    paginationModel: {
-                      pageSize: 10,
-                    },
-                  },
-                }}
-                pageSizeOptions={[10]}
-                checkGridSelection
-                disableRowSelectionOnClick
-                rowHeight={30}
-              />
-            </Grid>
-          )}
+    <Grid container spacing={1}>
+      {plantilla == null ? ( // Agrega el loader condicionalmente
+        <Grid item xs={12} align="center">
+          <CircularProgress size={50} />
         </Grid>
-      </Grid>{" "}
+      ) : (
+        <Grid container spacing={1}>
+          <Grid item xs={12}>
+            {plantilla.parametrosGenerales.length > 0 && (
+              <Grid xs={12} spacing={1}>
+                <Typography fontWeight="bold">Parametros Generales</Typography>
+                <DataGrid
+                  rows={transformarDatos(plantilla.parametrosGenerales)}
+                  columns={columns}
+                  initialState={{
+                    pagination: {
+                      paginationModel: {
+                        pageSize: 10,
+                      },
+                    },
+                  }}
+                  pageSizeOptions={[10]}
+                  checkGridSelection
+                  disableRowSelectionOnClick
+                  rowHeight={30}
+                />
+              </Grid>
+            )}
+          </Grid>
+          <Grid item xs={12}>
+            <Grid container spacing={0}>
+              {plantilla.programaciones.map((programacion, index) => (
+                <Grid key={index} xs={12} spacing={1}>
+                  <Typography fontWeight="bold">
+                    Parámetros de programación {index + 1}
+                  </Typography>
+                  <DataGrid
+                    rows={transformarDatos(programacion.parametros)}
+                    columns={columns}
+                    initialState={{
+                      pagination: {
+                        paginationModel: {
+                          pageSize: 10,
+                        },
+                      },
+                    }}
+                    pageSizeOptions={[10]}
+                    checkGridSelection
+                    disableRowSelectionOnClick
+                    rowHeight={30}
+                  />
+                </Grid>
+              ))}
+            </Grid>
+          </Grid>
+        </Grid>
+      )}
     </Grid>
   );
 };

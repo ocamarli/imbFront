@@ -13,9 +13,11 @@ import { DataGrid } from "@mui/x-data-grid";
 import { obtenerPlantillas } from "../../api/axios";
 import ModalClonarPlantilla from "./Componentes/ModalClonarPlantila.jsx";
 import EditarPlantilla from "./EditarPlantilla.jsx";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import Home from "../Home/Home.jsx"
 function transformarDatos(plantillas) {
   console.log(plantillas);
-  return plantillas.map((plantilla,index) => {
+  return plantillas.map((plantilla, index) => {
     return {
       id: index + 1 || "",
       nombrePlantilla: plantilla.nombrePlantilla || "",
@@ -37,9 +39,7 @@ const ListaPlantillas = (props) => {
     status: true,
     msg: "Operación exitosa",
   });
-  const manejarAbrirModal = (nombrePlantilla) => {
-
-  };
+  const manejarAbrirModal = (nombrePlantilla) => {};
 
   const manejarCerrarModal = () => {
     setModalActiva(false);
@@ -47,15 +47,13 @@ const ListaPlantillas = (props) => {
 
   const fetchPlantillas = useCallback(async () => {
     try {
-
       setIsLoading(true);
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-      console.log(tkn);
       if (tkn !== undefined) {
         const json = await obtenerPlantillas(tkn);
         console.log(json);
         setPlantillas(json.plantillas || []);
-        setRespuesta(json)
+        setRespuesta(json);
         onResponse(json);
         setIsLoading(false);
       }
@@ -69,16 +67,23 @@ const ListaPlantillas = (props) => {
     fetchPlantillas();
   }, [fetchPlantillas]);
   const manejarEditar = (id) => {
-    setSelectedComponent( <EditarPlantilla idPlantilla={id} setSelectedComponent={setSelectedComponent} onResponse={onResponse} auth={auth}></EditarPlantilla>)
+    setSelectedComponent(
+      <EditarPlantilla
+        idPlantilla={id}
+        setSelectedComponent={setSelectedComponent}
+        onResponse={onResponse}
+        auth={auth}
+      ></EditarPlantilla>
+    );
     console.log("Editar plantilla con ID:", id);
   };
 
   const manejarBloquear = (id) => {
-    manejarAbrirModal()
+    manejarAbrirModal();
   };
 
   const manejarClonar = (nombrePlantilla) => {
-    console.log(nombrePlantilla)
+    console.log(nombrePlantilla);
     setPlantillaAClonar(nombrePlantilla);
     setModalActiva(true);
   };
@@ -87,7 +92,12 @@ const ListaPlantillas = (props) => {
     console.log("Eliminar plantilla con ID:", id);
   };
   const manejarAgregarPlantilla = () => {
-    setSelectedComponent(<AgregarPlantilla setSelectedComponent={setSelectedComponent} auth={auth}></AgregarPlantilla>);
+    setSelectedComponent(
+      <AgregarPlantilla
+        setSelectedComponent={setSelectedComponent}
+        auth={auth}
+      ></AgregarPlantilla>
+    );
   };
 
   const manejarTabChange = (tab) => {
@@ -95,11 +105,11 @@ const ListaPlantillas = (props) => {
   };
 
   const columns = [
-    { field: "id", headerName: "ID",},
-    { field: "nombrePlantilla", headerName: "Nombre", },
-    { field: "firmware", headerName: "Firmware", },
-    { field: "hardware", headerName: "Hardware", },
-    { field: "creadoPor", headerName: "Creado por", },
+    { field: "id", headerName: "ID" },
+    { field: "nombrePlantilla", headerName: "Nombre" },
+    { field: "firmware", headerName: "Firmware" },
+    { field: "hardware", headerName: "Hardware" },
+    { field: "creadoPor", headerName: "Creado por" },
 
     {
       field: "clone",
@@ -217,13 +227,21 @@ const ListaPlantillas = (props) => {
                 </div>
               </Grid>
               <ModalClonarPlantilla
-              plantillaAClonar={plantillaAClonar}
-            activo={modalActiva}
-            respuesta={respuesta}
-            autoCierre={false}
-            onClose={manejarCerrarModal}
-          ></ModalClonarPlantilla>
+                plantillaAClonar={plantillaAClonar}
+                activo={modalActiva}
+                respuesta={respuesta}
+                autoCierre={false}
+                onClose={manejarCerrarModal}
+              ></ModalClonarPlantilla>
             </Grid>
+            <Button sx={{mt:5}}
+      variant="contained"
+      color="success" 
+      onClick={() => setSelectedComponent(<Home></Home>)}
+      startIcon={<ArrowBackIcon />} 
+    >
+      Salir
+    </Button>
           </Paper>
         </Grid>
       ) : (

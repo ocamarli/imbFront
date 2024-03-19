@@ -3,15 +3,12 @@ import { Button, Grid, Paper } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import HeaderContent from "../HeaderContent";
 import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/ModeEdit";
-import FileCopyIcon from "@mui/icons-material/FileCopy";
-import LockIcon from "@mui/icons-material/Lock";
 import AddIcon from "@mui/icons-material/Add";
 import AgregarGae from "./AgregarGae.jsx";
 import { DataGrid } from "@mui/x-data-grid";
 import { obtenerGaes } from "../../api/axios";
-import ModalClonarPlantilla from "../Recipes/Componentes/ModalClonarPlantila.jsx";
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import Home from "../Home/Home.jsx"
 function transformarDatos(gaes) {
   console.log(gaes);
   return gaes.map((gae) => {
@@ -25,21 +22,8 @@ function transformarDatos(gaes) {
 const ListaGaes = (props) => {
   const { setSelectedComponent, auth, onResponse } = props;
   const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("activas"); // Estado para controlar la pestaña activa
+
   const [gaes, setGaes] = useState([]);
-  const [modalActiva, setModalActiva] = useState(false);
-  const [plantillaAClonar, setPlantillaAClonar] = useState(false);
-  const [respuesta, setRespuesta] = useState({
-    status: true,
-    msg: "Operación exitosa",
-  });
-  const manejarAbrirModal = (nombrePlantilla) => {
-
-  };
-
-  const manejarCerrarModal = () => {
-    setModalActiva(false);
-  };
 
   const fetchGaes = useCallback(async () => {
     try {
@@ -51,7 +35,6 @@ const ListaGaes = (props) => {
         const json = await obtenerGaes(tkn);
         console.log(json);
         setGaes(json.gaes || []);
-        setRespuesta(json)
         onResponse(json);
         setIsLoading(false);
       }
@@ -64,30 +47,13 @@ const ListaGaes = (props) => {
   useEffect(() => {
     fetchGaes();
   }, [fetchGaes]);
-  const manejarEditar = (id) => {
-    console.log("Editar plantilla con ID:", id);
-  };
 
-  const manejarBloquear = (id) => {
-    manejarAbrirModal()
-  };
 
-  const manejarClonar = (nombrePlantilla) => {
-    console.log(nombrePlantilla)
-    setPlantillaAClonar(nombrePlantilla);
-    setModalActiva(true);
-  };
-
-  const manejarBorrar = (id) => {
-    console.log("Eliminar plantilla con ID:", id);
-  };
   const manejarAgregarPlantilla = () => {
     setSelectedComponent(<AgregarGae auth={auth}></AgregarGae>);
   };
 
-  const manejarTabChange = (tab) => {
-    setActiveTab(tab);
-  };
+
 
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
@@ -145,14 +111,16 @@ const ListaGaes = (props) => {
                   />
                 </div>
               </Grid>
-              <ModalClonarPlantilla
-              plantillaAClonar={plantillaAClonar}
-            activo={modalActiva}
-            respuesta={respuesta}
-            autoCierre={false}
-            onClose={manejarCerrarModal}
-          ></ModalClonarPlantilla>
+
             </Grid>
+            <Button sx={{mt:5}}
+      variant="contained"
+      color="success" 
+      onClick={() => setSelectedComponent(<Home></Home>)}
+      startIcon={<ArrowBackIcon />} 
+    >
+      Salir
+    </Button>
           </Paper>
         </Grid>
       ) : (

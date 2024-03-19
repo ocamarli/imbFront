@@ -12,17 +12,14 @@ import {
   Typography,
   InputLabel,
   CircularProgress,
-  FormLabel,
 } from "@mui/material";
-import { crearPlantilla } from "../../api/axios";
-import TablaDatos from "../../components/TablaDatos";
-import { obtenerParametros } from "../../api/axios";
 import HeaderContent from "../HeaderContent";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
-import Home from "@mui/icons-material/Home";
 import { obtenerPlantilla } from "../../api/axios";
 import TablaContenido from "./Componentes/TablaContenido";
+import Home from "../Home/Home.jsx"
+import ArrowBackIcon from "@mui/icons-material/ArrowBack.js";
 const EditarPlantilla = (props) => {
   const { idPlantilla, setSelectedComponent, onResponse, auth } = props;
   const [isLoading, setIsLoading] = useState(false);
@@ -33,8 +30,7 @@ const EditarPlantilla = (props) => {
   const alternarBloqueo = () => {
     setBloqueado(!bloqueado);
   };
-  console.log("Editar");
-  console.log(idPlantilla);
+
   const onSubmit = (data) => {
     console.log("onsub");
     console.log(data);
@@ -44,7 +40,7 @@ const EditarPlantilla = (props) => {
     register,
     handleSubmit,
     formState: { errors },
-    setValue
+
   } = useForm({
     defaultValues: {
       nombrePlantilla: plantilla?.plantilla.nombrePlantilla || "",
@@ -56,10 +52,8 @@ const EditarPlantilla = (props) => {
     try {
       setIsLoading(true);
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-      console.log(tkn);
       if (tkn !== undefined) {
         console.log("obtenerPlantilla");
-        console.log(idPlantilla);
         const json = await obtenerPlantilla(tkn, idPlantilla);
         console.log(json);
         setPlantilla(json || null);
@@ -72,11 +66,7 @@ const EditarPlantilla = (props) => {
       setIsLoading(false);
       console.error(error);
     }
-  }, [setIsLoading, setPlantilla, onResponse]);
-
-  const handleClose = useCallback(async () => {
-    await fetchObtenerPlantilla();
-  }, [fetchObtenerPlantilla]);
+  }, [setIsLoading, setPlantilla, onResponse,idPlantilla]);
 
   useEffect(() => {
     fetchObtenerPlantilla();
@@ -208,17 +198,22 @@ const EditarPlantilla = (props) => {
                 <Grid item xs={6}></Grid>
 
                 <Grid item xs={12}>
-                  <Typography variant="h6">Parametros</Typography>
+                  <TablaContenido idPlantilla={idPlantilla} setSelectedComponent={setSelectedComponent} onResponse={onResponse} auth={auth}></TablaContenido>        
                 </Grid>
-                <Grid item xs={12}>
-                  <TablaContenido></TablaContenido>
-                  
-                </Grid>
+ 
               </Grid>
             </form>
           </Paper>
         </Grid>
       )}
+                <Button sx={{mt:5}}
+      variant="contained"
+      color="success" 
+      onClick={() => setSelectedComponent(<Home></Home>)}
+      startIcon={<ArrowBackIcon />} 
+    >
+      Salir
+    </Button>
     </Grid>
   );
 };

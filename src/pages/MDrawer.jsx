@@ -146,6 +146,7 @@ export default function PersistentDrawerLeft(props) {
     setSelectedComponent(
       <ListaParametros
         auth={auth} 
+        setSelectedComponent={setSelectedComponent}
         onResponse={(json) => {
           setResponse(json);
           setOpenAlert(true);
