@@ -41,6 +41,9 @@ import ListaPlantillas from "./Recipes/ListaPlatillas";
 import ListaUsuarios from "./Register/ListaUsuarios";
 import UsuarioAutorizado from "../components/UsuarioAutorizado";
 import ListaGaes from "./Gaes/ListaGaes";
+import ApiIcon from '@mui/icons-material/Api';
+import HardwareIcon from '@mui/icons-material/Hardware';
+
 const drawerWidth = 250;
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
@@ -111,41 +114,47 @@ export default function PersistentDrawerLeft(props) {
 
   const seleccionarListaUsuarios = () => {
     setSelectedComponent(
-
       <ListaUsuarios
-        auth={auth}      
+        auth={auth}
         setSelectedComponent={setSelectedComponent}
         onResponse={(json) => {
           setResponse(json);
           setOpenAlert(true);
         }}
       />
-
     );
   };
   const seleccionarListaPlantillas = () => {
     setSelectedComponent(
-      <ListaPlantillas         onResponse={(json) => {
-        setResponse(json);
-        setOpenAlert(true);
-      }} auth={auth} setSelectedComponent={setSelectedComponent} />
+      <ListaPlantillas
+        onResponse={(json) => {
+          setResponse(json);
+          setOpenAlert(true);
+        }}
+        auth={auth}
+        setSelectedComponent={setSelectedComponent}
+      />
     );
   };
   const seleccionarListaGaes = () => {
     setSelectedComponent(
-      <ListaGaes         onResponse={(json) => {
-        setResponse(json);
-        setOpenAlert(true);
-      }} auth={auth} setSelectedComponent={setSelectedComponent} />
+      <ListaGaes
+        onResponse={(json) => {
+          setResponse(json);
+          setOpenAlert(true);
+        }}
+        auth={auth}
+        setSelectedComponent={setSelectedComponent}
+      />
     );
-  };  
+  };
   const selectHome = () => {
     setSelectedComponent(<Home />);
   };
   const selectParameters = () => {
     setSelectedComponent(
       <ListaParametros
-        auth={auth} 
+        auth={auth}
         setSelectedComponent={setSelectedComponent}
         onResponse={(json) => {
           setResponse(json);
@@ -154,7 +163,6 @@ export default function PersistentDrawerLeft(props) {
       />
     );
   };
-
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -209,7 +217,7 @@ export default function PersistentDrawerLeft(props) {
           <Box sx={{ flexGrow: 1 }} />
 
           <IconButton color="inherit" sx={{ ml: 2 }}>
-            <Typography >
+            <Typography>
               {auth !== null ? (
                 <React.Fragment>
                   {auth.nombre} (
@@ -286,21 +294,39 @@ export default function PersistentDrawerLeft(props) {
               </ListItemIcon>
               <ListItemText primary="Parametros" />
             </ListItemButton>
+
             <ListItemButton onClick={seleccionarListaGaes}>
               <ListItemIcon>
                 <DescriptionIcon sx={iconsStyle} />
               </ListItemIcon>
               <ListItemText primary="Gaes" />
-            </ListItemButton>            
-            <Divider />
-            <UsuarioAutorizado usuario={auth} permisosRequeridos={["superusuario"]}>
-              
-            <ListItemButton onClick={seleccionarListaUsuarios}>
-              <ListItemIcon>
-                <PersonAddIcon sx={iconsStyle} />
-              </ListItemIcon>
-              <ListItemText>Usuarios</ListItemText>
             </ListItemButton>
+
+            <ListItemButton onClick={seleccionarListaGaes}>
+              <ListItemIcon>
+                <ApiIcon sx={iconsStyle} />
+              </ListItemIcon>
+              <ListItemText primary="Firmwares" />
+            </ListItemButton>
+
+            <ListItemButton onClick={seleccionarListaGaes}>
+              <ListItemIcon>
+                <HardwareIcon sx={iconsStyle} />
+              </ListItemIcon>
+              <ListItemText primary="Hardwares" />
+            </ListItemButton>
+
+            <Divider />
+            <UsuarioAutorizado
+              usuario={auth}
+              permisosRequeridos={["superusuario"]}
+            >
+              <ListItemButton onClick={seleccionarListaUsuarios}>
+                <ListItemIcon>
+                  <PersonAddIcon sx={iconsStyle} />
+                </ListItemIcon>
+                <ListItemText>Usuarios</ListItemText>
+              </ListItemButton>
             </UsuarioAutorizado>
           </List>
         </FormControl>

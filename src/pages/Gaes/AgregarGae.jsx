@@ -41,10 +41,10 @@ const AgregarGae = () => {
   } = useForm();
 
   return (
-    <Grid container padding={2}>
+    <Grid container padding={2} >
       <Grid item xs={12}>
         <HeaderContent></HeaderContent>
-        <Paper style={{ padding: 20 }}>
+        <Paper style={{ padding: 20 }} >
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={3}>
               <Grid item xs={6}>

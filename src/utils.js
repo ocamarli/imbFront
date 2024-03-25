@@ -1,4 +1,3 @@
-
 const api = {
   baseuri: "https://imbvikkonapi.azurewebsites.net/api/v1/",
   endpoints: {
@@ -16,15 +15,20 @@ const api = {
     parameterRecipeUpdate:"recipe/parameter/update",
     parameterRecipeGet:"recipe/parameter/get",
     recipeGet:"recipe/",
+    actualizarParametroPlantilla:"plantilla/actualizarParametro",
     obtenerParametros:"parametro/obtenerParametros",
     obtenerUsuarios:"usuario/obtenerUsuarios",
     obtenerPlantillas:"plantilla/obtenerPlantillas",
     obtenerPlantilla:"plantilla/obtenerPlantilla",
     obtenerRecetas:"receta/obtenerRecetas",
+    obtenerFirmwares: "firmware/obtenerFirmwares",
+    obtenerHardwares:"hardware/obtenerHardwares",
     crearPlantilla:"plantilla/crearPlantilla",
-    actualizarParametroPlantilla:"plantilla/actualizarParametro",
     obtenerGaes:"gae/obtenerGaes",
     crearGae:"gae/crearGae",
+    crearFirware:"firmware/crearFirmware",
+    crearHardware:"hardware/crearHardware",
+    copiarPlantilla:"plantilla/copiarPlantilla"
   },
 };
 /*
@@ -42,10 +46,15 @@ export const ENV = {
     crearGae:()=> api.baseuri+api.endpoints.crearGae,
     obtenerUsuarios:()=>api.baseuri+api.endpoints.obtenerUsuarios,
     actualizarParametroPlantilla:()=>api.baseuri+api.endpoints.actualizarParametroPlantilla,
+    obtenerFirmwares:()=>api.baseuri+api.endpoints.obtenerFirmwares,
+    obtenerHardwares:()=>api.baseuri+api.endpoints.obtenerHardwares,
     obtenerPlantillas:()=>api.baseuri+api.endpoints.obtenerPlantillas,
+    crearFirware:()=>api.baseuri+api.endpoints.crearFirware,
+    crearHardware:()=>api.baseuri+api.endpoints.crearHardware,
     obtenerPlantilla:(idPlantilla)=>api.baseuri+api.endpoints.obtenerPlantilla+"/"+idPlantilla,
     obtenerRecetas:()=>api.baseuri+api.endpoints.obtenerRecetas,
     crearPlantilla:()=>api.baseuri+api.endpoints.crearPlantilla,
+    copiarPlantilla:()=>api.baseuri+api.endpoints.copiarPlantilla,
     login:()=> api.baseuri+api.endpoints.login,
     user:()=> api.baseuri+api.endpoints.user,
     obtenerParametros: () => api.baseuri + api.endpoints.obtenerParametros,
@@ -61,4 +70,4 @@ export const ENV = {
     updateParameterRecipe:()=>api.baseuri+api.endpoints.parameterRecipeUpdate,
     getParameterRecipe:()=>api.baseuri+api.endpoints.parameterRecipeGet,
     getRecipe:(id_recipe)=>api.baseuri+api.endpoints.recipeGet+id_recipe,
-}; 
+};

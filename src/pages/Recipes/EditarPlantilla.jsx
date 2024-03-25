@@ -2,16 +2,8 @@ import { useForm } from "react-hook-form";
 import React, { useState, useEffect, useCallback } from "react";
 import { useTheme } from "@mui/material/styles";
 import {
-  TextField,
-  Button,
-  FormControl,
-  Grid,
-  Paper,
-  Select,
-  MenuItem,
-  Typography,
-  InputLabel,
-  CircularProgress,
+  TextField, FormControlLabel, FormControl,
+  Grid,Checkbox,Box,Button, Paper, Select, MenuItem, Typography, InputLabel, CircularProgress,
 } from "@mui/material";
 import HeaderContent from "../HeaderContent";
 import LockIcon from "@mui/icons-material/Lock";
@@ -21,14 +13,28 @@ import TablaContenido from "./Componentes/TablaContenido";
 import Home from "../Home/Home.jsx"
 import ArrowBackIcon from "@mui/icons-material/ArrowBack.js";
 const EditarPlantilla = (props) => {
-  const { idPlantilla, setSelectedComponent, onResponse, auth } = props;
+  const { idPlantilla, setSelectedComponent, auth } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [plantilla, setPlantilla] = useState(null);
-
+  const [checkedItems, setCheckedItems] = useState({
+    checkbox1: false,
+    checkbox2: false,
+    checkbox3: false,
+    checkbox4: false,
+    checkbox5: false,
+    checkbox6: false,
+  });
   const theme = useTheme();
   const [bloqueado, setBloqueado] = useState(false);
   const alternarBloqueo = () => {
     setBloqueado(!bloqueado);
+  };
+
+  const handleCheckboxChange = (event, checkboxName) => {
+    setCheckedItems({
+      ...checkedItems,
+      [checkboxName]: event.target.checked,
+    });
   };
 
   const onSubmit = (data) => {
@@ -60,17 +66,18 @@ const EditarPlantilla = (props) => {
         setIsLoading(false);
       } else {
         setPlantilla(null);
-        onResponse({ status: false, msg: "Unauthorized Access" });
+
       }
     } catch (error) {
       setIsLoading(false);
       console.error(error);
     }
-  }, [setIsLoading, setPlantilla, onResponse,idPlantilla]);
+  }, [setIsLoading, setPlantilla, idPlantilla]);
 
   useEffect(() => {
     fetchObtenerPlantilla();
   }, [fetchObtenerPlantilla]);
+
   return (
     <Grid container padding={1}>
       {isLoading || plantilla == null ? ( // Agrega el loader condicionalmente
@@ -195,12 +202,42 @@ const EditarPlantilla = (props) => {
                     {bloqueado ? "Congelado" : "Congelar"}
                   </Button>
                 </Grid>
+                <Grid item xs= {12} >
+      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
+        <Typography color='gray'>Programaciones</Typography>
+        <br></br>
+      <FormControlLabel
+        control={<Checkbox checked={checkedItems.checkbox1} onChange={handleCheckboxChange} name="checkbox1" />}
+        label="1"
+      />
+      <FormControlLabel
+        control={<Checkbox checked={checkedItems.checkbox2} onChange={handleCheckboxChange} name="checkbox2" />}
+        label="2"
+      />
+      <FormControlLabel
+        control={<Checkbox checked={checkedItems.checkbox3} onChange={handleCheckboxChange} name="checkbox3" />}
+        label="3"
+      />
+      <FormControlLabel
+        control={<Checkbox checked={checkedItems.checkbox4} onChange={handleCheckboxChange} name="checkbox4" />}
+        label="4"
+      />
+      <FormControlLabel
+        control={<Checkbox checked={checkedItems.checkbox5} onChange={handleCheckboxChange} name="checkbox5" />}
+        label="5"
+      />
+      <FormControlLabel
+        control={<Checkbox checked={checkedItems.checkbox6} onChange={handleCheckboxChange} name="checkbox6" />}
+        label="6"
+      />
+    </Box>
+ </Grid>                
                 <Grid item xs={6}></Grid>
 
                 <Grid item xs={12}>
-                  <TablaContenido idPlantilla={idPlantilla} setSelectedComponent={setSelectedComponent} onResponse={onResponse} auth={auth}></TablaContenido>        
+                  <TablaContenido idPlantilla={idPlantilla} setSelectedComponent={setSelectedComponent} auth={auth}></TablaContenido>        
                 </Grid>
- 
+
               </Grid>
             </form>
           </Paper>

@@ -71,7 +71,6 @@ const ListaPlantillas = (props) => {
       <EditarPlantilla
         idPlantilla={id}
         setSelectedComponent={setSelectedComponent}
-        onResponse={onResponse}
         auth={auth}
       ></EditarPlantilla>
     );
@@ -82,9 +81,13 @@ const ListaPlantillas = (props) => {
     manejarAbrirModal();
   };
 
-  const manejarClonar = (nombrePlantilla) => {
-    console.log(nombrePlantilla);
-    setPlantillaAClonar(nombrePlantilla);
+  const manejarClonar = (idPlantilla) => {
+    console.log("plantilla a clonar");
+    console.log(idPlantilla);
+    
+    const plantillaSelecionada = plantillas.find(plantilla => plantilla._id === idPlantilla);
+    console.log(plantillaSelecionada);
+    setPlantillaAClonar(plantillaSelecionada);
     setModalActiva(true);
   };
 
@@ -116,7 +119,7 @@ const ListaPlantillas = (props) => {
       headerName: "Clonar",
 
       renderCell: (params) => (
-        <IconButton onClick={() => manejarClonar(params.row.nombre_plantilla)}>
+        <IconButton onClick={() => manejarClonar(params.row._id)}>
           <FileCopyIcon />
         </IconButton>
       ),
@@ -228,6 +231,8 @@ const ListaPlantillas = (props) => {
               </Grid>
               <ModalClonarPlantilla
                 plantillaAClonar={plantillaAClonar}
+                setSelectedComponent={setSelectedComponent}
+                auth={auth}
                 activo={modalActiva}
                 respuesta={respuesta}
                 autoCierre={false}

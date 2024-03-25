@@ -12,7 +12,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { obtenerGaes } from "../../../api/axios";
 import { obtenerPlantilla } from "../../../api/axios";
 const TablaContenido = (props) => {
-  const { idPlantilla, onResponse } = props;
+  const { idPlantilla} = props;
   const [gaes, setGaes] = useState([]);
 
   const [plantilla, setPlantilla] = useState(null);
@@ -29,12 +29,12 @@ const TablaContenido = (props) => {
         setPlantilla(json.plantilla || null);
       } else {
         setPlantilla(null);
-        onResponse({ status: false, msg: "Acceso no autorizado" });
+
       }
     } catch (error) {
       console.error(error);
     }
-  }, [idPlantilla,setPlantilla, onResponse]);
+  }, [idPlantilla,setPlantilla]);
 
   const fetchGaes = useCallback(async () => {
     try {
@@ -157,7 +157,7 @@ const TablaContenido = (props) => {
           <Grid item xs={12}>
             {plantilla.parametrosGenerales.length > 0 && (
               <Grid xs={12} spacing={1}>
-                <Typography fontWeight="bold">Parametros Generales</Typography>
+                <Typography variant="subtitle1" fontWeight={300}>Parametros Generales</Typography>
                 <DataGrid
                   rows={transformarDatos(plantilla.parametrosGenerales)}
                   columns={columns}
@@ -180,7 +180,7 @@ const TablaContenido = (props) => {
             <Grid container spacing={0}>
               {plantilla.programaciones.map((programacion, index) => (
                 <Grid key={index} xs={12} spacing={1}>
-                  <Typography fontWeight="bold">
+                  <Typography variant="subtitle1" fontWeight={300}>
                     Parámetros de programación {index + 1}
                   </Typography>
                   <DataGrid

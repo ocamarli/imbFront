@@ -203,6 +203,47 @@ export async function obtenerPlantillas(token) {
     return { parameters: [], status: false, msg: error.message};
   }
 }
+export async function obtenerFirmwares(token) {
+  try {
+    const response = await getData(
+      ENV.obtenerFirmwares(),
+      token
+    );
+
+    if (response.status === 200) {
+      return await response.json();
+    } else {
+      return {
+        firmwares: [],
+        status: false,
+        msg: "No se pudo obtener información de los firmwares.",
+      };
+    }
+  } catch (error) {
+    return { firmwares: [], status: false, msg: error.message};
+  }
+}
+
+export async function obtenerHardwares(token) {
+  try {
+    const response = await getData(
+      ENV.obtenerHardwares(),
+      token
+    );
+
+    if (response.status === 200) {
+      return await response.json();
+    } else {
+      return {
+        hardwares: [],
+        status: false,
+        msg: "No se pudo obtener información de los hardwares.",
+      };
+    }
+  } catch (error) {
+    return { hardwares: [], status: false, msg: error.message};
+  }
+}
 export async function obtenerPlantilla(token,idPlantilla) {
   try {
     const response = await getData(
@@ -344,6 +385,26 @@ export async function actualizarParametroPlantilla(data,token) {
     }
   } catch (error) {
     return { parameters: [], status: false, msg: error.message};
+  }
+}
+export async function copiarPlantilla(data,token) {
+  try {
+    const response = await postData(
+    ENV.copiarPlantilla(),
+      data,
+      token
+    );
+
+    if (response.status === 200) {
+      return await response.json();
+    } else {
+      return {
+        status: false,
+        msg: "No se puede realizar la copia de la plantilla",
+      };
+    }
+  } catch (error) {
+    return {  status: false, msg: error.message};
   }
 }
 export async function getParameterRecipe(data,token) {

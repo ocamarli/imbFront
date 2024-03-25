@@ -15,13 +15,16 @@ import { obtenerParametros } from "../../api/axios";
 import HeaderContent from "../HeaderContent";
 import EditarPlantilla from "./EditarPlantilla";
 import { crearPlantilla } from "../../api/axios";
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import Home from "../Home/Home.jsx"
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import Home from "../Home/Home.jsx";
+import { obtenerFirmwares } from "../../api/axios";
+import { obtenerHardwares } from "../../api/axios";
 const AgregarPlantilla = (props) => {
   const { setSelectedComponent, onResponse, auth } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [parametros, setParametros] = useState([]);
-
+  const [firmwares, setFirmwares] = useState([]);
+  const [hardwares, setHardwares] = useState([]);
 
   const handleCrearPlantilla = async (data) => {
     const listaParametrosGenerales = [];
@@ -61,6 +64,11 @@ const AgregarPlantilla = (props) => {
       parametrosGenerales: listaParametrosGenerales,
       programaciones: [
         { noProgramacion: "1", parametros: listaParametrosProgramacion },
+        { noProgramacion: "2", parametros: listaParametrosProgramacion },
+        { noProgramacion: "3", parametros: listaParametrosProgramacion },
+        { noProgramacion: "4", parametros: listaParametrosProgramacion },
+        { noProgramacion: "5", parametros: listaParametrosProgramacion },
+        { noProgramacion: "6", parametros: listaParametrosProgramacion },
       ],
     };
     console.log(newData);
@@ -73,7 +81,14 @@ const AgregarPlantilla = (props) => {
     if (response.status) {
       console.log("reponse idP");
       console.log(response.idPlantilla);
-      setSelectedComponent( <EditarPlantilla idPlantilla={response.idPlantilla} setSelectedComponent={setSelectedComponent} onResponse={onResponse} auth={auth}></EditarPlantilla>)
+      setSelectedComponent(
+        <EditarPlantilla
+          idPlantilla={response.idPlantilla}
+          setSelectedComponent={setSelectedComponent}
+          onResponse={onResponse}
+          auth={auth}
+        ></EditarPlantilla>
+      );
     } else {
       console.log("Error");
     }
@@ -108,11 +123,54 @@ const AgregarPlantilla = (props) => {
       console.error(error);
     }
   }, [setIsLoading, setParametros, onResponse]);
-
+  const fetchFirmwares = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+      if (tkn !== undefined) {
+        const json = await obtenerFirmwares(tkn);
+        console.log("fetchFirmwares");
+        console.log(json);
+        setFirmwares(json.firmwares || []);
+        setIsLoading(false);
+      } else {
+        setFirmwares([]);
+        onResponse({ status: false, msg: "Unauthorized Access" });
+      }
+    } catch (error) {
+      setIsLoading(false);
+      console.error(error);
+    }
+  }, [setIsLoading, setFirmwares, onResponse]);
+  const fetchHardwares = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+      if (tkn !== undefined) {
+        const json = await obtenerHardwares(tkn);
+        console.log("fetchHardwares");
+        console.log(json);
+        setHardwares(json.hardwares || []);
+        setIsLoading(false);
+      } else {
+        setHardwares([]);
+        onResponse({ status: false, msg: "Unauthorized Access" });
+      }
+    } catch (error) {
+      setIsLoading(false);
+      console.error(error);
+    }
+  }, [setIsLoading, setHardwares, onResponse]);
 
   useEffect(() => {
     fetchparametros();
   }, [fetchparametros]);
+  useEffect(() => {
+    fetchHardwares();
+  }, [fetchHardwares]);
+  useEffect(() => {
+    fetchFirmwares();
+  }, [fetchFirmwares]);
   return (
     <Grid container padding={1}>
       {isLoading ? ( // Agrega el loader condicionalmente
@@ -162,8 +220,11 @@ const AgregarPlantilla = (props) => {
                       <MenuItem disabled value="">
                         <em>Selecciona una firmware</em>
                       </MenuItem>
-                      <MenuItem value={"Firmware 1"}>Firmware 1</MenuItem>
-                      <MenuItem value={"Firmware 2"}>Firmware 2</MenuItem>
+                      {firmwares.map((firmware) => (
+                        <MenuItem key={firmware.valor} value={firmware.valor}>
+                          {firmware.nombre}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </Grid>
@@ -190,8 +251,11 @@ const AgregarPlantilla = (props) => {
                       <MenuItem disabled value="">
                         <em>Selecciona una hardware</em>
                       </MenuItem>
-                      <MenuItem value={"Hardware 2"}>Hardware 1</MenuItem>
-                      <MenuItem value={"Hardware 2"}>Hardware 2</MenuItem>
+                      {hardwares.map((hardware) => (
+                        <MenuItem key={hardware.valor} value={hardware.valor}>
+                          {hardware.nombre}
+                        </MenuItem>
+                      ))}
                     </Select>
                   </FormControl>
                 </Grid>
@@ -244,14 +308,15 @@ const AgregarPlantilla = (props) => {
           </Paper>
         </Grid>
       )}
-          <Button sx={{mt:5}}
-      variant="contained"
-      color="success" 
-      onClick={setSelectedComponent(<Home></Home>)}
-      startIcon={<ArrowBackIcon />} 
-    >
-      Salir
-    </Button>
+      <Button
+        sx={{ mt: 5 }}
+        variant="contained"
+        color="success"
+        onClick={() => setSelectedComponent(<Home />)}
+        startIcon={<ArrowBackIcon />}
+      >
+        Salir
+      </Button>
     </Grid>
   );
 };
