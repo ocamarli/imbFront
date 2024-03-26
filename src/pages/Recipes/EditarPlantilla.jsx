@@ -2,39 +2,34 @@ import { useForm } from "react-hook-form";
 import React, { useState, useEffect, useCallback } from "react";
 import { useTheme } from "@mui/material/styles";
 import {
-  TextField, FormControlLabel, FormControl,
-  Grid,Checkbox,Box,Button, Paper, Select, MenuItem, Typography, InputLabel, CircularProgress,
+  TextField,
+  FormControl,
+  Grid,
+  Button,
+  Paper,
+  Select,
+  MenuItem,
+  Typography,
+  InputLabel,
+  CircularProgress,
 } from "@mui/material";
 import HeaderContent from "../HeaderContent";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import { obtenerPlantilla } from "../../api/axios";
 import TablaContenido from "./Componentes/TablaContenido";
-import Home from "../Home/Home.jsx"
+import Home from "../Home/Home.jsx";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack.js";
+import GrupoCheckbox from "../../components/GrupoCheckbox.jsx";
 const EditarPlantilla = (props) => {
   const { idPlantilla, setSelectedComponent, auth } = props;
   const [isLoading, setIsLoading] = useState(false);
   const [plantilla, setPlantilla] = useState(null);
-  const [checkedItems, setCheckedItems] = useState({
-    checkbox1: false,
-    checkbox2: false,
-    checkbox3: false,
-    checkbox4: false,
-    checkbox5: false,
-    checkbox6: false,
-  });
+  const [checkboxSeleccionados, setCheckboxSeleccionados] = useState([]);
   const theme = useTheme();
   const [bloqueado, setBloqueado] = useState(false);
   const alternarBloqueo = () => {
     setBloqueado(!bloqueado);
-  };
-
-  const handleCheckboxChange = (event, checkboxName) => {
-    setCheckedItems({
-      ...checkedItems,
-      [checkboxName]: event.target.checked,
-    });
   };
 
   const onSubmit = (data) => {
@@ -46,13 +41,12 @@ const EditarPlantilla = (props) => {
     register,
     handleSubmit,
     formState: { errors },
-
   } = useForm({
     defaultValues: {
       nombrePlantilla: plantilla?.plantilla.nombrePlantilla || "",
       hardware: plantilla?.plantilla.hardware || "",
-      firmware: plantilla?.plantilla.nombrePlantilla || ""
-    }
+      firmware: plantilla?.plantilla.nombrePlantilla || "",
+    },
   });
   const fetchObtenerPlantilla = useCallback(async () => {
     try {
@@ -66,7 +60,6 @@ const EditarPlantilla = (props) => {
         setIsLoading(false);
       } else {
         setPlantilla(null);
-
       }
     } catch (error) {
       setIsLoading(false);
@@ -101,7 +94,6 @@ const EditarPlantilla = (props) => {
                     placeholder={plantilla?.plantilla.nombrePlantilla || ""}
                     variant="outlined"
                     error={errors.nombrePlantilla ? true : false}
-                    
                     helperText={
                       errors.nombrePlantilla ? "Este campo es requerido" : ""
                     }
@@ -181,8 +173,10 @@ const EditarPlantilla = (props) => {
                   <InputLabel>Creado por</InputLabel>
                   <InputLabel>{plantilla.plantilla.creadoPor}</InputLabel>
                 </Grid>
+                <Grid item xs={6}>
+                  <GrupoCheckbox setCheckboxSeleccionado={setCheckboxSeleccionados}></GrupoCheckbox>
+                </Grid>
                 <Grid item xs={12}>
-
                   <Button
                     {...register("congelar", { required: true })}
                     size="small"
@@ -202,55 +196,30 @@ const EditarPlantilla = (props) => {
                     {bloqueado ? "Congelado" : "Congelar"}
                   </Button>
                 </Grid>
-                <Grid item xs= {12} >
-      <Box sx={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
-        <Typography color='gray'>Programaciones</Typography>
-        <br></br>
-      <FormControlLabel
-        control={<Checkbox checked={checkedItems.checkbox1} onChange={handleCheckboxChange} name="checkbox1" />}
-        label="1"
-      />
-      <FormControlLabel
-        control={<Checkbox checked={checkedItems.checkbox2} onChange={handleCheckboxChange} name="checkbox2" />}
-        label="2"
-      />
-      <FormControlLabel
-        control={<Checkbox checked={checkedItems.checkbox3} onChange={handleCheckboxChange} name="checkbox3" />}
-        label="3"
-      />
-      <FormControlLabel
-        control={<Checkbox checked={checkedItems.checkbox4} onChange={handleCheckboxChange} name="checkbox4" />}
-        label="4"
-      />
-      <FormControlLabel
-        control={<Checkbox checked={checkedItems.checkbox5} onChange={handleCheckboxChange} name="checkbox5" />}
-        label="5"
-      />
-      <FormControlLabel
-        control={<Checkbox checked={checkedItems.checkbox6} onChange={handleCheckboxChange} name="checkbox6" />}
-        label="6"
-      />
-    </Box>
- </Grid>                
                 <Grid item xs={6}></Grid>
 
                 <Grid item xs={12}>
-                  <TablaContenido idPlantilla={idPlantilla} setSelectedComponent={setSelectedComponent} auth={auth}></TablaContenido>        
+                  <TablaContenido
+                    idPlantilla={idPlantilla}
+                    setSelectedComponent={setSelectedComponent}
+                    auth={auth}
+                    checkboxSeleccionados={checkboxSeleccionados}
+                  ></TablaContenido>
                 </Grid>
-
               </Grid>
             </form>
           </Paper>
         </Grid>
       )}
-                <Button sx={{mt:5}}
-      variant="contained"
-      color="success" 
-      onClick={() => setSelectedComponent(<Home></Home>)}
-      startIcon={<ArrowBackIcon />} 
-    >
-      Salir
-    </Button>
+      <Button
+        sx={{ mt: 5 }}
+        variant="contained"
+        color="success"
+        onClick={() => setSelectedComponent(<Home></Home>)}
+        startIcon={<ArrowBackIcon />}
+      >
+        Salir
+      </Button>
     </Grid>
   );
 };

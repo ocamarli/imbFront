@@ -12,7 +12,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { obtenerGaes } from "../../../api/axios";
 import { obtenerPlantilla } from "../../../api/axios";
 const TablaContenido = (props) => {
-  const { idPlantilla} = props;
+  const { idPlantilla,checkboxSeleccionados } = props;
   const [gaes, setGaes] = useState([]);
 
   const [plantilla, setPlantilla] = useState(null);
@@ -29,12 +29,11 @@ const TablaContenido = (props) => {
         setPlantilla(json.plantilla || null);
       } else {
         setPlantilla(null);
-
       }
     } catch (error) {
       console.error(error);
     }
-  }, [idPlantilla,setPlantilla]);
+  }, [idPlantilla, setPlantilla]);
 
   const fetchGaes = useCallback(async () => {
     try {
@@ -55,7 +54,7 @@ const TablaContenido = (props) => {
     console.log(idPlantilla);
 
     fetchGaes();
-  }, [idPlantilla,fetchGaes]);
+  }, [idPlantilla, fetchGaes]);
   useEffect(() => {
     fetchObtenerPlantilla();
   }, [fetchObtenerPlantilla]);
@@ -157,7 +156,9 @@ const TablaContenido = (props) => {
           <Grid item xs={12}>
             {plantilla.parametrosGenerales.length > 0 && (
               <Grid xs={12} spacing={1}>
-                <Typography variant="subtitle1" fontWeight={300}>Parametros Generales</Typography>
+                <Typography variant="body1" fontWeight={600}>
+                  Parametros Generales
+                </Typography>
                 <DataGrid
                   rows={transformarDatos(plantilla.parametrosGenerales)}
                   columns={columns}
@@ -178,28 +179,32 @@ const TablaContenido = (props) => {
           </Grid>
           <Grid item xs={12}>
             <Grid container spacing={0}>
-              {plantilla.programaciones.map((programacion, index) => (
-                <Grid key={index} xs={12} spacing={1}>
-                  <Typography variant="subtitle1" fontWeight={300}>
-                    Parámetros de programación {index + 1}
-                  </Typography>
-                  <DataGrid
-                    rows={transformarDatos(programacion.parametros)}
-                    columns={columns}
-                    initialState={{
-                      pagination: {
-                        paginationModel: {
-                          pageSize: 10,
+              {plantilla.programaciones
+                .filter((programacion) =>
+                  checkboxSeleccionados.includes(programacion.noProgramacion)
+                )
+                .map((programacion, index) => (
+                  <Grid key={index} xs={12} spacing={1}>
+                    <Typography variant="body1" fontWeight={600}>
+                      Parámetros de programación {programacion.noProgramacion}
+                    </Typography>
+                    <DataGrid
+                      rows={transformarDatos(programacion.parametros)}
+                      columns={columns}
+                      initialState={{
+                        pagination: {
+                          paginationModel: {
+                            pageSize: 10,
+                          },
                         },
-                      },
-                    }}
-                    pageSizeOptions={[10]}
-                    checkGridSelection
-                    disableRowSelectionOnClick
-                    rowHeight={30}
-                  />
-                </Grid>
-              ))}
+                      }}
+                      pageSizeOptions={[10]}
+                      checkGridSelection
+                      disableRowSelectionOnClick
+                      rowHeight={30}
+                    />
+                  </Grid>
+                ))}
             </Grid>
           </Grid>
         </Grid>

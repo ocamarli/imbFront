@@ -26,9 +26,10 @@ const api = {
     crearPlantilla:"plantilla/crearPlantilla",
     obtenerGaes:"gae/obtenerGaes",
     crearGae:"gae/crearGae",
-    crearFirware:"firmware/crearFirmware",
+    crearFirmware:"firmware/crearFirmware",
     crearHardware:"hardware/crearHardware",
-    copiarPlantilla:"plantilla/copiarPlantilla"
+    copiarPlantilla:"plantilla/copiarPlantilla",
+    obtenerCodigos:"codigo/obtenerCodigos",
   },
 };
 /*
@@ -44,13 +45,14 @@ function Encode2Url(obj) {
 export const ENV = {
     obtenerGaes:()=> api.baseuri+api.endpoints.obtenerGaes,
     crearGae:()=> api.baseuri+api.endpoints.crearGae,
+    crearFirmware:()=> api.baseuri+api.endpoints.crearFirmware,
+    crearHardware:()=> api.baseuri+api.endpoints.crearHardware,
     obtenerUsuarios:()=>api.baseuri+api.endpoints.obtenerUsuarios,
     actualizarParametroPlantilla:()=>api.baseuri+api.endpoints.actualizarParametroPlantilla,
     obtenerFirmwares:()=>api.baseuri+api.endpoints.obtenerFirmwares,
     obtenerHardwares:()=>api.baseuri+api.endpoints.obtenerHardwares,
     obtenerPlantillas:()=>api.baseuri+api.endpoints.obtenerPlantillas,
-    crearFirware:()=>api.baseuri+api.endpoints.crearFirware,
-    crearHardware:()=>api.baseuri+api.endpoints.crearHardware,
+    obtenerCodigos:()=>api.baseuri+api.endpoints.obtenerCodigos,
     obtenerPlantilla:(idPlantilla)=>api.baseuri+api.endpoints.obtenerPlantilla+"/"+idPlantilla,
     obtenerRecetas:()=>api.baseuri+api.endpoints.obtenerRecetas,
     crearPlantilla:()=>api.baseuri+api.endpoints.crearPlantilla,

@@ -41,9 +41,12 @@ import ListaPlantillas from "./Recipes/ListaPlatillas";
 import ListaUsuarios from "./Register/ListaUsuarios";
 import UsuarioAutorizado from "../components/UsuarioAutorizado";
 import ListaGaes from "./Gaes/ListaGaes";
+import ListaFirmwares from "./Firmwares/ListaFirmwares";
+import ListaHardwares from "./Hardwares/ListaHardwares";
 import ApiIcon from '@mui/icons-material/Api';
 import HardwareIcon from '@mui/icons-material/Hardware';
-
+import CodeIcon from '@mui/icons-material/Code';
+import Codigos from "./Codigos/Codigos";
 const drawerWidth = 250;
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
@@ -111,7 +114,18 @@ export default function PersistentDrawerLeft(props) {
 
     setOpenAlert(false);
   };
-
+  const seleccionarCodigos = () => {
+    setSelectedComponent(
+      <Codigos
+        onResponse={(json) => {
+          setResponse(json);
+          setOpenAlert(true);
+        }}
+        auth={auth}
+        setSelectedComponent={setSelectedComponent}
+      />
+    );
+  };
   const seleccionarListaUsuarios = () => {
     setSelectedComponent(
       <ListaUsuarios
@@ -148,6 +162,30 @@ export default function PersistentDrawerLeft(props) {
       />
     );
   };
+  const seleccionarListaHardwares = () => {
+    setSelectedComponent(
+      <ListaHardwares
+        onResponse={(json) => {
+          setResponse(json);
+          setOpenAlert(true);
+        }}
+        auth={auth}
+        setSelectedComponent={setSelectedComponent}
+      />
+    );
+  };
+  const seleccionarListaFirmwares = () => {
+    setSelectedComponent(
+      <ListaFirmwares
+        onResponse={(json) => {
+          setResponse(json);
+          setOpenAlert(true);
+        }}
+        auth={auth}
+        setSelectedComponent={setSelectedComponent}
+      />
+    );
+  };  
   const selectHome = () => {
     setSelectedComponent(<Home />);
   };
@@ -302,19 +340,27 @@ export default function PersistentDrawerLeft(props) {
               <ListItemText primary="Gaes" />
             </ListItemButton>
 
-            <ListItemButton onClick={seleccionarListaGaes}>
+            <ListItemButton onClick={seleccionarListaFirmwares}>
               <ListItemIcon>
                 <ApiIcon sx={iconsStyle} />
               </ListItemIcon>
               <ListItemText primary="Firmwares" />
             </ListItemButton>
 
-            <ListItemButton onClick={seleccionarListaGaes}>
+            <ListItemButton onClick={seleccionarListaHardwares}>
               <ListItemIcon>
                 <HardwareIcon sx={iconsStyle} />
               </ListItemIcon>
               <ListItemText primary="Hardwares" />
             </ListItemButton>
+
+            <ListItemButton onClick={seleccionarCodigos}>
+              <ListItemIcon>
+                <CodeIcon sx={iconsStyle} />
+              </ListItemIcon>
+              <ListItemText primary="Codigos" />
+            </ListItemButton>
+
 
             <Divider />
             <UsuarioAutorizado

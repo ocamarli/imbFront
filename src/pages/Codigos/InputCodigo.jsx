@@ -2,11 +2,10 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Button, Box, Grid, Divider } from "@mui/material";
 import CodeEditor from "@uiw/react-textarea-code-editor";
 import { useTheme } from "@mui/material";
-import { setFileTemplate } from "../../../api/axios";
-function CodeInput(props) {
-  const { id_template, setMatches, onClose } = props;
-
-  const [fileText, setFileText] = useState("");
+import {  obtenerCodigos, setFileTemplate } from "../../api/axios";
+function InputCodigo(props) {
+  const { setMatches, onClose,tipoCodigo } = props;
+  const [codigo, setCodigo] = useState("");
   const theme = useTheme();
   const fileInputRef = useRef(null);
 
@@ -14,12 +13,8 @@ function CodeInput(props) {
     fileInputRef.current.click();
   };
 
-  useEffect(() => {
-    obtenerCodigos();
-  }, []);
-
   const handleUpdate = () => {
-    setFetchFileTemplate({ text: fileText, id_template: id_template });
+    setFetchFileTemplate({ text: codigo, id_template: "id_template" });
     onClose();
   };
 
@@ -35,44 +30,46 @@ function CodeInput(props) {
           JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token
         );
         console.log(response);
-        
-
       }
     } catch (error) {
       
       console.log("error");
     }
   },[]);
-  const obtenerCodigos = async (data) => {
+  const fetchObtenerCodigos =  useCallback(async (data) => {
     try {
-      if (
-        JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token !==
-        undefined
-      ) {
-
-
-        
+      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+      if (tkn !== undefined)
+      {
+        const respuesta = await obtenerCodigos(tkn);
+        respuesta.codigos.forEach(codigo => {
+          if (codigo.nombre === tipoCodigo) {
+              setCodigo(codigo.valor);
+              console.log(codigo.nombre);
+          } else if (codigo.nombre === "codigoProgramaciones") {
+              console.log(codigo.nombre);
+          }
+      });
       }
-    } catch (error) {
-      
+    } catch (error) { 
       console.log("error");
-      setFileText("");
+      setCodigo("");
     }
-  };
+  },[tipoCodigo]);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
     reader.onload = (event) => {
       const content = event.target.result;
-      setFileText(content);
+      setCodigo(content);
     };
     reader.readAsText(file);
   };
 
   useEffect(() => {
     const regex = /\{(.+?)\}/g; // Agregamos la flag "g" para encontrar todas las coincidencias
-    const matches = fileText.match(regex);
+    const matches = codigo.match(regex);
     if (matches) {
       const foundValues = matches.map((match) =>
         match.substring(1, match.length - 1)
@@ -84,8 +81,10 @@ function CodeInput(props) {
 
       setMatches([]);
     }
-  }, [fileText, setMatches]);
-
+  }, [codigo, setMatches]);
+  useEffect(() => {
+    fetchObtenerCodigos();
+  }, [fetchObtenerCodigos]);
   return (
     <Grid container spacing={1}>
       <Grid item xs={12}>
@@ -97,8 +96,8 @@ function CodeInput(props) {
             style={{ display: "none" }}
           />
           <textarea
-            value={fileText}
-            onChange={(event) => setFileText(event.target.value)}
+            value={codigo}
+            onChange={(event) => setCodigo(event.target.value)}
             style={{ display: "none" }}
           />
           <Box
@@ -106,10 +105,13 @@ function CodeInput(props) {
               display: "flex",
               justifyContent: "space-between",
               height: "justifyContent",
+              
             }}
+          mt={1}
           >
-            <Button variant="outlined" onClick={handleButtonClick}>
-              Upload base code
+           
+            <Button  variant="contained" onClick={handleButtonClick}>
+              Subir Código base
             </Button>
 
           </Box>
@@ -125,10 +127,10 @@ function CodeInput(props) {
       >
         <CodeEditor
           data-color-mode={theme.palette.mode}
-          value={fileText}
+          value={codigo}
           language="c"
           placeholder="code."
-          onChange={(evn) => setFileText(evn.target.value)}
+          onChange={(evn) => setCodigo(evn.target.value)}
           padding={5}
           style={{
             minWith: "100%",
@@ -145,12 +147,12 @@ function CodeInput(props) {
         xs={12}
         sx={{display:"flex",justifyContent:"end"}}
       >
-        <Button sx={{marginTop:"3em"}} variant="outlined" type="submit" onClick={handleUpdate}>
-          SAVE/CLOSE
+        <Button sx={{marginTop:"3em"}} variant="contained" type="submit" onClick={handleUpdate}>
+          SALVAR
         </Button>
       </Grid>
     </Grid>
   );
 }
 
-export default CodeInput;
+export default InputCodigo;

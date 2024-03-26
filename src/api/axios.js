@@ -89,6 +89,40 @@ export async function crearGae(data, token) {
     return { status: false, msg: error.message };
   }
 }
+export async function crearFirmware(data, token) {
+  try {
+    const response = await postData(
+     ENV.crearFirmware(),
+      data,
+      token
+    );
+    console.log(data)
+    if (response.status === 200) {
+      return await response.json();
+    } else {
+      return { status: false, msg: "No se pudo guardar firmware." };
+    }
+  } catch (error) {
+    return { status: false, msg: error.message };
+  }
+}
+export async function crearHardware(data, token) {
+  try {
+    const response = await postData(
+     ENV.crearHardware(),
+      data,
+      token
+    );
+    console.log(data)
+    if (response.status === 200) {
+      return await response.json();
+    } else {
+      return { status: false, msg: "No se pudo guardar hardware." };
+    }
+  } catch (error) {
+    return { status: false, msg: error.message };
+  }
+}
 export async function setRecipe(data, token) {
   try {
     const response = await postData(
@@ -448,11 +482,11 @@ export async function getTemplates(token) {
     return { templates: [], status: false, msg: error.message};
   }
 }
-export async function getFileTemplate(id_template,token) {
+
+export async function obtenerCodigos(token) {
   try {
-    const response = await postData(
-      ENV.getFileTemplate(),
-      {id_template},
+    const response = await getData(
+      ENV.obtenerCodigos(),
       token
     );
 
@@ -462,7 +496,7 @@ export async function getFileTemplate(id_template,token) {
       return {
         text:"",
         status: false,
-        msg: "Could not retrieve templates",
+        msg: "No pudo obtener información de los códigos",
       };
     }
   } catch (error) {
