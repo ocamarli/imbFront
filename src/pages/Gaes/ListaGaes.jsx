@@ -66,7 +66,7 @@ const ListaGaes = (props) => {
     <Grid container padding={2}>
       {!isLoading ? (
         <Grid item xs={12}>
-          <HeaderContent titulo="Lista de gaes"></HeaderContent>
+          <HeaderContent titulo="Lista de GAEs"></HeaderContent>
           <Paper style={{ padding: 20 }}>
             <Grid container spacing={3}>
               <Grid
@@ -85,7 +85,7 @@ const ListaGaes = (props) => {
                   alignItems: "center",
                 }}
               >
-                <Typography variant="h6">Agregar código gae</Typography>
+                <Typography variant="h6">Agregar código GAE</Typography>
                 <IconButton
                   variant={"contained"}
                   sx={{
@@ -101,15 +101,16 @@ const ListaGaes = (props) => {
               </Grid>
 
               <Grid item xs={12}>
-                <div style={{ height: 400, width: "100%" }}>
+               
                   <DataGrid
                     /*rows={activeTab === "activas" ? dataActivas : dataObsoletas}*/
+                    sx={{ maxHeight: "calc(100vh - 330px)", width: "100%" }}
                     rows={transformarDatos(gaes)}
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5, 10, 20]}
                   />
-                </div>
+               
               </Grid>
 
             </Grid>

@@ -41,13 +41,13 @@ const AgregarGae = () => {
   } = useForm();
 
   return (
-    <Grid container padding={2} >
-      <Grid item xs={12}>
+    <Grid container padding={2}  justifyContent={"center"}>
+      <Grid item xs={7}>
         <HeaderContent></HeaderContent>
         <Paper style={{ padding: 20 }} >
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={3}>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <Typography>Id GAE</Typography>
                 <TextField
                   {...register("id_gae", { required: true })}
@@ -58,7 +58,7 @@ const AgregarGae = () => {
                   helperText={errors.id_gae ? "Este campo es requerido" : ""}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <Typography>Nombre GAE</Typography>
                 <TextField
                   {...register("nombre", { required: true })}
@@ -69,12 +69,12 @@ const AgregarGae = () => {
                   helperText={errors.nombre ? "Este campo es requerido" : ""}
                 />
               </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <InputLabel>Codigo GAE</InputLabel>
                 <TextField
                   {...register("codigo", { required: true })}
                   fullWidth
-                  placeholder="Codigo"
+                  placeholder="Código"
                   variant="outlined"
                   error={errors.codigo ? true : false}
                   helperText={errors.codigo ? "Este campo es requerido" : ""}

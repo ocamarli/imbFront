@@ -172,17 +172,13 @@ const AgregarPlantilla = (props) => {
     fetchFirmwares();
   }, [fetchFirmwares]);
   return (
-    <Grid container padding={1}>
-      {isLoading ? ( // Agrega el loader condicionalmente
-        <Grid item xs={12} align="center" mt="25%">
-          <CircularProgress size={50} />
-        </Grid>
-      ) : (
-        <Grid>
-          <HeaderContent></HeaderContent>
-          <Paper style={{ padding: 10 }}>
+    <Grid container padding={2} justifyContent={"center"}>
+    {!isLoading ? (
+      <Grid item xs={12}>
+          <HeaderContent titulo={"Agregar plantilla"}></HeaderContent>
+          <Paper style={{ padding: 20 }}>
             <form onSubmit={handleSubmit(onSubmit)}>
-              <Grid container spacing={1}>
+              <Grid container spacing={3}>
                 <Grid item xs={6}>
                   <Typography>Nombre de plantilla</Typography>
                   <TextField
@@ -209,7 +205,7 @@ const AgregarPlantilla = (props) => {
                       renderValue={(selected) => {
                         if (!selected) {
                           return (
-                            <em style={{ color: "rgba(0, 0, 0, 0.54)" }}>
+                            <em >
                               Selecciona una firmware
                             </em>
                           );
@@ -240,7 +236,7 @@ const AgregarPlantilla = (props) => {
                       renderValue={(selected) => {
                         if (!selected) {
                           return (
-                            <em style={{ color: "rgba(0, 0, 0, 0.54)" }}>
+                            <em >
                               Selecciona una hardware
                             </em>
                           );
@@ -273,9 +269,6 @@ const AgregarPlantilla = (props) => {
                     }
                   />
                 </Grid>
-
-                <Grid item xs={6}></Grid>
-
                 <Grid item xs={3}>
                   <Grid
                     container
@@ -284,31 +277,14 @@ const AgregarPlantilla = (props) => {
                   >
                     <Grid item xs={12}>
                       <Button variant="contained" fullWidth type="submit">
-                        Guardar cambios y salir
-                      </Button>
-                    </Grid>
-                  </Grid>
-                </Grid>
-
-                <Grid item xs={3}>
-                  <Grid
-                    container
-                    sx={{ justifyContent: "flex-end" }}
-                    spacing={2}
-                  >
-                    <Grid item xs={12}>
-                      <Button variant="contained" fullWidth type="submit">
-                        Guardar cambios y congelar
+                        Guardar cambios y continuar
                       </Button>
                     </Grid>
                   </Grid>
                 </Grid>
               </Grid>
             </form>
-          </Paper>
-        </Grid>
-      )}
-      <Button
+            <Button
         sx={{ mt: 5 }}
         variant="contained"
         color="success"
@@ -317,8 +293,14 @@ const AgregarPlantilla = (props) => {
       >
         Salir
       </Button>
+          </Paper>
+
     </Grid>
-  );
+ ) : (
+  <></>
+)}
+</Grid>
+);
 };
 
 export default AgregarPlantilla;

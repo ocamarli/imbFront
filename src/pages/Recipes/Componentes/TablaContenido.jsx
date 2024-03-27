@@ -62,7 +62,7 @@ const TablaContenido = (props) => {
     { field: "id", headerName: "ID", flex: 0.5 },
     {
       field: "valor",
-      headerName: "Valor",
+      headerName: "VALOR",
       flex: 1,
       editable: true,
       renderCell: (params) => {
@@ -94,12 +94,12 @@ const TablaContenido = (props) => {
     },
     {
       field: "rango",
-      headerName: "Rango",
+      headerName: "RANGO",
       flex: 1,
     },
     {
       field: "descripcion",
-      headerName: "Descripción",
+      headerName: "DESCRIPCIÓN",
       flex: 2,
     },
   ];
@@ -157,7 +157,7 @@ const TablaContenido = (props) => {
             {plantilla.parametrosGenerales.length > 0 && (
               <Grid xs={12} spacing={1}>
                 <Typography variant="body1" fontWeight={600}>
-                  Parametros Generales
+                  Parámetros Generales
                 </Typography>
                 <DataGrid
                   rows={transformarDatos(plantilla.parametrosGenerales)}

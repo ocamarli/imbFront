@@ -1,18 +1,10 @@
 import { useForm } from "react-hook-form";
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import { useTheme } from "@mui/material/styles";
 import {
-  TextField,
-  FormControl,
-  Grid,
-  Button,
-  Paper,
-  Select,
-  MenuItem,
-  Typography,
-  InputLabel,
-  CircularProgress,
-} from "@mui/material";
+  TextField, FormControlLabel, Radio, RadioGroup, FormLabel, FormControl,
+  Grid, Button, Paper, Select, MenuItem, Typography, InputLabel,
+  CircularProgress} from "@mui/material";
 import HeaderContent from "../HeaderContent";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
@@ -21,6 +13,7 @@ import TablaContenido from "./Componentes/TablaContenido";
 import Home from "../Home/Home.jsx";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack.js";
 import GrupoCheckbox from "../../components/GrupoCheckbox.jsx";
+
 const EditarPlantilla = (props) => {
   const { idPlantilla, setSelectedComponent, auth } = props;
   const [isLoading, setIsLoading] = useState(false);
@@ -28,10 +21,15 @@ const EditarPlantilla = (props) => {
   const [checkboxSeleccionados, setCheckboxSeleccionados] = useState([]);
   const theme = useTheme();
   const [bloqueado, setBloqueado] = useState(false);
+  const [selectedProgram, setSelectedProgram] = useState("");
+
+  const handleChange = (event) => {
+    setSelectedProgram(event.target.value);
+  };
   const alternarBloqueo = () => {
     setBloqueado(!bloqueado);
   };
-
+  const totalDeProgramas = useMemo(() => ["1", "2", "3", "4", "5", "6"], []);
   const onSubmit = (data) => {
     console.log("onsub");
     console.log(data);
@@ -169,12 +167,9 @@ const EditarPlantilla = (props) => {
                     }
                   />
                 </Grid>
-                <Grid item xs={6}>
+                <Grid item xs={12}>
                   <InputLabel>Creado por</InputLabel>
                   <InputLabel>{plantilla.plantilla.creadoPor}</InputLabel>
-                </Grid>
-                <Grid item xs={6}>
-                  <GrupoCheckbox setCheckboxSeleccionado={setCheckboxSeleccionados}></GrupoCheckbox>
                 </Grid>
                 <Grid item xs={12}>
                   <Button
@@ -195,6 +190,39 @@ const EditarPlantilla = (props) => {
                   >
                     {bloqueado ? "Congelado" : "Congelar"}
                   </Button>
+                </Grid>
+                <Grid item xs={12}>
+                  <GrupoCheckbox
+                    setCheckboxSeleccionado={setCheckboxSeleccionados}
+                  ></GrupoCheckbox>
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography variant="body1" fontWeight={600}>
+                    Inicio seleccionado
+                  </Typography>
+
+                  <FormControl component="fieldset">
+                    <FormLabel component="legend">
+                      Selecciona un programa
+                    </FormLabel>
+                    <RadioGroup
+                      row
+                      value={selectedProgram}
+                      onChange={handleChange}
+                    >
+                      <Grid container>
+                        {totalDeProgramas.map((programa) => (
+                          <Grid item key={programa}>
+                            <FormControlLabel
+                              value={programa}
+                              control={<Radio />}
+                              label={programa}
+                            />
+                          </Grid>
+                        ))}
+                      </Grid>
+                    </RadioGroup>
+                  </FormControl>
                 </Grid>
                 <Grid item xs={6}></Grid>
 

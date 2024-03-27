@@ -48,14 +48,14 @@ const columns = [
   { field: "id", headerName: "ID", flex: 0.4 },
   {
     field: "rango",
-    headerName: "Rango",
+    headerName: "RANGO",
     flex: 0.7,
     editable: true,
   },
 
   {
     field: "descripcion",
-    headerName: "Descripción",
+    headerName: "DESCRIPCIÓN",
     flex: 2,
     editable: true,
   },

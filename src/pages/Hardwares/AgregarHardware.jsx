@@ -37,35 +37,24 @@ const AgregarHardware = () => {
   } = useForm();
 
   return (
-    <Grid container padding={2} >
-      <Grid item xs={12}>
+    <Grid container padding={2}  justifyContent={"center"}>
+      <Grid item xs={7}>
         <HeaderContent titulo="Agregar Hardware"></HeaderContent>
         <Paper style={{ padding: 20 }} >
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={3}>
-              <Grid item xs={6}>
-                <Typography>Id hardware</Typography>
+              <Grid item xs={12}>
+                <Typography>Descripción hardware</Typography>
                 <TextField
-                  {...register("idHardware", { required: true })}
+                  {...register("descripcion", { required: true })}
                   fullWidth
-                  placeholder="ID"
+                  placeholder="Descripción hardware"
                   variant="outlined"
-                  error={errors.idHardware ? true : false}
-                  helperText={errors.idHardware ? "Este campo es requerido" : ""}
+                  error={errors.descripcion ? true : false}
+                  helperText={errors.descripcion ? "Este campo es requerido" : ""}
                 />
               </Grid>
-              <Grid item xs={6}>
-                <Typography>Nombre hardware</Typography>
-                <TextField
-                  {...register("nombre", { required: true })}
-                  fullWidth
-                  placeholder="Nombre hardware"
-                  variant="outlined"
-                  error={errors.nombre ? true : false}
-                  helperText={errors.nombre ? "Este campo es requerido" : ""}
-                />
-              </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <InputLabel>Código hardware</InputLabel>
                 <TextField
                   {...register("codigo", { required: true })}

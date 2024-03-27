@@ -12,12 +12,12 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Home from "../Home/Home.jsx"
 const columns = [
   { field: "id", headerName: "ID", flex: .4 },
-  { field: "rango", headerName: "Rango", flex: .7, editable: true },
-  { field: "unidad", headerName: "Unidad", flex: .5, editable: true },
-  { field: "descripcion", headerName: "Descripción", flex: 2, editable: true},
-  { field: "logicaFuncionamiento", headerName: "Lógica de funcionamiento", flex: 2,   editable: false},
-  { field: "tipo_parameto", headerName: "Tipo de parámetro", flex: 1, editable: true},
-  { field: "grupo", headerName: "Grupo", flex: 1, editable: true},  
+  { field: "rango", headerName: "RANGO", flex: .7, editable: true },
+  { field: "unidad", headerName: "UNIDAD", flex: .5, editable: true },
+  { field: "descripcion", headerName: "DESCRIPCIÓN", flex: 2, editable: true},
+  { field: "logicaFuncionamiento", headerName: "LÓGICA DE FUNCIONAMIENTO", flex: 2,   editable: false},
+  { field: "tipo_parameto", headerName: "TIPO DE PARÁMETRO", flex: 1, editable: true},
+  { field: "grupo", headerName: "GRUPO", flex: 1, editable: true},  
 
 ];
 
@@ -116,9 +116,9 @@ function ListaParametros(props) {
           </Dialog>
         </Grid>
         <Grid item xs={12}>
-          <HeaderContent></HeaderContent>
-          <Paper style={{ padding: 10 }}>
-            <Grid container spacing={2}>
+          <HeaderContent titulo="Lista de parámetros"></HeaderContent>
+          <Paper style={{ padding: 20 }}>
+            <Grid container spacing={3}>
               <Grid
                 item
                 xs={12}
@@ -157,6 +157,7 @@ function ListaParametros(props) {
                   {parametros.length > 0 && (
                     <Grid xs={12} spacing={1}>
                       <DataGrid
+                        sx={{ maxHeight: "calc(100vh - 330px)", width: "100%" }}
                         rows={transformarDatos(parametros)}
                         columns={columns}
                         initialState={{
@@ -175,16 +176,17 @@ function ListaParametros(props) {
                 </Grid>
               </Grid>
             </Grid>
-          </Paper>
-        </Grid>
-        <Button sx={{mt:5}}
+            <Button sx={{mt:2}}
       variant="contained"
       color="success" 
       onClick={() => setSelectedComponent(<Home></Home>)}
       startIcon={<ArrowBackIcon />} 
     >
       Salir
-    </Button>
+    </Button>            
+          </Paper>
+        </Grid>
+
       </Grid>
 
     </Provider>

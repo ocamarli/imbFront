@@ -64,7 +64,7 @@ function GrupoCheckbox(props) {
 
     return (
         <div>
-          <Typography variant="body1" fontWeight={600} >Filtros</Typography>
+          <Typography variant="body1" fontWeight={600} >Habilitar programas</Typography>
             <FormControlLabel
                 
                 control={<Checkbox size="small" checked={mostrarTodos} onChange={handleMostrarTodosChange} />}

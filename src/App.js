@@ -6,7 +6,6 @@ import { useState, useEffect } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { isExpired, decodeToken } from "react-jwt";
 import SplashPage from "./pages/Splash/SplashPage.jsx";
-import Test from "./Test";
 import { Box } from "@mui/material";
 import AgregarUsuario from "./pages/Register/AgregarUsuario.jsx";
 import AgregarPlantilla from "./pages/Recipes/AgregarPlantilla.jsx";
@@ -87,7 +86,7 @@ function App() {
       case 0:
         return <MDrawer onDarkModeChange={handleDarkModeChange} auth={auth} />;
       case 1:
-        return <Test onDarkModeChange={handleDarkModeChange} auth={auth} />;
+        return <div></div>;
       case 2:
         return <AgregarPlantilla onDarkModeChange={handleDarkModeChange} auth={auth}/>;
       case 3:

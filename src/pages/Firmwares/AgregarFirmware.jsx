@@ -41,35 +41,25 @@ const AgregarFirmware = () => {
   } = useForm();
 
   return (
-    <Grid container padding={2} >
-      <Grid item xs={12}>
+    <Grid container padding={2}  justifyContent={"center"}>
+      <Grid item xs={7}>
         <HeaderContent titulo="Agregar firmware"></HeaderContent>
         <Paper style={{ padding: 20 }} >
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={3}>
-              <Grid item xs={6}>
-                <Typography>Id firmware</Typography>
+
+              <Grid item xs={12}>
+                <Typography>Descripción firmware</Typography>
                 <TextField
-                  {...register("idFirmware", { required: true })}
+                  {...register("descripcion", { required: true })}
                   fullWidth
-                  placeholder="ID"
+                  placeholder="Descripción"
                   variant="outlined"
-                  error={errors.idFirmware ? true : false}
-                  helperText={errors.idFirmware ? "Este campo es requerido" : ""}
+                  error={errors.descripcion ? true : false}
+                  helperText={errors.descripcion ? "Este campo es requerido" : ""}
                 />
               </Grid>
-              <Grid item xs={6}>
-                <Typography>Nombre firmware</Typography>
-                <TextField
-                  {...register("nombre", { required: true })}
-                  fullWidth
-                  placeholder="Nombre"
-                  variant="outlined"
-                  error={errors.nombre ? true : false}
-                  helperText={errors.nombre ? "Este campo es requerido" : ""}
-                />
-              </Grid>
-              <Grid item xs={6}>
+              <Grid item xs={12}>
                 <InputLabel>Código firmware</InputLabel>
                 <TextField
                   {...register("codigo", { required: true })}

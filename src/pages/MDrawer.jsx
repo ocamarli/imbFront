@@ -47,6 +47,7 @@ import ApiIcon from '@mui/icons-material/Api';
 import HardwareIcon from '@mui/icons-material/Hardware';
 import CodeIcon from '@mui/icons-material/Code';
 import Codigos from "./Codigos/Codigos";
+
 const drawerWidth = 250;
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
@@ -325,19 +326,22 @@ export default function PersistentDrawerLeft(props) {
               </ListItemIcon>
               <ListItemText primary="Plantillas" />
             </ListItemButton>
-
+            <UsuarioAutorizado
+                usuario={auth}
+                permisosRequeridos={["system"]}
+              >
             <ListItemButton onClick={selectParameters}>
               <ListItemIcon>
                 <DescriptionIcon sx={iconsStyle} />
               </ListItemIcon>
-              <ListItemText primary="Parametros" />
+              <ListItemText primary="Parámetros" />
             </ListItemButton>
-
+</UsuarioAutorizado>
             <ListItemButton onClick={seleccionarListaGaes}>
               <ListItemIcon>
                 <DescriptionIcon sx={iconsStyle} />
               </ListItemIcon>
-              <ListItemText primary="Gaes" />
+              <ListItemText primary="GAEs" />
             </ListItemButton>
 
             <ListItemButton onClick={seleccionarListaFirmwares}>
@@ -353,14 +357,17 @@ export default function PersistentDrawerLeft(props) {
               </ListItemIcon>
               <ListItemText primary="Hardwares" />
             </ListItemButton>
-
+            <UsuarioAutorizado
+                usuario={auth}
+                permisosRequeridos={["system"]}
+              >
             <ListItemButton onClick={seleccionarCodigos}>
               <ListItemIcon>
                 <CodeIcon sx={iconsStyle} />
               </ListItemIcon>
-              <ListItemText primary="Codigos" />
+              <ListItemText primary="Códigos" />
             </ListItemButton>
-
+</UsuarioAutorizado>
 
             <Divider />
             <UsuarioAutorizado

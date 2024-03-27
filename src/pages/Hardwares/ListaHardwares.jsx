@@ -101,15 +101,16 @@ const ListaHardwares = (props) => {
               </Grid>
 
               <Grid item xs={12}>
-                <div style={{ height: 400, width: "100%" }}>
+                
                   <DataGrid
                     /*rows={activeTab === "activas" ? dataActivas : dataObsoletas}*/
+                    sx={{ maxHeight: "calc(100vh - 330px)", width: "100%" }}
                     rows={transformarDatos(hardwares)}
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5, 10, 20]}
                   />
-                </div>
+                
               </Grid>
 
             </Grid>

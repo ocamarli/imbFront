@@ -7,7 +7,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { DataGrid } from "@mui/x-data-grid";
 import { obtenerFirmwares } from "../../api/axios.js";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import Home from "../Home/Home.jsx"
+import Home from "../Home/Home.jsx";
 import AgregarFirmware from "./AgregarFirmware.jsx";
 
 function transformarDatos(firmwares) {
@@ -28,7 +28,6 @@ const ListaFirmwares = (props) => {
 
   const fetchFirmwares = useCallback(async () => {
     try {
-
       setIsLoading(true);
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
       console.log(tkn);
@@ -49,18 +48,14 @@ const ListaFirmwares = (props) => {
     fetchFirmwares();
   }, [fetchFirmwares]);
 
-
   const manejarAgregarPlantilla = () => {
     setSelectedComponent(<AgregarFirmware auth={auth}></AgregarFirmware>);
   };
-
-
 
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
     { field: "nombre", headerName: "Nombre", width: 150 },
     { field: "codigo", headerName: "Código", width: 150 },
-
   ];
 
   return (
@@ -74,8 +69,7 @@ const ListaFirmwares = (props) => {
                 item
                 xs={8}
                 sx={{ display: "flex", justifyContent: "left" }}
-              >
-              </Grid>
+              ></Grid>
 
               <Grid
                 item
@@ -102,26 +96,25 @@ const ListaFirmwares = (props) => {
               </Grid>
 
               <Grid item xs={12}>
-                <div style={{ height: 400, width: "100%" }}>
-                  <DataGrid
-                    /*rows={activeTab === "activas" ? dataActivas : dataObsoletas}*/
-                    rows={transformarDatos(firmwares)}
-                    columns={columns}
-                    pageSize={5}
-                    rowsPerPageOptions={[5, 10, 20]}
-                  />
-                </div>
+                <DataGrid
+                  /*rows={activeTab === "activas" ? dataActivas : dataObsoletas}*/
+                  sx={{ maxHeight: "calc(100vh - 330px)", width: "100%" }}
+                  rows={transformarDatos(firmwares)}
+                  columns={columns}
+                  pageSize={5}
+                  rowsPerPageOptions={[5, 10, 20]}
+                />
               </Grid>
-
             </Grid>
-            <Button sx={{mt:5}}
-      variant="contained"
-      color="success" 
-      onClick={() => setSelectedComponent(<Home></Home>)}
-      startIcon={<ArrowBackIcon />} 
-    >
-      Salir
-    </Button>
+            <Button
+              sx={{ mt: 5 }}
+              variant="contained"
+              color="success"
+              onClick={() => setSelectedComponent(<Home></Home>)}
+              startIcon={<ArrowBackIcon />}
+            >
+              Salir
+            </Button>
           </Paper>
         </Grid>
       ) : (

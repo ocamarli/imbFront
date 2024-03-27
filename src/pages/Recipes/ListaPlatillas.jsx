@@ -14,7 +14,7 @@ import { obtenerPlantillas } from "../../api/axios";
 import ModalClonarPlantilla from "./Componentes/ModalClonarPlantila.jsx";
 import EditarPlantilla from "./EditarPlantilla.jsx";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import Home from "../Home/Home.jsx"
+import Home from "../Home/Home.jsx";
 function transformarDatos(plantillas) {
   console.log(plantillas);
   return plantillas.map((plantilla, index) => {
@@ -84,8 +84,10 @@ const ListaPlantillas = (props) => {
   const manejarClonar = (idPlantilla) => {
     console.log("plantilla a clonar");
     console.log(idPlantilla);
-    
-    const plantillaSelecionada = plantillas.find(plantilla => plantilla._id === idPlantilla);
+
+    const plantillaSelecionada = plantillas.find(
+      (plantilla) => plantilla._id === idPlantilla
+    );
     console.log(plantillaSelecionada);
     setPlantillaAClonar(plantillaSelecionada);
     setModalActiva(true);
@@ -109,14 +111,14 @@ const ListaPlantillas = (props) => {
 
   const columns = [
     { field: "id", headerName: "ID" },
-    { field: "nombrePlantilla", headerName: "Nombre" },
-    { field: "firmware", headerName: "Firmware" },
-    { field: "hardware", headerName: "Hardware" },
-    { field: "creadoPor", headerName: "Creado por" },
+    { field: "nombrePlantilla", headerName: "NOMBRE" },
+    { field: "firmware", headerName: "FIRMWARE" },
+    { field: "hardware", headerName: "HARDWARE" },
+    { field: "creadoPor", headerName: "CREADO POR" },
 
     {
       field: "clone",
-      headerName: "Clonar",
+      headerName: "CLONAR",
 
       renderCell: (params) => (
         <IconButton onClick={() => manejarClonar(params.row._id)}>
@@ -126,7 +128,7 @@ const ListaPlantillas = (props) => {
     },
     {
       field: "edit",
-      headerName: "Editar",
+      headerName: "EDITAR",
 
       renderCell: (params) => (
         <IconButton onClick={() => manejarEditar(params.row._id)}>
@@ -136,7 +138,7 @@ const ListaPlantillas = (props) => {
     },
     {
       field: "block",
-      headerName: "Congelar",
+      headerName: "CONGELAR",
 
       renderCell: (params) => (
         <IconButton onClick={() => manejarBloquear(params.row.id)}>
@@ -146,7 +148,7 @@ const ListaPlantillas = (props) => {
     },
     {
       field: "delete",
-      headerName: "Eliminar",
+      headerName: "ELIMINAR",
 
       renderCell: (params) => (
         <IconButton onClick={() => manejarBorrar(params.row.id)}>
@@ -219,15 +221,14 @@ const ListaPlantillas = (props) => {
               </Grid>
 
               <Grid item xs={12}>
-                <div style={{ width: "100%" }}>
-                  <DataGrid
-                    /*rows={activeTab === "activas" ? dataActivas : dataObsoletas}*/
-                    rows={transformarDatos(plantillas)}
-                    columns={columns}
-                    pageSize={50}
-                    rowsPerPageOptions={[5, 10, 20]}
-                  />
-                </div>
+                <DataGrid
+                  /*rows={activeTab === "activas" ? dataActivas : dataObsoletas}*/
+                  sx={{ maxHeight: "calc(100vh - 330px)", width: "100%" }}
+                  rows={transformarDatos(plantillas)}
+                  columns={columns}
+                  pageSize={50}
+                  rowsPerPageOptions={[5, 10, 20]}
+                />
               </Grid>
               <ModalClonarPlantilla
                 plantillaAClonar={plantillaAClonar}
@@ -239,14 +240,15 @@ const ListaPlantillas = (props) => {
                 onClose={manejarCerrarModal}
               ></ModalClonarPlantilla>
             </Grid>
-            <Button sx={{mt:5}}
-      variant="contained"
-      color="success" 
-      onClick={() => setSelectedComponent(<Home></Home>)}
-      startIcon={<ArrowBackIcon />} 
-    >
-      Salir
-    </Button>
+            <Button
+              sx={{ mt: 5 }}
+              variant="contained"
+              color="success"
+              onClick={() => setSelectedComponent(<Home></Home>)}
+              startIcon={<ArrowBackIcon />}
+            >
+              Salir
+            </Button>
           </Paper>
         </Grid>
       ) : (
