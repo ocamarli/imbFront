@@ -9,7 +9,6 @@ import {
   Select,
   MenuItem,
   Typography,
-  CircularProgress,
 } from "@mui/material";
 import { obtenerParametros } from "../../api/axios";
 import HeaderContent from "../HeaderContent";
