@@ -14,7 +14,6 @@ const AgregarGae = () => {
     console.log(data);
     handleCloseRegister(data);
   };
-
   const cerrarModal = () => {
     setEstaActivo(false); // Restablecer el estado a false cuando se cierra el modal
   };
@@ -23,7 +22,6 @@ const AgregarGae = () => {
   const handleCloseRegister = async (data) => {
 
     console.log(data);
-
     const response = await crearGae(
       data,
       JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token

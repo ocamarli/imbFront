@@ -11,12 +11,17 @@ import { DataGrid } from "@mui/x-data-grid";
 import React, { useState, useEffect, useCallback } from "react";
 import { obtenerGaes } from "../../../api/axios";
 import { obtenerPlantilla } from "../../../api/axios";
+import { actualizarParametroPlantilla } from "../../../api/axios";
 const TablaContenido = (props) => {
   const { idPlantilla,checkboxSeleccionados } = props;
-  const [gaes, setGaes] = useState([]);
+
 
   const [plantilla, setPlantilla] = useState(null);
-
+  const handleSelectChange = (e, id_plantilla, id_parametro) => {
+    const valor = e.target.value;
+    // Llamar a la función actualizarParametroPlantilla() aquí
+    fetchActualizarParametroPlantilla(id_plantilla, id_parametro, valor);
+  };
   const fetchObtenerPlantilla = useCallback(async () => {
     try {
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
@@ -34,27 +39,25 @@ const TablaContenido = (props) => {
       console.error(error);
     }
   }, [idPlantilla, setPlantilla]);
-
-  const fetchGaes = useCallback(async () => {
+  const fetchActualizarParametroPlantilla = useCallback(async (id_plantilla, id_parametro, valor) => {
     try {
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+      console.log(tkn);
       if (tkn !== undefined) {
-        const json = await obtenerGaes(tkn);
+        console.log("actualizarParametro");
+        console.log(idPlantilla);
+        const json = await actualizarParametroPlantilla(tkn, idPlantilla);
         console.log(json);
-        setGaes(json.gaes || []);
+        setPlantilla(json.plantilla || null);
       } else {
-        setGaes([]);
+        setPlantilla(null);
       }
     } catch (error) {
       console.error(error);
     }
-  }, [setGaes]);
+  }, [idPlantilla, setPlantilla]);
 
-  useEffect(() => {
-    console.log(idPlantilla);
 
-    fetchGaes();
-  }, [idPlantilla, fetchGaes]);
   useEffect(() => {
     fetchObtenerPlantilla();
   }, [fetchObtenerPlantilla]);
@@ -71,13 +74,15 @@ const TablaContenido = (props) => {
             <FormControl variant="outlined" size="small" fullWidth>
               <Select
                 value={""}
-                onChange={(e) => console.log(e.target.value, params.id)}
+                onChange={(e) =>
+                  handleSelectChange(e, params.row.id_plantilla, params.row.id_parametro)
+                }
               >
-                {gaes.map((gae) => (
-                  <MenuItem key={gae.id} value={gae.valor}>
-                    {gae.valor}
-                  </MenuItem>
-                ))}
+                      {params.row.opciones.map((opcion) => (
+                        <MenuItem key={opcion.valor} value={opcion.valor}>
+                          {opcion.nombre}
+                        </MenuItem>
+                      ))}
               </Select>
             </FormControl>
           );
@@ -141,6 +146,11 @@ const TablaContenido = (props) => {
         descripcion: parametro.descripcion || "",
         tipo_parameto: parametro.tipo_parametro || "",
         tipo_campo: parametro.tipo_campo || "",
+        tipoParametro: parametro.tipoParametro || "",
+        unidad:parametro.unidad ||"",
+        valor_min:parametro.valor_min || "",
+        valor_max:parametro.valor_max || "",
+        opciones:parametro.opciones || [],
         rango: rango,
       };
     });
@@ -189,6 +199,7 @@ const TablaContenido = (props) => {
                       Parámetros de programación {programacion.noProgramacion}
                     </Typography>
                     <DataGrid
+                      key={index}
                       rows={transformarDatos(programacion.parametros)}
                       columns={columns}
                       initialState={{

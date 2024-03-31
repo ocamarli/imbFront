@@ -85,7 +85,7 @@ export default function Login() {
           }}
         >
           <Grid item xs={12}>
-            <img src={"imberaLogo.png"} alt="Logo" />
+            <img src={process.env.PUBLIC_URL +"/imberaLogo.png"} alt="Logo" />
           </Grid>
           <Typography component="h1" variant="h5" sx={{ mt: 4,mb:2 }}>
             Iniciar Sesión

@@ -15,7 +15,7 @@ const SvgComponent = (props) => {
       
 sx={{opacity:".7"}}
     >
-            <img src={"imberaLogo.png"} alt="Logo" />
+            <img src={process.env.PUBLIC_URL +"/imberaLogo.png"} alt="Logo" />
     </Grid>
   );
 };

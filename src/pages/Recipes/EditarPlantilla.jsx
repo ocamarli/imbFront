@@ -16,20 +16,21 @@ import GrupoCheckbox from "../../components/GrupoCheckbox.jsx";
 
 const EditarPlantilla = (props) => {
   const { idPlantilla, setSelectedComponent, auth } = props;
+  const totalDeProgramas = useMemo(() => ["1", "2", "3", "4", "5", "6"], []);
   const [isLoading, setIsLoading] = useState(false);
   const [plantilla, setPlantilla] = useState(null);
   const [checkboxSeleccionados, setCheckboxSeleccionados] = useState([]);
   const theme = useTheme();
   const [bloqueado, setBloqueado] = useState(false);
-  const [selectedProgram, setSelectedProgram] = useState("");
+  const [programaSeleccionado, setProgramaSeleccionado] = useState(totalDeProgramas[0]);
 
   const handleChange = (event) => {
-    setSelectedProgram(event.target.value);
+    setProgramaSeleccionado(event.target.value);
   };
   const alternarBloqueo = () => {
     setBloqueado(!bloqueado);
   };
-  const totalDeProgramas = useMemo(() => ["1", "2", "3", "4", "5", "6"], []);
+
   const onSubmit = (data) => {
     console.log("onsub");
     console.log(data);
@@ -207,7 +208,7 @@ const EditarPlantilla = (props) => {
                     </FormLabel>
                     <RadioGroup
                       row
-                      value={selectedProgram}
+                      value={programaSeleccionado}
                       onChange={handleChange}
                     >
                       <Grid container>
