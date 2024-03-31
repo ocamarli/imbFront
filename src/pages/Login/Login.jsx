@@ -10,6 +10,7 @@ import { useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import Paper from "@mui/material/Paper";
 import { authenticate } from "../../api/axios";
+import ImagenLogin from "../../imagenes/ImberaLogo.png"
 
 function Copyright(props) {
   return (
@@ -85,7 +86,7 @@ export default function Login() {
           }}
         >
           <Grid item xs={12}>
-            <img src={"/imberaLogo.png"} alt="Logo" />
+            <img src={ImagenLogin} alt="Logo" />
           </Grid>
           <Typography component="h1" variant="h5" sx={{ mt: 4,mb:2 }}>
             Iniciar Sesión

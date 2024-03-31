@@ -1,5 +1,5 @@
 import React from "react";
-
+import ImagenHome from "../../imagenes/ImberaLogo.png"
 import { Grid } from "@mui/material";
 
 const SvgComponent = (props) => {
@@ -15,7 +15,7 @@ const SvgComponent = (props) => {
       
 sx={{opacity:".7"}}
     >
-            <img src={"/imberaLogo.png"} alt="Logo" />
+            <img src={ImagenHome} alt="Logo" />
     </Grid>
   );
 };
