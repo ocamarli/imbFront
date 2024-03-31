@@ -97,7 +97,6 @@ const AgregarPlantilla = (props) => {
     console.log(data);
     handleCrearPlantilla(data);
   };
-
   const {
     register,
     handleSubmit,

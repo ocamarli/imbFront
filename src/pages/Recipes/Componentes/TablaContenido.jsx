@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useState, useEffect, useCallback } from "react";
-import { obtenerGaes } from "../../../api/axios";
+
 import { obtenerPlantilla } from "../../../api/axios";
 import { actualizarParametroPlantilla } from "../../../api/axios";
 const TablaContenido = (props) => {
