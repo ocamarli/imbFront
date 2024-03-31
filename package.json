@@ -37,7 +37,6 @@
     "react-scripts": "5.0.1",
     "react-svg": "^16.1.6",
     "react-syntax-highlighter": "^15.5.0",
-    "react-three-fiber": "^6.0.13",
     "react-transition-group": "^4.4.5",
     "react-use-downloader": "^1.2.4",
     "redux": "^4.2.1",
