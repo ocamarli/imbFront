@@ -15,6 +15,7 @@ import { obtenerPlantilla } from "../../../api/axios";
 const TablaContenido = (props) => {
   const { idPlantilla, checkboxSeleccionados } = props;
 
+
   const [plantilla, setPlantilla] = useState(null);
   const handleSelectChange = (e, id_plantilla, idParametro) => {
     const valor = e.target.value;
@@ -147,7 +148,7 @@ const TablaContenido = (props) => {
       } else if (parametro.tipoCampo === "opciones") {
         unidadValor = "N.A";
         rango = parametro.opciones
-          .map((opcion, index) => `${index + 1} ,`)
+          .map((opcion, index) => `${index} ,`)
           .join("");
 
         logicaFuncionamiento = parametro.opciones

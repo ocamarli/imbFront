@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import Link from "@mui/material/Link";
 import Grid from "@mui/material/Grid";
@@ -10,8 +10,9 @@ import { useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import Paper from "@mui/material/Paper";
 import { authenticate } from "../../api/axios";
-import ImagenLogin from "../../imagenes/ImberaLogo.png"
-import ImagenFondo from "../../imagenes/fondo-login.png"
+import ImagenLogin from "../../imagenes/ImberaLogo.png";
+import ImagenFondo from "../../imagenes/fondo-login.png";
+import RespuestaModal from "../../components/RespuestaModal";
 function Copyright(props) {
   return (
     <Typography
@@ -32,26 +33,40 @@ function Copyright(props) {
 export default function Login() {
   const theme = useTheme();
   const navigate = useNavigate();
+  const cerrarModal = () => {
+    setEstaActivo(false); // Restablecer el estado a false cuando se cierra el modal
+  };
+  const [estaActivo, setEstaActivo] = useState(false);
+  const [respuestaModal, setRespuestaModal] = useState(false);
+
+  const fetchAuth = async (data) => {
+    const response = await authenticate(data);
+    console.log("response", response);
+    if (response.status) {
+      console.log("Nueva auth");
+
+      sessionStorage.setItem(
+        "ACCSSTKN",
+        JSON.stringify({
+          access_token: response.access_token,
+          refresh_token: response.refresh_token,
+        })
+      );
+      navigate("/Menu");
+    } else {
+      console.log("Error");
+      setEstaActivo(true);
+      setRespuestaModal(response);
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    authenticate({
+    let data = {
       usuario: event.target.form[0].value,
       pwo: event.target.form[1].value,
-    })
-      .then((json) => {
-        sessionStorage.setItem(
-          "ACCSSTKN",
-          JSON.stringify({
-            access_token: json.access_token,
-            refresh_token: json.refresh_token,
-          })
-        );
-        navigate("/Menu");
-      })
-      .catch((e) => {
-        console.log(e);
-      });
+    };
+    fetchAuth(data);
   };
 
   return (
@@ -65,7 +80,7 @@ export default function Login() {
         sm={4}
         md={9}
         sx={{
-          backgroundImage: "url("+ImagenFondo+")",
+          backgroundImage: "url(" + ImagenFondo + ")",
           backgroundRepeat: "no-repeat",
           backgroundColor: (theme) =>
             theme.palette.mode === "light"
@@ -88,7 +103,7 @@ export default function Login() {
           <Grid item xs={12}>
             <img src={ImagenLogin} alt="Logo" />
           </Grid>
-          <Typography component="h1" variant="h5" sx={{ mt: 4,mb:2 }}>
+          <Typography component="h1" variant="h5" sx={{ mt: 4, mb: 2 }}>
             Iniciar Sesión
           </Typography>
           <Box component="form" noValidate sx={{ mt: 1 }}>
@@ -126,6 +141,12 @@ export default function Login() {
           </Box>
         </Box>
       </Grid>
+      <RespuestaModal
+        activo={estaActivo}
+        respuesta={respuestaModal}
+        autoCierre={true}
+        onClose={cerrarModal}
+      />
     </Grid>
   );
 }

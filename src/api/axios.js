@@ -5,7 +5,7 @@ export async function authenticate(data) {
     if (response.status === 200) {
       return await response.json();
     } else {
-      return { status: false, msg: "Could not retrieve user data" };
+      return { status: false, msg: "No encontró información" };
     }
   } catch (error) {
     return { status: false, msg: error.message };
@@ -18,7 +18,7 @@ export async function setRegister(data, token) {
     if (response.status === 200) {
       return await response.json();
     } else {
-      return { status: false, msg: "Could not retrieve user data" };
+      return { status: false, msg: "No encontró información" };
     }
   } catch (error) {
     return { status: false, msg: error.message };

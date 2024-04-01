@@ -47,7 +47,6 @@ const ListaParametrosCodigo = (props) => {
               {parametros.map((item) => (
 
                 <Box key={item.idParametro} >
-                  {console.log(item)}
                   <ItemParametroCodigo
                     word={item.idParametro}
                     nombre={item.nombre}
