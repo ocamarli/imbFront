@@ -100,7 +100,7 @@ const EditarPlantilla = (props) => {
   const handleCrearReceta = async (data) => {
     const list = [];
     parametros.map((param) => {
-      list.push({ id_parametro: param, valor: "", estado: false });
+      list.push({ idParametro: param, valor: "", estado: false });
       return null;
     });
 

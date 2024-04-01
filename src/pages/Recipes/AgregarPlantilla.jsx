@@ -33,7 +33,7 @@ const AgregarPlantilla = (props) => {
       if (param.tipoParametro === "General") {
         // Modificar el parámetro y agregarlo a la lista de generales
         listaParametrosGenerales.push({
-          id_parametro: param.id_parametro,
+          idParametro: param.idParametro,
           valor: "",
           estado: false,
         });
@@ -41,7 +41,7 @@ const AgregarPlantilla = (props) => {
       } else if (param.tipoParametro === "Programacion") {
         // Modificar el parámetro y agregarlo a la lista de programación
         listaParametrosProgramacion.push({
-          id_parametro: param.id_parametro,
+          idParametro: param.idParametro,
           valor: "",
           estado: false,
         });
@@ -214,8 +214,8 @@ const AgregarPlantilla = (props) => {
                       <MenuItem disabled value="">
                         <em>Selecciona una firmware</em>
                       </MenuItem>
-                      {firmwares.map((firmware) => (
-                        <MenuItem key={firmware.valor} value={firmware.valor}>
+                      {firmwares.map((firmware,index) => (
+                        <MenuItem key={index+1} value={firmware.codigo}>
                           {firmware.nombre}
                         </MenuItem>
                       ))}
@@ -245,8 +245,8 @@ const AgregarPlantilla = (props) => {
                       <MenuItem disabled value="">
                         <em>Selecciona una hardware</em>
                       </MenuItem>
-                      {hardwares.map((hardware) => (
-                        <MenuItem key={hardware.valor} value={hardware.valor}>
+                      {hardwares.map((hardware,index) => (
+                        <MenuItem key={index+1} value={hardware.codigo}>
                           {hardware.nombre}
                         </MenuItem>
                       ))}

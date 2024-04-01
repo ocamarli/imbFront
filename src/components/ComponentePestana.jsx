@@ -10,7 +10,7 @@ function transformarDatos(parametros) {
     let unidadValor;
     let rango;
     let logicaFuncionamiento;
-    if (parametro.tipo_campo === "rango") {
+    if (parametro.tipoCampo === "rango") {
       unidadValor = parametro.unidad;
       rango =
         parametro.valor_min +
@@ -18,7 +18,7 @@ function transformarDatos(parametros) {
         " - " +
         parametro.valor_max +
         parametro.unidad;
-    } else if (parametro.tipo_campo === "opciones") {
+    } else if (parametro.tipoCampo === "opciones") {
       unidadValor = "N.A";
       rango = parametro.opciones
         .map((opcion, index) => `${index + 1} |`)
@@ -33,7 +33,7 @@ function transformarDatos(parametros) {
     }
 
     return {
-      id: parametro.id_parametro,
+      id: parametro.idParametro,
       descripcion: parametro.descripcion || "",
       tipo_parameto: parametro.tipo_parametro || "",
       rango: rango,

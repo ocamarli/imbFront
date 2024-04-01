@@ -22,7 +22,7 @@ import Select from "@mui/material/Select";
 import { useForm } from "react-hook-form";
 import { FormHelperText } from "@mui/material";
 const AddParameter = ({ open, handleClose }) => {
-  const [tipo_campo, setTipo_campo] = useState("");
+  const [tipoCampo, setTipoCampo] = useState("");
   const [openOptions, setOpenOptions] = useState(false); // Define el estado "open" en el componente padre
   const [options, setOptions] = useState([]);
   const {
@@ -58,10 +58,10 @@ const AddParameter = ({ open, handleClose }) => {
   const fetchSetParameter = async (data) => {
     let newData = "";
 
-    if (data.tipo_campo === "opciones") {
+    if (data.tipoCampo === "opciones") {
       newData = { ...data, opciones: options };
     }
-    if (data.tipo_campo === "rango") {
+    if (data.tipoCampo === "rango") {
       newData = { ...data };
     } else {
       console.log("options");
@@ -100,13 +100,13 @@ const AddParameter = ({ open, handleClose }) => {
             <Grid container direction="column" spacing={2}>
               <Grid item xs={12}>
                 <TextField
-                  {...register("id_parametro", { required: true })}
+                  {...register("idParametro", { required: true })}
                   fullWidth
                   label="ID parametro"
                   variant="standard"
-                  error={errors.id_parametro ? true : false}
+                  error={errors.idParametro ? true : false}
                   helperText={
-                    errors.id_parametro ? "Este campo es requerido" : ""
+                    errors.idParametro ? "Este campo es requerido" : ""
                   }
                 />
               </Grid>
@@ -193,14 +193,14 @@ const AddParameter = ({ open, handleClose }) => {
                 <FormControl variant="standard" sx={{ width: "100%" }}>
                   <InputLabel>Tipo de campo</InputLabel>
                   <Select
-                    {...register("tipo_campo", { required: true })}
+                    {...register("tipoCampo", { required: true })}
                     onChange={(e) => {
-                      setValue("tipo_campo", e.target.value);
-                      setTipo_campo(e.target.value);
+                      setValue("tipoCampo", e.target.value);
+                      setTipoCampo(e.target.value);
                       console.log("tyyyp");
                     }}
                     label="Tipo de campo"
-                    error={errors.tipo_campo ? true : false}
+                    error={errors.tipoCampo ? true : false}
                   >
                     <MenuItem value="">
                       <em>Tipo de campo</em>
@@ -208,14 +208,14 @@ const AddParameter = ({ open, handleClose }) => {
                     <MenuItem value={"rango"}>Rango</MenuItem>
                     <MenuItem value={"opciones"}>Opciones</MenuItem>
                   </Select>
-                  {errors.tipo_campo && (
+                  {errors.tipoCampo && (
                     <FormHelperText error={true}>
                       Este campo es requerido.
                     </FormHelperText>
                   )}
                 </FormControl>
               </Grid>
-              {tipo_campo === "rango" ? (
+              {tipoCampo === "rango" ? (
                 <Grid item xs={12} name="gridRango">
                   <Paper variant="outlined" style={{ padding: 15 }}>
                     <Grid container direction="column">
@@ -273,7 +273,7 @@ const AddParameter = ({ open, handleClose }) => {
                     </Grid>
                   </Paper>
                 </Grid>
-              ) : tipo_campo === "opciones" ? (
+              ) : tipoCampo === "opciones" ? (
                 <Grid item xs={12} name="gridOptions">
                   <Paper variant="outlined" style={{ padding: 15 }}>
                     <FormLabel>

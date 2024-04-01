@@ -46,12 +46,12 @@ const ListaParametrosCodigo = (props) => {
             >
               {parametros.map((item) => (
 
-                <Box key={item.id_parametro} >
+                <Box key={item.idParametro} >
                   {console.log(item)}
                   <ItemParametroCodigo
-                    word={item.id_parametro}
+                    word={item.idParametro}
                     nombre={item.nombre}
-                    isEnable={matches.includes(item.id_parametro)}
+                    isEnable={matches.includes(item.idParametro)}
                   />
 
                 </Box>

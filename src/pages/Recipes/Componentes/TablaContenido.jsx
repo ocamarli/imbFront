@@ -11,16 +11,18 @@ import { DataGrid } from "@mui/x-data-grid";
 import React, { useState, useEffect, useCallback } from "react";
 
 import { obtenerPlantilla } from "../../../api/axios";
-import { actualizarParametroPlantilla } from "../../../api/axios";
+//import { actualizarParametroPlantilla } from "../../../api/axios";
 const TablaContenido = (props) => {
-  const { idPlantilla,checkboxSeleccionados } = props;
-
+  const { idPlantilla, checkboxSeleccionados } = props;
 
   const [plantilla, setPlantilla] = useState(null);
-  const handleSelectChange = (e, id_plantilla, id_parametro) => {
+  const handleSelectChange = (e, id_plantilla, idParametro) => {
     const valor = e.target.value;
+    console.log(valor);
+    console.log("idParametro");
+    console.log(idParametro);
     // Llamar a la función actualizarParametroPlantilla() aquí
-    fetchActualizarParametroPlantilla(id_plantilla, id_parametro, valor);
+    //fetchActualizarParametroPlantilla(id_plantilla, idParametro, valor);
   };
   const fetchObtenerPlantilla = useCallback(async () => {
     try {
@@ -39,25 +41,30 @@ const TablaContenido = (props) => {
       console.error(error);
     }
   }, [idPlantilla, setPlantilla]);
-  const fetchActualizarParametroPlantilla = useCallback(async (id_plantilla, id_parametro, valor) => {
-    try {
-      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-      console.log(tkn);
-      if (tkn !== undefined) {
-        console.log("actualizarParametro");
-        console.log(idPlantilla);
-        const json = await actualizarParametroPlantilla(tkn, idPlantilla);
-        console.log(json);
-        setPlantilla(json.plantilla || null);
-      } else {
-        setPlantilla(null);
+  /*
+  const fetchActualizarParametroPlantilla = useCallback(
+    async (id_plantilla, idParametro, valor) => {
+      try {
+        const tkn = JSON.parse(
+          sessionStorage.getItem("ACCSSTKN")
+        )?.access_token;
+        console.log(tkn);
+        if (tkn !== undefined) {
+          console.log("actualizarParametro");
+          console.log(idPlantilla);
+          const json = await actualizarParametroPlantilla(tkn, idPlantilla);
+          console.log(json);
+          setPlantilla(json.plantilla || null);
+        } else {
+          setPlantilla(null);
+        }
+      } catch (error) {
+        console.error(error);
       }
-    } catch (error) {
-      console.error(error);
-    }
-  }, [idPlantilla, setPlantilla]);
-
-
+    },
+    [idPlantilla, setPlantilla]
+  );
+*/
   useEffect(() => {
     fetchObtenerPlantilla();
   }, [fetchObtenerPlantilla]);
@@ -69,27 +76,39 @@ const TablaContenido = (props) => {
       flex: 1,
       editable: true,
       renderCell: (params) => {
-        if (params.row.tipo_campo === "opciones") {
+        if (params.row.tipoCampo === "opciones") {
           return (
             <FormControl variant="outlined" size="small" fullWidth>
               <Select
-                value={""}
                 onChange={(e) =>
-                  handleSelectChange(e, params.row.id_plantilla, params.row.id_parametro)
+                  handleSelectChange(e, params.row.id_plantilla, params.row.id)
                 }
+                size="small"
+                defaultValue="" // Asegúrate de dejar este defaultValue vacío
+                displayEmpty // Esta propiedad garantiza que el elemento seleccionado muestre el placeholder cuando esté vacío
+                renderValue={(selected) => {
+                  if (!selected) {
+                    return <em>Selecciona una opción</em>;
+                  }
+                  return selected;
+                }}
               >
-                      {params.row.opciones.map((opcion) => (
-                        <MenuItem key={opcion.valor} value={opcion.valor}>
-                          {opcion.nombre}
-                        </MenuItem>
-                      ))}
+                <MenuItem disabled value="">
+                  <em>Selecciona una opción</em>
+                </MenuItem>
+                {params.row.opciones.map((opcion) => (
+                  <MenuItem key={opcion.valor} value={opcion.valor}>
+                    {opcion.nombre}
+                  </MenuItem>
+                ))}
               </Select>
+
             </FormControl>
           );
         } else {
           return (
             <TextField
-              value={params.value}
+              value={params.valor}
               onChange={(e) => console.log(e.target.value)}
               fullWidth
             />
@@ -116,7 +135,7 @@ const TablaContenido = (props) => {
       let rango;
       let logicaFuncionamiento = "";
       console.log(logicaFuncionamiento, tipoCampoData, unidadValor);
-      if (parametro.tipo_campo === "rango") {
+      if (parametro.tipoCampo === "rango") {
         unidadValor = parametro.unidad;
         rango =
           parametro.valor_min +
@@ -125,7 +144,7 @@ const TablaContenido = (props) => {
           "-" +
           parametro.valor_max +
           parametro.unidad;
-      } else if (parametro.tipo_campo === "opciones") {
+      } else if (parametro.tipoCampo === "opciones") {
         unidadValor = "N.A";
         rango = parametro.opciones
           .map((opcion, index) => `${index + 1} ,`)
@@ -141,17 +160,16 @@ const TablaContenido = (props) => {
       }
 
       return {
-        id: parametro.id_parametro,
+        id: parametro.idParametro,
         valor: parametro.valor,
         descripcion: parametro.descripcion || "",
-        tipo_parameto: parametro.tipo_parametro || "",
-        tipo_campo: parametro.tipo_campo || "",
+        tipoCampo: parametro.tipoCampo || "",
         tipoParametro: parametro.tipoParametro || "",
-        unidad:parametro.unidad ||"",
-        valor_min:parametro.valor_min || "",
-        valor_max:parametro.valor_max || "",
-        opciones:parametro.opciones || [],
-        rango: rango,
+        unidad: parametro.unidad || "",
+        valor_min: parametro.valor_min || "",
+        valor_max: parametro.valor_max || "",
+        opciones: parametro.opciones || [],
+        rango: rango || "",
       };
     });
   }
@@ -175,11 +193,11 @@ const TablaContenido = (props) => {
                   initialState={{
                     pagination: {
                       paginationModel: {
-                        pageSize: 10,
+                        pageSize: 50,
                       },
                     },
                   }}
-                  pageSizeOptions={[10]}
+                  pageSizeOptions={[50]}
                   checkGridSelection
                   disableRowSelectionOnClick
                   rowHeight={30}
@@ -205,11 +223,11 @@ const TablaContenido = (props) => {
                       initialState={{
                         pagination: {
                           paginationModel: {
-                            pageSize: 10,
+                            pageSize: 50,
                           },
                         },
                       }}
-                      pageSizeOptions={[10]}
+                      pageSizeOptions={[50]}
                       checkGridSelection
                       disableRowSelectionOnClick
                       rowHeight={30}

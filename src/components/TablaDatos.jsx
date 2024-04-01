@@ -10,7 +10,7 @@ function transformarDatos(parametros) {
     let rango;
     let logicaFuncionamiento = "";
     console.log(logicaFuncionamiento, tipoCampoData, unidadValor);
-    if (parametro.tipo_campo === "rango") {
+    if (parametro.tipoCampo === "rango") {
       unidadValor = parametro.unidad;
       rango =
         parametro.valor_min +
@@ -19,7 +19,7 @@ function transformarDatos(parametros) {
         "-" +
         parametro.valor_max +
         parametro.unidad;
-    } else if (parametro.tipo_campo === "opciones") {
+    } else if (parametro.tipoCampo === "opciones") {
       unidadValor = "N.A";
       rango = parametro.opciones
         .map((opcion, index) => `${index + 1} ,`)
@@ -35,11 +35,11 @@ function transformarDatos(parametros) {
     }
 
     return {
-      id: parametro.id_parametro,
+      id: parametro.idParametro,
       valor: parametro.valor,
       descripcion: parametro.descripcion || "",
       tipo_parameto: parametro.tipo_parametro || "",
-      tipo_campo: parametro.tipo_campo || "",
+      tipoCampo: parametro.tipoCampo || "",
       rango: rango,
     };
   });

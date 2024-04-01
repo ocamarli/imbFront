@@ -11,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import Paper from "@mui/material/Paper";
 import { authenticate } from "../../api/axios";
 import ImagenLogin from "../../imagenes/ImberaLogo.png"
-
+import ImagenFondo from "../../imagenes/fondo-login.png"
 function Copyright(props) {
   return (
     <Typography
@@ -65,7 +65,7 @@ export default function Login() {
         sm={4}
         md={9}
         sx={{
-          backgroundImage: "url(/fondo-login.png)",
+          backgroundImage: "url("+ImagenFondo+")",
           backgroundRepeat: "no-repeat",
           backgroundColor: (theme) =>
             theme.palette.mode === "light"
