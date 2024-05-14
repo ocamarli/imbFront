@@ -2,31 +2,88 @@ import React, { useState, useCallback, useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import HeaderContent from "../HeaderContent";
 import { ListItemAvatar } from "@mui/material";
-import {
-  Grid,
-  Divider,
-  List,
-  ListItem,
-  ListItemText,
-  IconButton,
-  Avatar,
+import { Grid, Divider, List, ListItem, ListItemText,
+  IconButton, Avatar, Tooltip, Button, Paper
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/ModeEdit";
 import AddIcon from "@mui/icons-material/Add";
-import { obtenerUsuarios } from "../../api/axios";
+import { obtenerUsuarios } from "../../api/usuariosApi";
 import { CircularProgress } from "@mui/material";
 import AgregarUsuario from "./AgregarUsuario";
 import { useTheme } from "@mui/material/styles";
 import UsuarioAutorizado from "../../components/UsuarioAutorizado";
+import EditarUsuario from "./EditarUsuario";
+import PersonOffIcon from "@mui/icons-material/PersonOff";
+import { actualizarEstatusUsuario } from "../../api/usuariosApi";
+import RespuestaModal from "../../components/RespuestaModal";
+
 const ListaUsuarios = (props) => {
   const theme = useTheme();
+  const [estaActivoModalConfirmacion, setEstaActivoModalConfirmacion] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [usuarios, setUsuarios] = useState([]);
   const { onResponse, setSelectedComponent, auth } = props;
-
+  const [idUsuarioSelecionado,setIdUsuarioSeleccionado] = useState("");
+  const [respuestaModalConfirmacion, setRespuestaModalConfirmacion] = useState({msg:"¡Confirma para deshabilitar el usuario!",status:false});
+  const [estaActivoModalOk, setEstaActivoModalOk] = useState(false);
+  const [respuestaModalOk, setRespuestaModalOk] = useState({msg:"¡Usuario deshabilitado!",status:true});
+  const [estaActivoModalError, setEstaActivoModalError] = useState(false);
+  const [respuestaModalError, setRespuestaModalError] = useState({msg:"¡Error al deshabilitar el usuario!",status:false});
   const handleClickAgregarUsuario = () => {
-    setSelectedComponent(<AgregarUsuario></AgregarUsuario>);
+    setSelectedComponent(<AgregarUsuario
+      setSelectedComponent={setSelectedComponent}
+    ></AgregarUsuario>);
   };
+  const cerrarModal = (confirmacion) => {
+    console.log("confirmacion", confirmacion);
+    if(confirmacion){
+      const estatus = false;
+      console.log("idUsuarioSelecionado")
+      console.log(idUsuarioSelecionado)
+      fetchActualizarEstatusUsuario(estatus,idUsuarioSelecionado)
+    }
+    setEstaActivoModalConfirmacion(false); // Restablecer el estado a false cuando se cierra el modal
+    setEstaActivoModalOk(false)
+  };
+  const handleEstatusUsuario = (idUsuario) => {
+    setIdUsuarioSeleccionado(idUsuario);
+    setEstaActivoModalConfirmacion(true);
+    //fetchActualizarEstatusUsuario(estatus,idUsuario);
+  };
+  const handleEditarUsuario = (idUsuario) => {
+    setSelectedComponent(
+      <EditarUsuario
+        idUsuario={idUsuario}
+        setSelectedComponent={setSelectedComponent}
+        auth={auth}
+      ></EditarUsuario>
+    );
+    console.log("Editar usuario con ID:", idUsuario);
+  };
+
+  const fetchActualizarEstatusUsuario = useCallback(
+    async (estatus, idUsuario) => {
+      try {
+        setIsLoading(true);
+        const tkn = JSON.parse(
+          sessionStorage.getItem("ACCSSTKN")
+        )?.access_token;
+        if (tkn !== undefined) {
+          const data = { idUsuario: idUsuario, estatus: estatus };
+          const json = await actualizarEstatusUsuario(data, tkn);
+          console.log(json);
+          setIsLoading(false);
+          setEstaActivoModalOk(true)
+          cObtenerUsuarios()
+        } else {
+        }
+      } catch (error) {
+        setIsLoading(false);
+        console.error(error);
+      }
+    },
+    [setIsLoading]
+  );
   const cObtenerUsuarios = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -36,6 +93,7 @@ const ListaUsuarios = (props) => {
         setUsuarios(json.usuarios);
         onResponse({ status: json.status, msg: json.msg });
         setIsLoading(false);
+        console.log(json.usuarios);
       }
     } catch (error) {
       setIsLoading(false);
@@ -48,30 +106,37 @@ const ListaUsuarios = (props) => {
   }, [cObtenerUsuarios]);
 
   return (
-    <Grid container padding={2} sx={{ height: "calc(100vh)" }}>
+    <Grid container padding={2} >
       <Grid item xs={12}>
         {isLoading ? ( // Agrega el loader condicionalmente
           <Grid item xs={12} align="center">
             <CircularProgress size={50} />
           </Grid>
-        ) : 
+        ) : (
           <Grid>
-             <HeaderContent titulo="Lista de usuarios"></HeaderContent>
-            <Grid container spacing={0}>
+            <HeaderContent titulo="Lista de usuarios"></HeaderContent>
+            <Paper style={{ padding: 20 }}>
+            <Grid container spacing={3}>
               <UsuarioAutorizado
                 usuario={auth}
                 permisosRequeridos={["superusuario"]}
               >
+                              <Grid
+                item
+                xs={8}
+                sx={{ display: "flex", justifyContent: "left" }}
+              >
+              </Grid>
                 <Grid
                   item
-                  xs={12}
+                  xs={4}
                   sx={{
                     display: "flex",
                     justifyContent: "right",
                     alignItems: "center",
                   }}
                 >
-                  <Typography variant="h6" mt={4}>
+                  <Typography variant="h6">
                     Agregar usuario nuevo
                   </Typography>
                   <IconButton
@@ -156,7 +221,26 @@ const ListaUsuarios = (props) => {
                               justifyContent: "flex-end",
                             }}
                           >
-                            <EditIcon />
+                            <Tooltip title="Deshabilitar usuario">
+                              <IconButton
+                                onClick={() => {
+                                  handleEstatusUsuario(usuario.idUsuario);
+                                }}
+                                aria-label="edit"
+                              >
+                                <PersonOffIcon />
+                              </IconButton>
+                            </Tooltip>
+                            <Tooltip title="Editar usuario">
+                              <IconButton
+                                onClick={() => {
+                                  handleEditarUsuario(usuario.idUsuario);
+                                }}
+                                aria-label="edit"
+                              >
+                                <EditIcon />
+                              </IconButton>
+                            </Tooltip>
                           </Grid>
                         </Grid>
                       </ListItem>
@@ -168,9 +252,25 @@ const ListaUsuarios = (props) => {
                 </List>
               </Grid>
             </Grid>
-            </Grid>
-        }
+            </Paper>
+          </Grid>
+        )}
       </Grid>
+      {/* Modal Respuesta Ok */}
+      <RespuestaModal
+        activo={estaActivoModalOk}
+        respuesta={respuestaModalOk}
+        autoCierre={true}
+        onClose={cerrarModal}
+      />      
+      {/* Modal Confirmación */}
+
+      <RespuestaModal
+        activo={estaActivoModalConfirmacion}
+        respuesta={respuestaModalConfirmacion}
+        autoCierre={false}
+        onClose={cerrarModal}
+      />
     </Grid>
   );
 };

@@ -5,6 +5,7 @@ import Typography from "@mui/material/Typography";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 import Button from "@mui/material/Button";
+import { Grid } from "@mui/material";
 
 const RespuestaModal = (props) => {
   const { activo, respuesta, autoCierre, onClose } = props
@@ -23,17 +24,17 @@ const RespuestaModal = (props) => {
     }
   }, [activo, autoCierre, onClose]);
 
-  const handleCerrarModal = () => {
+  const handleCerrarModal = (confirmacion) => {
     setAbierto(false);
     if (onClose) {
-      onClose();
+      onClose(confirmacion);
     }
   };
 
   return (
     <Modal
       open={abierto}
-      onClose={handleCerrarModal}
+      onClose={()=>{handleCerrarModal(false)}}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
@@ -63,9 +64,18 @@ const RespuestaModal = (props) => {
           {respuesta.msg}
         </Typography>
         {!autoCierre && (
-          <Button onClick={handleCerrarModal} variant="contained" sx={{ width: "100%" }}>
-            Cerrar
+          <Grid container spacing={1}>
+            <Grid item xs={6} >
+          <Button onClick={()=>{handleCerrarModal(true)}} variant="contained" sx={{ width: "100%" }}>
+            Confirmar
           </Button>
+          </Grid>
+          <Grid item xs={6}>
+          <Button   onClick={()=>{handleCerrarModal(false)}} variant="contained" sx={{ width: "100%" ,backgroundColor:"red"}}>
+            Salir
+          </Button>
+          </Grid>
+          </Grid>
         )}
       </Box>
     </Modal>

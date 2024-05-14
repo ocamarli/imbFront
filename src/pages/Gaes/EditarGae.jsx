@@ -1,28 +1,52 @@
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useState,useCallback } from "react";
 import { TextField, Button, Grid, Paper,} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
 import HeaderContent from "../HeaderContent";
 import RespuestaModal from "../../components/RespuestaModal";
-import { crearHardware } from "../../api/hardwaresApi";
-import Home from "../Home/Home";
-const AgregarHardware = (props) => {
-  const {setSelectedComponent} = props
+import { crearGae } from "../../api/gaesApi";
+import { actualizarGae } from "../../api/gaesApi";
+import { obtenerGae } from "../../api/gaesApi";
+import Home from "../Home/Home"
+const EditarGae = (props) => {
+    const {idGae,setSelectedComponent,auth} = props
+    const [estaActivo, setEstaActivo] = useState(false);
+    const [respuestaModal, setRespuestaModal] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);    
   const onSubmit = (data) => {
-    data.idHardware = parseInt(data.idHardware);
+    data.id_gae = parseInt(data.id_gae);
     console.log("submit");
     console.log(data);
     handleCloseRegister(data);
   };
+  const [gae, setGae] = useState(null);
   const cerrarModal = () => {
     setEstaActivo(false); // Restablecer el estado a false cuando se cierra el modal
   };
-  const [estaActivo, setEstaActivo] = useState(false);
-  const [respuestaModal, setRespuestaModal] = useState(false);
+  const fetchObtenerGae = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+      if (tkn !== undefined) {
+
+        const json = await obtenerGae(tkn, idGae);
+        console.log(json);
+        setGae(json.usuario || null);
+        setIsLoading(false);
+      } else {
+        setGae(null);
+      }
+    } catch (error) {
+      setIsLoading(false);
+      console.error(error);
+    }
+  }, [setIsLoading, setGae, idGae]);
+
   const handleCloseRegister = async (data) => {
+
     console.log(data);
-    const response = await crearHardware(
+    const response = await crearGae(
       data,
       JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token
     );
@@ -47,7 +71,7 @@ const AgregarHardware = (props) => {
   };
   const handleOnCLickSalir = () => {
     setSelectedComponent(<Home></Home>);
-  };    
+  };
   const {
     register,
     handleSubmit,
@@ -57,24 +81,25 @@ const AgregarHardware = (props) => {
   return (
     <Grid container padding={2}  justifyContent={"center"}>
       <Grid item xs={7}>
-        <HeaderContent titulo="Agregar Hardware"></HeaderContent>
+        <HeaderContent titulo="Editar GAE"></HeaderContent>
         <Paper style={{ padding: 20 }} >
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={3}>
+
               <Grid item xs={12}>
-                <Typography>Nombre hardware</Typography>
+                <Typography>Nombre GAE</Typography>
                 <TextField
                   {...register("nombre", { required: true })}
                   fullWidth
-                  placeholder="Nombre hardware"
+                  placeholder="Nombre Gae"
                   variant="outlined"
-                  error={errors.descripcion ? true : false}
-                  helperText={errors.descripcion ? "Este campo es requerido" : ""}
-                  onChange={handleOnChangeInput}
+                  error={errors.nombre ? true : false}
+                  helperText={errors.nombre ? "Este campo es requerido" : ""}
+                  onChange={handleOnChangeInput} 
                 />
               </Grid>
               <Grid item xs={12}>
-                <InputLabel>Descripción hardware</InputLabel>
+                <InputLabel>Descripción GAE</InputLabel>
                 <TextField
                   {...register("descripcion", { required: true })}
                   fullWidth
@@ -82,7 +107,7 @@ const AgregarHardware = (props) => {
                   variant="outlined"
                   error={errors.descripcion ? true : false}
                   helperText={errors.descripcion ? "Este campo es requerido" : ""}
-                  onChange={handleOnChangeInput}
+                  onChange={handleOnChangeInput} 
                 />
               </Grid>
 
@@ -95,7 +120,7 @@ const AgregarHardware = (props) => {
                       sx={{ height: "50px" }}
                       fullWidth
                     >
-                      Agregar
+                      Actualizar
                     </Button>
                   </Grid>
                   <Grid item xs={6}>
@@ -106,19 +131,19 @@ const AgregarHardware = (props) => {
                       fullWidth
                       onClick={handleOnCLickSalir}
                     >
-                      Salir
+                      salir
                     </Button>
-                  </Grid>                     
+                  </Grid>                  
                 </Grid>
               </Grid>
             </Grid>
           </form>
         </Paper>
       </Grid>
-
-       <RespuestaModal activo={estaActivo} respuesta={respuestaModal} autoCierre={false} onClose={cerrarModal}/>
+       {/* Renderiza el componente de Snackbar */}
+       <RespuestaModal activo={estaActivo} respuesta={respuestaModal} autoCierre={true} onClose={cerrarModal}/>
     </Grid>
   );
 };
 
-export default AgregarHardware;
+export default EditarGae;

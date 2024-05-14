@@ -3,7 +3,7 @@ import { Dialog, Typography,IconButton } from "@mui/material";
 import React, { useState, useEffect, useCallback } from "react";
 import store from "../../store";
 import { Provider } from "react-redux";
-import { obtenerParametros } from "../../api/axios";
+import { obtenerParametros } from "../../api/parametrosApi.jsx";
 import { Grid, Paper, CircularProgress,Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import HeaderContent from "../HeaderContent";

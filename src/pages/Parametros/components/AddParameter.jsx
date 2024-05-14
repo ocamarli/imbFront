@@ -15,7 +15,7 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import AddOptions from "./AddOptions";
 import ItemOptions from "./ItemOptions";
 import Typography from "@mui/material/Typography";
-import { crearParametro } from "../../../api/axios";
+import { crearParametro } from "../../../api/parametrosApi";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import Select from "@mui/material/Select";

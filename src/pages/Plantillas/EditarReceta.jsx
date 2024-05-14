@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import { crearReceta } from "../../api/axios";
 import ComponentePestana from "../../components/ComponentePestana";
-import { obtenerParametros } from "../../api/axios";
+import { obtenerParametros } from "../../api/parametrosApi";
 import HeaderContent from "../HeaderContent";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";

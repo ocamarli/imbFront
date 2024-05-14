@@ -10,7 +10,7 @@ import LockIcon from "@mui/icons-material/Lock";
 import AddIcon from "@mui/icons-material/Add";
 import AgregarPlantilla from "./AgregarPlantilla";
 import { DataGrid } from "@mui/x-data-grid";
-import { obtenerPlantillas } from "../../api/axios";
+import { obtenerPlantillas } from "../../api/plantillasApi.jsx";
 import ModalClonarPlantilla from "./Componentes/ModalClonarPlantila.jsx";
 import EditarPlantilla from "./EditarPlantilla.jsx";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";

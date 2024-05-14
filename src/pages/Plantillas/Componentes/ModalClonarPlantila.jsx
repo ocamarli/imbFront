@@ -3,7 +3,7 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import { Grid, TextField, Box, Modal } from "@mui/material";
 import { useForm } from "react-hook-form";
-import { copiarPlantilla } from "../../../api/axios";
+import { copiarPlantilla } from "../../../api/plantillasApi";
 import EditarPlantilla from "../EditarPlantilla";
 
 

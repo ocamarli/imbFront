@@ -8,7 +8,7 @@ import {
 import HeaderContent from "../HeaderContent";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
-import { obtenerPlantilla } from "../../api/axios";
+import { obtenerPlantilla } from "../../api/plantillasApi.jsx";
 import TablaContenido from "./Componentes/TablaContenido";
 import Home from "../Home/Home.jsx";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack.js";
@@ -192,12 +192,12 @@ const EditarPlantilla = (props) => {
                     {bloqueado ? "Congelado" : "Congelar"}
                   </Button>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={6}>
                   <GrupoCheckbox
                     setCheckboxSeleccionado={setCheckboxSeleccionados}
                   ></GrupoCheckbox>
                 </Grid>
-                <Grid item xs={12}>
+                <Grid item xs={6}>
                   <Typography variant="body1" fontWeight={600}>
                     Inicio seleccionado
                   </Typography>
@@ -237,10 +237,7 @@ const EditarPlantilla = (props) => {
                 </Grid>
               </Grid>
             </form>
-          </Paper>
-        </Grid>
-      )}
-      <Button
+            <Button
         sx={{ mt: 5 }}
         variant="contained"
         color="success"
@@ -249,6 +246,9 @@ const EditarPlantilla = (props) => {
       >
         Salir
       </Button>
+          </Paper>
+        </Grid>
+      )}
     </Grid>
   );
 };

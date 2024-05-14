@@ -6,16 +6,18 @@ import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
 import AgregarGae from "./AgregarGae.jsx";
 import { DataGrid } from "@mui/x-data-grid";
-import { obtenerGaes } from "../../api/axios";
+import { obtenerGaes } from "../../api/gaesApi.jsx";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Home from "../Home/Home.jsx"
+import EditarGae from "./EditarGae.jsx";
+import { DeleteOutline as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 function transformarDatos(gaes) {
   console.log(gaes);
-  return gaes.map((gae) => {
+  return gaes.map((gae,index) => {
     return {
-      id: gae.id_gae || "",
+      id: index+1 || "",
       nombre: gae.nombre || "",
-      codigo: gae.codigo || "",
+      descripcion: gae.descripcion || "",
     };
   });
 }
@@ -24,7 +26,21 @@ const ListaGaes = (props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [gaes, setGaes] = useState([]);
-
+  const handleEditar = (idFirmware) => {
+    setSelectedComponent(
+      <EditarGae
+        idFirmware={idFirmware}
+        setSelectedComponent={setSelectedComponent}
+        auth={auth}
+      ></EditarGae>
+    );
+    console.log(`Editar firmware con ID ${idFirmware}`);
+  };
+  
+  const handleEliminar = (id) => {
+    // Aquí puedes realizar la lógica para eliminar el firmware con el ID proporcionado
+    console.log(`Eliminar firmware con ID ${id}`);
+  };
   const fetchGaes = useCallback(async () => {
     try {
 
@@ -50,15 +66,37 @@ const ListaGaes = (props) => {
 
 
   const manejarAgregarPlantilla = () => {
-    setSelectedComponent(<AgregarGae auth={auth}></AgregarGae>);
+    setSelectedComponent(<AgregarGae setSelectedComponent={setSelectedComponent} auth={auth}></AgregarGae>);
   };
 
 
 
   const columns = [
-    { field: "id", headerName: "ID", width: 90 },
-    { field: "nombre", headerName: "Nombre", width: 150 },
-    { field: "codigo", headerName: "Código", width: 150 },
+    { field: "id", headerName: "ID" },
+    { field: "nombre", headerName: "Nombre" },
+    { field: "descripcion", headerName: "Descripción"},
+    {
+      field: "editar",
+      headerName: "Editar",
+      sortable: false,
+      width: 90,
+      renderCell: (params) => (
+        <IconButton onClick={() => handleEditar(params.row.id)}>
+          <EditIcon />
+        </IconButton>
+      ),
+    },
+    {
+      field: "eliminar",
+      headerName: "Eliminar",
+      sortable: false,
+      width: 110,
+      renderCell: (params) => (
+        <IconButton onClick={() => handleEliminar(params.row.id)}>
+          <DeleteIcon />
+        </IconButton>
+      ),
+    },
 
   ];
 

@@ -9,7 +9,7 @@ import Typography from "@mui/material/Typography";
 import { useTheme } from "@mui/material/styles";
 import { useNavigate } from "react-router-dom";
 import Paper from "@mui/material/Paper";
-import { authenticate } from "../../api/axios";
+import { authenticate } from "../../api/usuariosApi";
 import ImagenLogin from "../../imagenes/ImberaLogo.png";
 import ImagenFondo from "../../imagenes/fondo-login.png";
 import RespuestaModal from "../../components/RespuestaModal";

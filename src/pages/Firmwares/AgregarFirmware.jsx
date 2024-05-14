@@ -5,9 +5,10 @@ import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
 import HeaderContent from "../HeaderContent";
 import RespuestaModal from "../../components/RespuestaModal";
-import { crearFirmware} from "../../api/axios";
-const AgregarFirmware = () => {
-
+import { crearFirmware } from "../../api/firmwaresApi";
+import Home from "../Home/Home";
+const AgregarFirmware = (props) => {
+  const { setSelectedComponent } = props;
   const onSubmit = (data) => {
     data.idFirmware = parseInt(data.idFirmware);
     console.log("submit");
@@ -33,7 +34,23 @@ const AgregarFirmware = () => {
     setEstaActivo(true);
     setRespuestaModal(response);
   };
+  const handleOnChangeInput = (event) => {
+    // Expresión regular que permite letras (mayúsculas y minúsculas) y espacios en blanco
+    const regex = /^[A-Za-z\s]*$/;
+    const inputValue = event.target.value;
 
+    // Validar si el texto ingresado cumple con la expresión regular
+    if (regex.test(inputValue)) {
+      // Si cumple, convertir a mayúsculas y establecer en el campo de texto
+      event.target.value = inputValue.toUpperCase();
+    } else {
+      // Si no cumple, eliminar el último caracter ingresado
+      event.target.value = inputValue.slice(0, -1);
+    }
+  };
+  const handleOnCLickSalir = () => {
+    setSelectedComponent(<Home></Home>);
+  };  
   const {
     register,
     handleSubmit,
@@ -49,7 +66,19 @@ const AgregarFirmware = () => {
             <Grid container spacing={3}>
 
               <Grid item xs={12}>
-                <Typography>Descripción firmware</Typography>
+                <Typography>Nombre firmware</Typography>
+                <TextField
+                  {...register("nombre", { required: true })}
+                  fullWidth
+                  placeholder="Nombre"
+                  variant="outlined"
+                  error={errors.nombre ? true : false}
+                  helperText={errors.nombre ? "Este campo es requerido" : ""}
+                  onChange={handleOnChangeInput}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <InputLabel>Descripción firmware</InputLabel>
                 <TextField
                   {...register("descripcion", { required: true })}
                   fullWidth
@@ -57,32 +86,33 @@ const AgregarFirmware = () => {
                   variant="outlined"
                   error={errors.descripcion ? true : false}
                   helperText={errors.descripcion ? "Este campo es requerido" : ""}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <InputLabel>Código firmware</InputLabel>
-                <TextField
-                  {...register("codigo", { required: true })}
-                  fullWidth
-                  placeholder="Código"
-                  variant="outlined"
-                  error={errors.codigo ? true : false}
-                  helperText={errors.codigo ? "Este campo es requerido" : ""}
+                  onChange={handleOnChangeInput}
                 />
               </Grid>
 
               <Grid item xs={12}>
                 <Grid container sx={{ justifyContent: "space-around" }} spacing={2}>
-                  <Grid item xs={4}>
+                  <Grid item xs={6}>
                     <Button
                       variant="contained"
                       type="submit"
                       sx={{ height: "50px" }}
                       fullWidth
                     >
-                      Agregar código
+                      Agregar
                     </Button>
                   </Grid>
+                  <Grid item xs={6}>
+                    <Button
+                      color="error"
+                      variant="contained"
+                      sx={{ height: "50px" }}
+                      fullWidth
+                      onClick={handleOnCLickSalir}
+                    >
+                      Salir
+                    </Button>
+                  </Grid>                       
                 </Grid>
               </Grid>
             </Grid>

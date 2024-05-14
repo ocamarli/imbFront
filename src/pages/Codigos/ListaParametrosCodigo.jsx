@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Typography, Grid, Paper,Box } from "@mui/material";
 import ItemParametroCodigo from "./ItemParametroCodigo";
-import { obtenerParametros } from "../../api/axios";
+import { obtenerParametros } from "../../api/parametrosApi";
 const ListaParametrosCodigo = (props) => {
   const {matches}=props
   console.log("matches",matches)

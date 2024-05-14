@@ -2,24 +2,12 @@ import { styled, useTheme } from "@mui/material/styles";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import MuiAppBar from "@mui/material/AppBar";
 import {
-  Typography,
-  Divider,
-  Toolbar,
-  List,
-  Box,
-  Drawer,
-  CssBaseline,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  IconButton,
-  FormControl,
+  Typography, Divider, Toolbar, List, Box, Drawer, CssBaseline,
+  ListItemButton, ListItemIcon, ListItemText, IconButton, FormControl,
 } from "@mui/material/";
-
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
 import ChevronRightIcon from "@mui/icons-material/ChevronRight";
-
 import React, { useState } from "react";
 import Avatar from "@mui/material/Avatar";
 import Brightness4Icon from "@mui/icons-material/Brightness4";
@@ -30,14 +18,14 @@ import HomeIcon from "@mui/icons-material/Home";
 import FormatListNumberedIcon from "@mui/icons-material/FormatListNumbered";
 import DescriptionIcon from "@mui/icons-material/Description";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import ListaParametros from "./Parameters/ListaParametros";
+import ListaParametros from "./Parametros/ListaParametros";
 import Home from "./Home/Home";
 import "./MenuCss.css";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import imgHeader from "./imberaLogoMenu.png";
 import { alpha } from "@mui/material/";
-import ListaPlantillas from "./Recipes/ListaPlatillas";
+import ListaPlantillas from "./Plantillas/ListaPlatillas";
 import ListaUsuarios from "./Register/ListaUsuarios";
 import UsuarioAutorizado from "../components/UsuarioAutorizado";
 import ListaGaes from "./Gaes/ListaGaes";

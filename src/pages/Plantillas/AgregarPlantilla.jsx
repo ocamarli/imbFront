@@ -10,14 +10,14 @@ import {
   MenuItem,
   Typography,
 } from "@mui/material";
-import { obtenerParametros } from "../../api/axios";
+import { obtenerParametros } from "../../api/parametrosApi.jsx";
 import HeaderContent from "../HeaderContent";
 import EditarPlantilla from "./EditarPlantilla";
-import { crearPlantilla } from "../../api/axios";
+import { crearPlantilla } from "../../api/plantillasApi.jsx";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Home from "../Home/Home.jsx";
-import { obtenerFirmwares } from "../../api/axios";
-import { obtenerHardwares } from "../../api/axios";
+import { obtenerFirmwares } from "../../api/firmwaresApi.jsx";
+import { obtenerHardwares } from "../../api/hardwaresApi.jsx";
 const AgregarPlantilla = (props) => {
   const { setSelectedComponent, onResponse, auth } = props;
   const [isLoading, setIsLoading] = useState(false);

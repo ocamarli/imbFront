@@ -8,23 +8,80 @@ import {
   Typography,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import React, { useState, useEffect, useCallback } from "react";
-
-import { obtenerPlantilla } from "../../../api/axios";
-//import { actualizarParametroPlantilla } from "../../../api/axios";
+import React, { useState, useEffect, useCallback, useRef } from "react";
+import RespuestaModal from "../../../components/RespuestaModal";
+import { obtenerPlantilla } from "../../../api/plantillasApi";
+import { actualizarParametroPlantilla } from "../../../api/plantillasApi";
 const TablaContenido = (props) => {
   const { idPlantilla, checkboxSeleccionados } = props;
 
-
   const [plantilla, setPlantilla] = useState(null);
-  const handleSelectChange = (e, id_plantilla, idParametro) => {
-    const valor = e.target.value;
-    console.log(valor);
-    console.log("idParametro");
-    console.log(idParametro);
-    // Llamar a la función actualizarParametroPlantilla() aquí
-    //fetchActualizarParametroPlantilla(id_plantilla, idParametro, valor);
+  
+  const [respuestaModal, setRespuestaModal] = useState({
+    status:false,
+    msg:"valor no válido",
+  });
+  const [estaActivo, setEstaActivo] = useState(false);
+  const handleOnChange = (e) => {
+    const inputValue = e.target.value;
+  
+    // Validar si el valor ingresado cumple con el patrón
+    if (/^-?[0-9]*(\.[0-9]+)?$/.test(inputValue) || inputValue === "") {
+      // Si el valor cumple con el patrón o está vacío, no hacemos nada
+    } else {
+      // Si el valor no cumple con el patrón, eliminamos el último carácter ingresado
+      e.target.value = inputValue.slice(0, -1);
+    }
   };
+  
+  const handleOnBlur = (e, parametro) => {
+    const nuevoValor = e.target.value;
+    const idParametro = parametro.row.id;
+    const valorActual = parametro.row.valor;    
+    const noProgramacion = parametro.row.noProgramacion;
+    const valorMin = parametro.row.valor_min;
+    const valorMax = parametro.row.valor_max;
+    const tipoCampo = parametro.row.tipoCampo;
+    const tipoParametro = parametro.row.tipoParametro;
+
+    if (tipoCampo == "rango")
+    {
+      if (/^-?[0-9]*(\.[0-9]+)?$/.test(nuevoValor) || nuevoValor === "") {
+        // Si cumple con el patrón o está vacío, actualizar el valor en el estado
+        if (nuevoValor>=valorMin && nuevoValor <=  valorMax)
+        {
+          console.log("ok")
+        }
+        else{
+          console.log("error")
+          parametro.row.valor=valorActual;
+          setEstaActivo(true);
+          e.preventDefault();
+          
+        }
+        
+      } else {
+        // Si no cumple con el patrón, restaurar el valor actual
+        parametro.row.valor = valorActual;
+      }
+     
+    }
+  console.log("id:",idParametro)
+  console.log("valor",valorActual)
+  //fetchActualizarParametroPlantilla(idPlantilla, idParametro, valor, noProgramacion);
+  };
+  const cerrarModal = () => {
+    setEstaActivo(false); // Restablecer el estado a false cuando se cierra el modal
+  };
+  const handleSelectChange = (e, idParametro, noProgramacion) => {
+    const valor = e.target.value;
+    console.log("handleSelectChange");
+    console.log("valor", valor);
+    console.log("idParametro", idParametro);
+    // Llamar a la función actualizarParametroPlantilla() aquí
+    fetchActualizarParametroPlantilla(idPlantilla, idParametro, valor, 0);
+  };
+
   const fetchObtenerPlantilla = useCallback(async () => {
     try {
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
@@ -42,30 +99,37 @@ const TablaContenido = (props) => {
       console.error(error);
     }
   }, [idPlantilla, setPlantilla]);
-  /*
+
   const fetchActualizarParametroPlantilla = useCallback(
-    async (id_plantilla, idParametro, valor) => {
+    async (idPlantilla, idParametro, valor, noProgramacion) => {
       try {
         const tkn = JSON.parse(
           sessionStorage.getItem("ACCSSTKN")
-        )?.access_token;
-        console.log(tkn);
+        )?.access_token;;
         if (tkn !== undefined) {
           console.log("actualizarParametro");
           console.log(idPlantilla);
-          const json = await actualizarParametroPlantilla(tkn, idPlantilla);
+          const data = {
+            "idPlantilla": idPlantilla,
+            "idParametro": idParametro,
+            "valor": valor,
+            "noProgramacion": noProgramacion
+          };
+          
+          const json = await actualizarParametroPlantilla(
+            data,
+            tkn
+          );
           console.log(json);
-          setPlantilla(json.plantilla || null);
         } else {
-          setPlantilla(null);
+
         }
       } catch (error) {
         console.error(error);
       }
-    },
-    [idPlantilla, setPlantilla]
+    }
   );
-*/
+
   useEffect(() => {
     fetchObtenerPlantilla();
   }, [fetchObtenerPlantilla]);
@@ -75,17 +139,24 @@ const TablaContenido = (props) => {
       field: "valor",
       headerName: "VALOR",
       flex: 1,
-      editable: true,
-      renderCell: (params) => {
-        if (params.row.tipoCampo === "opciones") {
+      editable: false,
+      renderCell: (parametro) => {
+        if (parametro.row.tipoCampo === "opciones") {
           return (
             <FormControl variant="outlined" size="small" fullWidth>
               <Select
+                id={"select-param-"+ parametro.row.id}
+                key={"select-param-"+ parametro.row.id}
+                name={"select-param"}
                 onChange={(e) =>
-                  handleSelectChange(e, params.row.id_plantilla, params.row.id)
+                  handleSelectChange(
+                    e,
+                    parametro.row.id,
+                    parametro.row.noProgramacion
+                  )
                 }
                 size="small"
-                defaultValue="" // Asegúrate de dejar este defaultValue vacío
+                defaultValue={parametro.row.valor}// Asegúrate de dejar este defaultValue vacío
                 displayEmpty // Esta propiedad garantiza que el elemento seleccionado muestre el placeholder cuando esté vacío
                 renderValue={(selected) => {
                   if (!selected) {
@@ -97,22 +168,34 @@ const TablaContenido = (props) => {
                 <MenuItem disabled value="">
                   <em>Selecciona una opción</em>
                 </MenuItem>
-                {params.row.opciones.map((opcion) => (
+                {parametro.row.opciones.map((opcion) => (
                   <MenuItem key={opcion.valor} value={opcion.valor}>
                     {opcion.nombre}
                   </MenuItem>
                 ))}
               </Select>
-
             </FormControl>
           );
         } else {
           return (
-            <TextField
-              value={params.valor}
-              onChange={(e) => console.log(e.target.value)}
-              fullWidth
-            />
+   
+            <FormControl variant="outlined" size="small" fullWidth>
+              
+
+              <TextField
+                type="text"
+                id={"search-input-" + parametro.row.id}
+                onBlur={(e) =>
+                  handleOnBlur(e, parametro)
+                }
+                onChange={(e)=>{handleOnChange(e) }}
+                defaultValue={parametro.row.valor}
+
+                  pattern= "-?[0-9]*(\.[0-9]+)?"
+
+                
+              />
+            </FormControl>
           );
         }
       },
@@ -128,8 +211,9 @@ const TablaContenido = (props) => {
       flex: 2,
     },
   ];
-  function transformarDatos(parametros) {
+  function transformarDatos(parametros, noProgramacion) {
     console.log(parametros);
+    console.log("NoPRo"+parseInt(noProgramacion));
     return parametros.map((parametro) => {
       let tipoCampoData = "";
       let unidadValor = "";
@@ -171,66 +255,57 @@ const TablaContenido = (props) => {
         valor_max: parametro.valor_max || "",
         opciones: parametro.opciones || [],
         rango: rango || "",
+        noProgramacion: noProgramacion || "",
       };
     });
   }
   return (
-    <Grid container spacing={1}>
+    <Grid container>
       {plantilla == null ? ( // Agrega el loader condicionalmente
         <Grid item xs={12} align="center">
           <CircularProgress size={50} />
         </Grid>
       ) : (
-        <Grid container spacing={1}>
+        <Grid container>
           <Grid item xs={12}>
             {plantilla.parametrosGenerales.length > 0 && (
-              <Grid xs={12} spacing={1}>
+              <Grid item xs={12}>
                 <Typography variant="body1" fontWeight={600}>
                   Parámetros Generales
                 </Typography>
                 <DataGrid
-                  rows={transformarDatos(plantilla.parametrosGenerales)}
+                  rows={transformarDatos(plantilla.parametrosGenerales,null)}
                   columns={columns}
-                  initialState={{
-                    pagination: {
-                      paginationModel: {
-                        pageSize: 50,
-                      },
-                    },
-                  }}
-                  pageSizeOptions={[50]}
-                  checkGridSelection
-                  disableRowSelectionOnClick
+                  pageSize={5}
                   rowHeight={30}
                 />
               </Grid>
             )}
           </Grid>
           <Grid item xs={12}>
-            <Grid container spacing={0}>
+            <Grid container>
               {plantilla.programaciones
                 .filter((programacion) =>
                   checkboxSeleccionados.includes(programacion.noProgramacion)
                 )
-                .map((programacion, index) => (
-                  <Grid key={index} xs={12} spacing={1}>
+                .map((programacion) => (
+                  <Grid
+                    item
+                    key={parseInt(programacion.noProgramacion)}
+                    xs={12}
+                    spacing={1}
+                  >
                     <Typography variant="body1" fontWeight={600}>
                       Parámetros de programación {programacion.noProgramacion}
                     </Typography>
                     <DataGrid
-                      key={index}
-                      rows={transformarDatos(programacion.parametros)}
+                      key={parseInt(programacion.noProgramacion)}
+                      rows={transformarDatos(
+                        programacion.parametros,
+                        parseInt(programacion.noProgramacion)
+                      )}
                       columns={columns}
-                      initialState={{
-                        pagination: {
-                          paginationModel: {
-                            pageSize: 50,
-                          },
-                        },
-                      }}
-                      pageSizeOptions={[50]}
-                      checkGridSelection
-                      disableRowSelectionOnClick
+                      pageSize={5}
                       rowHeight={30}
                     />
                   </Grid>
@@ -239,6 +314,7 @@ const TablaContenido = (props) => {
           </Grid>
         </Grid>
       )}
+             <RespuestaModal activo={estaActivo} respuesta={respuestaModal} autoCierre={true} onClose={cerrarModal}/>
     </Grid>
   );
 };

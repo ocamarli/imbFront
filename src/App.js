@@ -8,7 +8,7 @@ import { isExpired, decodeToken } from "react-jwt";
 
 import { Box } from "@mui/material";
 import AgregarUsuario from "./pages/Register/AgregarUsuario.jsx";
-import AgregarPlantilla from "./pages/Recipes/AgregarPlantilla.jsx";
+import AgregarPlantilla from "./pages/Plantillas/AgregarPlantilla.jsx";
 function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [isLoading, setIsLoading] = useState(true);

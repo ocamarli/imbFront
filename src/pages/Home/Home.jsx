@@ -2,7 +2,7 @@ import React from "react";
 import ImagenHome from "../../imagenes/ImberaLogo.png"
 import { Grid } from "@mui/material";
 
-const SvgComponent = (props) => {
+const Home = (props) => {
 
   return (
     <Grid
@@ -20,4 +20,4 @@ sx={{opacity:".7"}}
   );
 };
 
-export default SvgComponent;
+export default Home;

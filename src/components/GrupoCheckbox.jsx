@@ -1,7 +1,7 @@
 import React, { useState, useEffect,useMemo } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { Typography } from '@mui/material';
+import { Typography, FormLabel } from '@mui/material';
 
 function GrupoCheckbox(props) {
     const { setCheckboxSeleccionado } = props;
@@ -11,8 +11,6 @@ function GrupoCheckbox(props) {
     const [checkboxSeleccionados, setCheckboxSeleccionados] = useState([]);
     // Estado para controlar si se muestra todos o solo los seleccionados
     const [mostrarTodos, setMostrarTodos] = useState(false);
-    // Estado para controlar si se filtran los seleccionados
-    const [filtrarSeleccionados, setFiltrarSeleccionados] = useState(false);
 
     // Función para manejar el cambio de estado de un checkbox
     const handleChange = (value) => (event) => {
@@ -27,33 +25,6 @@ function GrupoCheckbox(props) {
         }
     };
 
-    // Función para manejar el checkbox de mostrar todos
-    const handleMostrarTodosChange = () => {
-        setMostrarTodos(!mostrarTodos);
-        if (!mostrarTodos) {
-            setCheckboxSeleccionados(totalDeProgramas);
-            setFiltrarSeleccionados(false);
-            setCheckboxSeleccionado(totalDeProgramas);
-        } else {
-            setCheckboxSeleccionados([]);
-            setCheckboxSeleccionado([]);
-            setFiltrarSeleccionados(true);
-        }
-    };
-
-    // Función para manejar el checkbox de filtrar seleccionados
-    const handleFiltrarSeleccionadosChange = () => {
-        setFiltrarSeleccionados(!filtrarSeleccionados);
-        if (filtrarSeleccionados) {
-            setCheckboxSeleccionados([]);
-            setCheckboxSeleccionado([]);
-            setMostrarTodos(true);
-        } else {
-            setCheckboxSeleccionados([]);
-            setCheckboxSeleccionado([]);
-            setMostrarTodos(false);
-        }
-    };
 
     useEffect(() => {
         if (mostrarTodos) {
@@ -65,20 +36,14 @@ function GrupoCheckbox(props) {
     return (
         <div>
           <Typography variant="body1" fontWeight={600} >Habilitar programas</Typography>
-            <FormControlLabel
-                
-                control={<Checkbox size="small" checked={mostrarTodos} onChange={handleMostrarTodosChange} />}
-                label="Mostrar Todos"
-            />
-            <FormControlLabel
-                control={<Checkbox size="small" checked={filtrarSeleccionados} onChange={handleFiltrarSeleccionadosChange} />}
-                label="Filtrar Seleccionados"
-            />
-            <br />
+          <FormLabel component="legend">
+                      Selecciona un programa
+                    </FormLabel>
             {totalDeProgramas.map((programa) => (
                 <FormControlLabel
+                    
                     key={programa}
-                    control={<Checkbox size="small" onChange={handleChange(programa)} />}
+                    control={<Checkbox id={programa} size="small" onChange={handleChange(programa)} />}
                     label={programa}
                     disabled={mostrarTodos}
                     checked={checkboxSeleccionados.includes(programa)}

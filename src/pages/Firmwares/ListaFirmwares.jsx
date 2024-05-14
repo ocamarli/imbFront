@@ -5,16 +5,18 @@ import HeaderContent from "../HeaderContent";
 import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
 import { DataGrid } from "@mui/x-data-grid";
-import { obtenerFirmwares } from "../../api/axios.js";
+import { obtenerFirmwares } from "../../api/firmwaresApi.jsx";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Home from "../Home/Home.jsx";
 import AgregarFirmware from "./AgregarFirmware.jsx";
+import EditarFirmware from "./EditarFirmware.jsx";
+import { DeleteOutline as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 
 function transformarDatos(firmwares) {
   console.log(firmwares);
-  return firmwares.map((firmware) => {
+  return firmwares.map((firmware,index) => {
     return {
-      id: firmware.idFirmware || "",
+      id: index+1 || "",
       nombre: firmware.nombre || "",
       codigo: firmware.codigo || "",
     };
@@ -25,7 +27,21 @@ const ListaFirmwares = (props) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [firmwares, setFirmwares] = useState([]);
+const handleEditar = (idFirmware) => {
+  setSelectedComponent(
+    <EditarFirmware
+      idFirmware={idFirmware}
+      setSelectedComponent={setSelectedComponent}
+      auth={auth}
+    ></EditarFirmware>
+  );
+  console.log(`Editar firmware con ID ${idFirmware}`);
+};
 
+const handleEliminar = (id) => {
+  // Aquí puedes realizar la lógica para eliminar el firmware con el ID proporcionado
+  console.log(`Eliminar firmware con ID ${id}`);
+};
   const fetchFirmwares = useCallback(async () => {
     try {
       setIsLoading(true);
@@ -49,13 +65,36 @@ const ListaFirmwares = (props) => {
   }, [fetchFirmwares]);
 
   const manejarAgregarPlantilla = () => {
-    setSelectedComponent(<AgregarFirmware auth={auth}></AgregarFirmware>);
+    setSelectedComponent(<AgregarFirmware setSelectedComponent={setSelectedComponent} auth={auth}></AgregarFirmware>);
   };
+
 
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
     { field: "nombre", headerName: "Nombre", width: 150 },
     { field: "codigo", headerName: "Código", width: 150 },
+    {
+      field: "editar",
+      headerName: "Editar",
+      sortable: false,
+      width: 90,
+      renderCell: (params) => (
+        <IconButton onClick={() => handleEditar(params.row.id)}>
+          <EditIcon />
+        </IconButton>
+      ),
+    },
+    {
+      field: "eliminar",
+      headerName: "Eliminar",
+      sortable: false,
+      width: 110,
+      renderCell: (params) => (
+        <IconButton onClick={() => handleEliminar(params.row.id)}>
+          <DeleteIcon />
+        </IconButton>
+      ),
+    },
   ];
 
   return (

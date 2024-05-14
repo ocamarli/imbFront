@@ -2,7 +2,8 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Button, Box, Grid, Divider } from "@mui/material";
 import CodeEditor from "@uiw/react-textarea-code-editor";
 import { useTheme } from "@mui/material";
-import {  obtenerCodigos, setFileTemplate } from "../../api/axios";
+import { obtenerCodigos } from "../../api/axios";
+import { setFileTemplate } from "../../api/axios";
 function InputCodigo(props) {
   const { setMatches, onClose,tipoCodigo } = props;
   const [codigo, setCodigo] = useState("");
