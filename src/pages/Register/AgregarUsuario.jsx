@@ -7,7 +7,7 @@ import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
 import { setRegister } from "../../api/usuariosApi";
 import HeaderContent from "../HeaderContent";
-import RespuestaModal from "../../components/RespuestaModal";
+import ModalGenerico from "../../components/ModalGenerico";
 import Home from "../Home/Home";
 const AgregarUsuario = (props) => {
   const { setSelectedComponent } = props;
@@ -212,7 +212,7 @@ const AgregarUsuario = (props) => {
         </Paper>
       </Grid>
        {/* Renderiza el componente de Snackbar */}
-       <RespuestaModal activo={estaActivo} respuesta={respuestaModal} autoCierre={true} onClose={cerrarModal}/>
+       <ModalGenerico activo={estaActivo} respuesta={respuestaModal} autoCierre={true} onClose={cerrarModal}/>
     </Grid>
   );
 };

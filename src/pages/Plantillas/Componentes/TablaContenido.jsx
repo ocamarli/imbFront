@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import RespuestaModal from "../../../components/RespuestaModal";
+import ModalGenerico from "../../../components/ModalGenerico";
 import { obtenerPlantilla } from "../../../api/plantillasApi";
 import { actualizarParametroPlantilla } from "../../../api/plantillasApi";
 const TablaContenido = (props) => {
@@ -314,7 +314,7 @@ const TablaContenido = (props) => {
           </Grid>
         </Grid>
       )}
-             <RespuestaModal activo={estaActivo} respuesta={respuestaModal} autoCierre={true} onClose={cerrarModal}/>
+             <ModalGenerico activo={estaActivo} respuesta={respuestaModal} autoCierre={true} onClose={cerrarModal}/>
     </Grid>
   );
 };

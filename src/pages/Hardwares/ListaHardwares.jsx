@@ -6,11 +6,11 @@ import IconButton from "@mui/material/IconButton";
 import AddIcon from "@mui/icons-material/Add";
 import AgregarHardware from "./AgregarHardware.jsx";
 import { DataGrid } from "@mui/x-data-grid";
-import { obtenerHardwares } from "../../api/hardwaresApi.jsx";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Home from "../Home/Home.jsx"
 import EditarHardware from "./EditarHardware.jsx";
 import { DeleteOutline as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
+import { useHardwareService } from "../../hooks/useHardwareService.jsx";
 function transformarDatos(hardwares) {
   console.log(hardwares);
   return hardwares.map((hardware,index) => {
@@ -23,9 +23,7 @@ function transformarDatos(hardwares) {
 }
 const ListaHardwares = (props) => {
   const { setSelectedComponent, auth, onResponse } = props;
-  const [isLoading, setIsLoading] = useState(false);
-
-  const [hardwares, setHardwares] = useState([]);
+  const { hardwares, isLoading, fetchHardwares, handleEliminarHardware } = useHardwareService(onResponse);
   const handleEditar = (idHardware) => {
     setSelectedComponent(
       <EditarHardware
@@ -36,40 +34,14 @@ const ListaHardwares = (props) => {
     );
     console.log(`Editar hardware con ID ${idHardware}`);
   };
-  
-  const handleEliminar = (id) => {
-    // Aquí puedes realizar la lógica para eliminar el firmware con el ID proporcionado
-    console.log(`Eliminar firmware con ID ${id}`);
-  };
-  const fetchHardwares = useCallback(async () => {
-    try {
 
-      setIsLoading(true);
-      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-      console.log(tkn);
-      if (tkn !== undefined) {
-        const json = await obtenerHardwares(tkn);
-        console.log(json);
-        setHardwares(json.hardwares || []);
-        onResponse(json);
-        setIsLoading(false);
-      }
-    } catch (error) {
-      setIsLoading(false);
-      onResponse({ status: false, msg: error });
-      console.error(error);
-    }
-  }, [setIsLoading, setHardwares, onResponse]);
   useEffect(() => {
     fetchHardwares();
   }, [fetchHardwares]);
 
-
   const manejarAgregarHardware = () => {
     setSelectedComponent(<AgregarHardware setSelectedComponent={setSelectedComponent} auth={auth}></AgregarHardware>);
   };
-
-
 
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
@@ -92,7 +64,7 @@ const ListaHardwares = (props) => {
       sortable: false,
       width: 110,
       renderCell: (params) => (
-        <IconButton onClick={() => handleEliminar(params.row.id)}>
+        <IconButton onClick={() => handleEliminarHardware(params.row.id)}>
           <DeleteIcon />
         </IconButton>
       ),

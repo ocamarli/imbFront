@@ -1,5 +1,6 @@
 import { postData,getData } from "./axios";
 import { ENV } from "../utils";
+
 export async function actualizarGae(data, token) {
   try {
     const response = await postData(
@@ -17,6 +18,7 @@ export async function actualizarGae(data, token) {
     return { status: false, msg: error.message };
   }
 } 
+
 export async function obtenerGaes(token) {
     try {
       const response = await getData(
@@ -49,13 +51,13 @@ export async function obtenerGaes(token) {
         return await response.json();
       } else {
         return {
-          usuarios: [],
+          gae: [],
           status: false,
-          msg: "No se pudo obtener la información de los usuarios",
+          msg: "No se pudo obtener la información de GAE",
         };
       }
     } catch (error) {
-      return { usuarios: [], status: false, msg: error.message};
+      return { gaes: [], status: false, msg: error.message};
     }
   }
   export async function crearGae(data, token) {

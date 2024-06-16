@@ -10,6 +10,7 @@ import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Home from "../Home/Home.jsx";
 import AgregarFirmware from "./AgregarFirmware.jsx";
 import EditarFirmware from "./EditarFirmware.jsx";
+import { useFirmwareService } from "../../hooks/useFirmwareService.jsx";
 import { DeleteOutline as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
 
 function transformarDatos(firmwares) {
@@ -24,9 +25,8 @@ function transformarDatos(firmwares) {
 }
 const ListaFirmwares = (props) => {
   const { setSelectedComponent, auth, onResponse } = props;
-  const [isLoading, setIsLoading] = useState(false);
+  const { firmwares, isLoading, fetchFirmwares, handleEliminarFirmware } = useFirmwareService(onResponse);  
 
-  const [firmwares, setFirmwares] = useState([]);
 const handleEditar = (idFirmware) => {
   setSelectedComponent(
     <EditarFirmware
@@ -38,28 +38,7 @@ const handleEditar = (idFirmware) => {
   console.log(`Editar firmware con ID ${idFirmware}`);
 };
 
-const handleEliminar = (id) => {
-  // Aquí puedes realizar la lógica para eliminar el firmware con el ID proporcionado
-  console.log(`Eliminar firmware con ID ${id}`);
-};
-  const fetchFirmwares = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-      console.log(tkn);
-      if (tkn !== undefined) {
-        const json = await obtenerFirmwares(tkn);
-        console.log(json);
-        setFirmwares(json.firmwares || []);
-        onResponse(json);
-        setIsLoading(false);
-      }
-    } catch (error) {
-      setIsLoading(false);
-      onResponse({ status: false, msg: error });
-      console.error(error);
-    }
-  }, [setIsLoading, setFirmwares, onResponse]);
+
   useEffect(() => {
     fetchFirmwares();
   }, [fetchFirmwares]);
@@ -90,7 +69,7 @@ const handleEliminar = (id) => {
       sortable: false,
       width: 110,
       renderCell: (params) => (
-        <IconButton onClick={() => handleEliminar(params.row.id)}>
+        <IconButton onClick={() => handleEliminarFirmware(params.row.id)}>
           <DeleteIcon />
         </IconButton>
       ),

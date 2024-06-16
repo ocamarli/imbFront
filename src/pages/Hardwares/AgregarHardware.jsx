@@ -4,38 +4,24 @@ import { TextField, Button, Grid, Paper,} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
 import HeaderContent from "../HeaderContent";
-import RespuestaModal from "../../components/RespuestaModal";
-import { crearHardware } from "../../api/hardwaresApi";
+import ModalGenerico from "../../components/ModalGenerico";
+import { useHardwareService } from "../../hooks/useHardwareService";
 import Home from "../Home/Home";
 const AgregarHardware = (props) => {
   const {setSelectedComponent} = props
   const onSubmit = (data) => {
-    data.idHardware = parseInt(data.idHardware);
     console.log("submit");
     console.log(data);
-    handleCloseRegister(data);
+    handleCreate(data)
   };
   const cerrarModal = () => {
     setEstaActivo(false); // Restablecer el estado a false cuando se cierra el modal
   };
-  const [estaActivo, setEstaActivo] = useState(false);
-  const [respuestaModal, setRespuestaModal] = useState(false);
-  const handleCloseRegister = async (data) => {
-    console.log(data);
-    const response = await crearHardware(
-      data,
-      JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token
-    );
-    console.log(response);
-    console.log(response.status);
-    setEstaActivo(true);
-    setRespuestaModal(response);
-  };
+  const {handleCreate,estaActivo,setEstaActivo,respuestaModal}=useHardwareService()
   const handleOnChangeInput = (event) => {
     // Expresión regular que permite letras (mayúsculas y minúsculas) y espacios en blanco
-    const regex = /^[A-Za-z\s]*$/;
+    const regex = /^[A-Za-z0-9\s_-]*$/;
     const inputValue = event.target.value;
-
     // Validar si el texto ingresado cumple con la expresión regular
     if (regex.test(inputValue)) {
       // Si cumple, convertir a mayúsculas y establecer en el campo de texto
@@ -116,7 +102,7 @@ const AgregarHardware = (props) => {
         </Paper>
       </Grid>
 
-       <RespuestaModal activo={estaActivo} respuesta={respuestaModal} autoCierre={false} onClose={cerrarModal}/>
+       <ModalGenerico activo={estaActivo} respuesta={respuestaModal} autoCierre={false} onClose={cerrarModal}/>
     </Grid>
   );
 };

@@ -4,7 +4,7 @@ import { TextField, Button, Grid, Paper,} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
 import HeaderContent from "../HeaderContent";
-import RespuestaModal from "../../components/RespuestaModal";
+import ModalGenerico from "../../components/ModalGenerico";
 import { crearHardware } from "../../api/hardwaresApi";
 import Home from "../Home/Home";
 const EditarHardware = (props) => {
@@ -100,7 +100,7 @@ const EditarHardware = (props) => {
         </Paper>
       </Grid>
 
-       <RespuestaModal activo={estaActivo} respuesta={respuestaModal} autoCierre={false} onClose={cerrarModal}/>
+       <ModalGenerico activo={estaActivo} respuesta={respuestaModal} autoCierre={false} onClose={cerrarModal}/>
     </Grid>
   );
 };

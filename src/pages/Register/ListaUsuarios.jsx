@@ -15,7 +15,7 @@ import UsuarioAutorizado from "../../components/UsuarioAutorizado";
 import EditarUsuario from "./EditarUsuario";
 import PersonOffIcon from "@mui/icons-material/PersonOff";
 import { actualizarEstatusUsuario } from "../../api/usuariosApi";
-import RespuestaModal from "../../components/RespuestaModal";
+import ModalGenerico from "../../components/ModalGenerico";
 
 const ListaUsuarios = (props) => {
   const theme = useTheme();
@@ -61,8 +61,7 @@ const ListaUsuarios = (props) => {
     console.log("Editar usuario con ID:", idUsuario);
   };
 
-  const fetchActualizarEstatusUsuario = useCallback(
-    async (estatus, idUsuario) => {
+  const fetchActualizarEstatusUsuario = useCallback(async (estatus, idUsuario) => {
       try {
         setIsLoading(true);
         const tkn = JSON.parse(
@@ -257,7 +256,7 @@ const ListaUsuarios = (props) => {
         )}
       </Grid>
       {/* Modal Respuesta Ok */}
-      <RespuestaModal
+      <ModalGenerico
         activo={estaActivoModalOk}
         respuesta={respuestaModalOk}
         autoCierre={true}
@@ -265,7 +264,7 @@ const ListaUsuarios = (props) => {
       />      
       {/* Modal Confirmación */}
 
-      <RespuestaModal
+      <ModalGenerico
         activo={estaActivoModalConfirmacion}
         respuesta={respuestaModalConfirmacion}
         autoCierre={false}

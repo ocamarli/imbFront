@@ -4,7 +4,7 @@ import { TextField, Button, Grid, Paper,} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
 import HeaderContent from "../HeaderContent";
-import RespuestaModal from "../../components/RespuestaModal";
+import ModalGenerico from "../../components/ModalGenerico";
 import { crearFirmware } from "../../api/firmwaresApi";
 import Home from "../Home/Home";
 const AgregarFirmware = (props) => {
@@ -120,7 +120,7 @@ const AgregarFirmware = (props) => {
         </Paper>
       </Grid>
        {/* Renderiza el componente de Snackbar */}
-       <RespuestaModal activo={estaActivo} respuesta={respuestaModal} autoCierre={false} onClose={cerrarModal}/>
+       <ModalGenerico activo={estaActivo} respuesta={respuestaModal} autoCierre={false} onClose={cerrarModal}/>
     </Grid>
   );
 };

@@ -6,7 +6,7 @@ import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
 import { setRegister } from "../../api/usuariosApi";
 import HeaderContent from "../HeaderContent";
-import RespuestaModal from "../../components/RespuestaModal";
+import ModalGenerico from "../../components/ModalGenerico";
 import { obtenerUsuario } from "../../api/usuariosApi";
 import { actualizarUsuario } from "../../api/usuariosApi";
 import Home from "../Home/Home";
@@ -48,6 +48,8 @@ console.log("----ID----",idUsuario)
   const cerrarModal = () => {
     setEstaActivo(false); // Restablecer el estado a false cuando se cierra el modal
   };
+
+  
   const handleCloseRegister = async (data) => {
     let newData;
     newData = { idUsuario:idUsuario,...data, permisos:autorizaciones };
@@ -212,7 +214,7 @@ console.log("----ID----",idUsuario)
             </Grid>
           </form>
         </Paper>
-        <RespuestaModal activo={estaActivo} respuesta={respuestaModal} autoCierre={true} onClose={cerrarModal}/>
+        <ModalGenerico activo={estaActivo} respuesta={respuestaModal} autoCierre={true} onClose={cerrarModal}/>
       </Grid>
 
 

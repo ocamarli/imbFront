@@ -12,7 +12,7 @@ import Paper from "@mui/material/Paper";
 import { authenticate } from "../../api/usuariosApi";
 import ImagenLogin from "../../imagenes/ImberaLogo.png";
 import ImagenFondo from "../../imagenes/fondo-login.png";
-import RespuestaModal from "../../components/RespuestaModal";
+import ModalGenerico from "../../components/ModalGenerico";
 function Copyright(props) {
   return (
     <Typography
@@ -141,7 +141,7 @@ export default function Login() {
           </Box>
         </Box>
       </Grid>
-      <RespuestaModal
+      <ModalGenerico
         activo={estaActivo}
         respuesta={respuestaModal}
         autoCierre={true}

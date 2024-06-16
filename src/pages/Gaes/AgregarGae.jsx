@@ -4,7 +4,7 @@ import { TextField, Button, Grid, Paper,} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
 import HeaderContent from "../HeaderContent";
-import RespuestaModal from "../../components/RespuestaModal";
+import RespuestaModal from "../../components/ModalGenerico";
 import { crearGae } from "../../api/gaesApi";
 import Home from "../Home/Home";
 const AgregarGae = (props) => {
@@ -65,6 +65,18 @@ const AgregarGae = (props) => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
+                <Typography>Id GAE</Typography>
+                <TextField
+                  {...register("idGae", { required: true })}
+                  fullWidth
+                  placeholder="id GAE"
+                  variant="outlined"
+                  error={errors.idGae ? true : false}
+                  helperText={errors.idGae ? "Este campo es requerido" : ""}
+                  onChange={handleOnChangeInput}
+                />
+              </Grid>
+              <Grid item xs={12}>
                 <Typography>Nombre GAE</Typography>
                 <TextField
                   {...register("nombre", { required: true })}
@@ -75,16 +87,16 @@ const AgregarGae = (props) => {
                   helperText={errors.nombre ? "Este campo es requerido" : ""}
                   onChange={handleOnChangeInput}
                 />
-              </Grid>
+              </Grid>              
               <Grid item xs={12}>
-                <Typography>Descripción GAE</Typography>
+                <Typography>Código GAE</Typography>
                 <TextField
-                  {...register("descripcion", { required: true })}
+                  {...register("codigo", { required: true })}
                   fullWidth
-                  placeholder="Descripción Gae"
+                  placeholder="Código GAE"
                   variant="outlined"
-                  error={errors.descripcion ? true : false}
-                  helperText={errors.descripcion ? "Este campo es requerido" : ""}
+                  error={errors.codigo ? true : false}
+                  helperText={errors.codigo ? "Este campo es requerido" : ""}
                   onChange={handleOnChangeInput}
                 />
               </Grid>

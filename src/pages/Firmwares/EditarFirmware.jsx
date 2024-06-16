@@ -4,7 +4,7 @@ import { TextField, Button, Grid, Paper } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
 import HeaderContent from "../HeaderContent";
-import RespuestaModal from "../../components/RespuestaModal";
+import ModalGenerico from "../../components/ModalGenerico";
 import { actualizarFirmware } from "../../api/firmwaresApi";
 import Home from "../Home/Home"
 const EditarFirmware = (props) => {
@@ -108,7 +108,7 @@ const EditarFirmware = (props) => {
         </Paper>
       </Grid>
       {/* Renderiza el componente de Snackbar */}
-      <RespuestaModal
+      <ModalGenerico
         activo={estaActivo}
         respuesta={respuestaModal}
         autoCierre={false}
