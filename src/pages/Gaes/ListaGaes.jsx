@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect} from "react";
 import { Button, Grid, Paper, Typography, IconButton } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Add as AddIcon, ArrowBack as ArrowBackIcon, DeleteOutline as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
@@ -12,7 +12,8 @@ function transformarDatos(gaes) {
   return gaes.map((gae,index) => {
     return {
       id: index+1 || "",
-      idGae:gae.idGae,
+      idGaeInterno:gae.idGaeInterno,
+      idGae:gae.idGae || "",
       nombre: gae.nombre || "",
       codigo: gae.codigo || "",
     };
@@ -21,7 +22,7 @@ function transformarDatos(gaes) {
 const ListaGaes = (props) => {
   const { setSelectedComponent, auth, onResponse } = props;
   const { gaes, isLoading, fetchGaes, handleDeshabilitarGae, cerrarModalOk, cerrarModalConfirmacion,
-        setEstaActivoModalConfirmacion, estaActivoModalOk,respuestaModalOk,estaActivoModalConfirmacion,respuestaModalConfirmacion } = useGaeService(onResponse);  
+       estaActivoModalOk,respuestaModalOk,estaActivoModalConfirmacion,respuestaModalConfirmacion } = useGaeService(onResponse);  
 
   const handleEditarGae = (idGae) => {
     setSelectedComponent(
@@ -42,7 +43,7 @@ const ListaGaes = (props) => {
 
   const columns = [
     { field: "id", headerName: "ID" },
-    { field: "idGae", headerName:"ID GAE"},
+    { field: "idGaeInterno", headerName:"ID GAE"},
     { field: "nombre", headerName: "Nombre" },
     { field: "codigo", headerName: "Código"},
     {

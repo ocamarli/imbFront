@@ -2,7 +2,6 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { TextField, Button, Grid, Paper,} from "@mui/material";
 import Typography from "@mui/material/Typography";
-import InputLabel from "@mui/material/InputLabel";
 import HeaderContent from "../HeaderContent";
 import RespuestaModal from "../../components/ModalGenerico";
 import { crearGae } from "../../api/gaesApi";
@@ -67,12 +66,12 @@ const AgregarGae = (props) => {
               <Grid item xs={12}>
                 <Typography>Id GAE</Typography>
                 <TextField
-                  {...register("idGae", { required: true })}
+                  {...register("idGaeInterno", { required: true })}
                   fullWidth
                   placeholder="id GAE"
                   variant="outlined"
-                  error={errors.idGae ? true : false}
-                  helperText={errors.idGae ? "Este campo es requerido" : ""}
+                  error={errors.idGaeInterno ? true : false}
+                  helperText={errors.idGaeInterno ? "Este campo es requerido" : ""}
                   onChange={handleOnChangeInput}
                 />
               </Grid>

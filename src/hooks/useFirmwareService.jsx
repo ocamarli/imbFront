@@ -1,9 +1,10 @@
 // hooks/useSoftwareService.js
 import { useState, useCallback } from 'react';
 
-import { crearFirmware,obtenerFirmwares,actualizarFirmware } from '../api/firmwaresApi';
+import { crearFirmware,obtenerFirmwares,actualizarFirmware,obtenerFirmware } from '../api/firmwaresApi';
 export const useFirmwareService = () => {
   const [firmwares, setFirmwares] = useState([]);
+  const [firmware, setFirmware] = useState(null);  
   const [isLoading, setIsLoading] = useState(false);
   const [estaActivo, setEstaActivo] = useState(false);
   const [respuestaModal, setRespuestaModal] = useState(false);
@@ -20,23 +21,58 @@ export const useFirmwareService = () => {
     status: false,
   });
 
-
+  const fetchFirmware = useCallback(async (idFirmware) => {
+    try {
+      setIsLoading(true);
+      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+      if (tkn) {
+        const json = await obtenerFirmware(tkn,idFirmware);
+  
+        console.log(json.firmware);
+        setFirmware(json.firmware || []);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.error(error);
+    }
+  }, []);
   const fetchFirmwares = useCallback(async () => {
     try {
       setIsLoading(true);
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
       if (tkn) {
         const json = await obtenerFirmwares(tkn);
-        setFirmwares(json.firmwares || []);
-        
+        const firmwaresActivos =
+          json.firmwares?.filter((firmware) => firmware.estatus !== false) || [];
+        console.log(json.firmwares);
+        setFirmwares(firmwaresActivos || []);
       }
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
-      
       console.error(error);
     }
   }, []);
+  const handleEditarFirmware = async (data) => {
+    try {
+      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+      const response = await actualizarFirmware(data,tkn)
+      
+      if (response.status) {
+        console.log(response);
+        if (response.status) {
+          setRespuestaModalOk({ msg: response.msg, status: true });
+          setEstaActivoModalOk(true);
+        }
+      }
+      console.log(response);
+
+      setRespuestaModal(response);;
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleCreateFirmware = async (data) => {
     try {
@@ -46,13 +82,6 @@ export const useFirmwareService = () => {
         setEstaActivo(true);
         setRespuestaModal(response);
       }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  const handleEliminarFirmware = async (data) => {
-    try {
-         console.log("sdasd")
     } catch (error) {
       console.error(error);
     }
@@ -97,12 +126,26 @@ export const useFirmwareService = () => {
 
   return {
     firmwares,
+    firmware,    
     isLoading,
+    idFirmwareSeleccionado,
     estaActivo,
     respuestaModal,
+    estaActivoModalOk,
+    respuestaModalOk,
+    estaActivoModalConfirmacion,
+    respuestaModalConfirmacion,
+    setRespuestaModalConfirmacion,
+    cerrarModalOk,
+    cerrarModalConfirmacion,
+    setEstaActivoModalConfirmacion,
+    setIdFirmwareSeleccionado,
     fetchFirmwares,
+    fetchFirmware,
     handleCreateFirmware,
-    handleEliminarFirmware,
-    setEstaActivo
+    handleDeshabilitarFirmware,
+    handleEditarFirmware,
+    setEstaActivo,
+    
   };
 };

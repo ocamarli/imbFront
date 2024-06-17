@@ -1,77 +1,63 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { Button, Grid, Paper } from "@mui/material";
-import Typography from "@mui/material/Typography";
-import HeaderContent from "../HeaderContent";
-import IconButton from "@mui/material/IconButton";
-import AddIcon from "@mui/icons-material/Add";
-import AgregarHardware from "./AgregarHardware.jsx";
+import { Button, Grid, Paper, Typography, IconButton } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import Home from "../Home/Home.jsx"
-import EditarHardware from "./EditarHardware.jsx";
-import { DeleteOutline as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
+import { Add as AddIcon, ArrowBack as ArrowBackIcon, DeleteOutline as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
+import HeaderContent from "../HeaderContent";
+import AgregarGae from "./AgregarGae";
+import EditarGae from "./EditarGae";
 import ModalGenerico from "../../components/ModalGenerico";
-import { useHardwareService } from "../../hooks/useHardwareService.jsx";
-function transformarDatos(hardwares) {
-  console.log(hardwares);
-  return hardwares.map((hardware,index) => {
+import { useGaeService } from "../../hooks/useGaeServices";
+import Home from "../Home/Home";
+function transformarDatos(gaes) {
+  return gaes.map((gae,index) => {
     return {
       id: index+1 || "",
-      idHardware:hardware.idHardware || "",
-      nombre: hardware.nombre || "",
-      descripcion: hardware.descripcion || "",
+      idGaeInterno:gae.idGaeInterno,
+      idGae:gae.idGae || "",
+      nombre: gae.nombre || "",
+      codigo: gae.codigo || "",
     };
   });
 }
-const ListaHardwares = (props) => {
+const ListaGaes = (props) => {
   const { setSelectedComponent, auth, onResponse } = props;
-  const { hardwares, isLoading, fetchHardwares, handleDeshabilitarHardware, cerrarModalOk, cerrarModalConfirmacion,
-    setEstaActivoModalConfirmacion, estaActivoModalOk,respuestaModalOk,estaActivoModalConfirmacion,respuestaModalConfirmacion } = useHardwareService(onResponse); 
-  const handleEditarHardware = (idHardware) => {
+  const { gaes, isLoading, fetchGaes, handleDeshabilitarGae, cerrarModalOk, cerrarModalConfirmacion,
+        setEstaActivoModalConfirmacion, estaActivoModalOk,respuestaModalOk,estaActivoModalConfirmacion,respuestaModalConfirmacion } = useGaeService(onResponse);  
+
+  const handleEditarGae = (idGae) => {
     setSelectedComponent(
-      <EditarHardware
-        idHardware={idHardware}
+      <EditarGae
+        idGae={idGae}
         setSelectedComponent={setSelectedComponent}
         auth={auth}
-      ></EditarHardware>
+      ></EditarGae>
     );
-    console.log(`Editar hardware con ID ${idHardware}`);
   };
 
   useEffect(() => {
-    fetchHardwares();
-  }, [fetchHardwares]);
-
-  const manejarAgregarHardware = () => {
-    setSelectedComponent(<AgregarHardware setSelectedComponent={setSelectedComponent} auth={auth}></AgregarHardware>);
+    fetchGaes();
+  }, [fetchGaes]);
+  const manejarAgregarPlantilla = () => {
+    setSelectedComponent(<AgregarGae setSelectedComponent={setSelectedComponent} auth={auth}></AgregarGae>);
   };
 
   const columns = [
-    { field: "id", headerName: "ID", width: 90 },
-    { field: "nombre", headerName: "Nombre", width: 350 },
-    { field: "descripcion", headerName: "Descripcion", width: 150 },
-    {
-      field: "editar",
-      headerName: "Editar",
-      sortable: false,
-      width: 90,
-      renderCell: (params) => (
-        <IconButton onClick={() => handleEditarHardware(params.row.id)}>
-          <EditIcon />
-        </IconButton>
-      ),
-    },
+    { field: "id", headerName: "ID" },
+    { field: "idGaeInterno", headerName:"ID GAE"},
+    { field: "nombre", headerName: "Nombre" },
+    { field: "codigo", headerName: "Código"},
     {
       field: "eliminar",
-      headerName: "Eliminar",
+      headerName: "Deshabilitar",
       sortable: false,
       width: 110,
       renderCell: (params) => (
-        <IconButton onClick={() => handleDeshabilitarHardware(params.row.idHardware)}>
+        <IconButton onClick={() => handleDeshabilitarGae(params.row.idGae)}>
           <DeleteIcon />
         </IconButton>
       ),
     },
+
   ];
 
   return (
@@ -98,8 +84,8 @@ const ListaHardwares = (props) => {
               { label: "Confirmar", handler: () => { cerrarModalConfirmacion(true); }, color: "primary" },
               { label: "Cancelar", handler: () => { cerrarModalConfirmacion(false); }, color: "error" },
             ]}
-      />          
-          <HeaderContent titulo="Lista de hardwares"></HeaderContent>
+      />
+          <HeaderContent titulo="Lista de GAEs"></HeaderContent>
           <Paper style={{ padding: 20 }}>
             <Grid container spacing={3}>
               <Grid
@@ -118,7 +104,7 @@ const ListaHardwares = (props) => {
                   alignItems: "center",
                 }}
               >
-                <Typography variant="h6">Agregar hardware</Typography>
+                <Typography variant="h6">Agregar código GAE</Typography>
                 <IconButton
                   variant={"contained"}
                   sx={{
@@ -127,23 +113,23 @@ const ListaHardwares = (props) => {
                     color: "white",
                     marginLeft: "10px",
                   }}
-                  onClick={manejarAgregarHardware}
+                  onClick={()=>{manejarAgregarPlantilla()}}
                 >
                   <AddIcon />
                 </IconButton>
               </Grid>
 
               <Grid item xs={12}>
-                
+               
                   <DataGrid
                     /*rows={activeTab === "activas" ? dataActivas : dataObsoletas}*/
                     sx={{ maxHeight: "calc(100vh - 330px)", width: "100%" }}
-                    rows={transformarDatos(hardwares)}
+                    rows={transformarDatos(gaes)}
                     columns={columns}
                     pageSize={5}
                     rowsPerPageOptions={[5, 10, 20]}
                   />
-                
+               
               </Grid>
 
             </Grid>
@@ -164,4 +150,4 @@ const ListaHardwares = (props) => {
   );
 };
 
-export default ListaHardwares;
+export default ListaGaes;

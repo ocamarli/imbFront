@@ -1,9 +1,10 @@
 // hooks/useSoftwareService.js
 import { useState, useCallback } from 'react';
 
-import { crearHardware,obtenerHardwares,actualizarHardware } from '../api/hardwaresApi';
+import { crearHardware,obtenerHardwares,actualizarHardware,obtenerHardware } from '../api/hardwaresApi';
 export const useHardwareService = () => {
   const [hardwares, setHardwares] = useState([]);
+  const [hardware, setHardware] = useState(null);  
   const [isLoading, setIsLoading] = useState(false);
   const [estaActivo, setEstaActivo] = useState(false);
   const [respuestaModal, setRespuestaModal] = useState(false);
@@ -20,23 +21,58 @@ export const useHardwareService = () => {
     status: false,
   });
 
-
+  const fetchHardware = useCallback(async (idHardware) => {
+    try {
+      setIsLoading(true);
+      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+      if (tkn) {
+        const json = await obtenerHardware(tkn,idHardware);
+  
+        console.log(json.hardware);
+        setHardware(json.hardware || []);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.error(error);
+    }
+  }, []);
   const fetchHardwares = useCallback(async () => {
     try {
       setIsLoading(true);
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
       if (tkn) {
         const json = await obtenerHardwares(tkn);
-        setHardwares(json.Hardwares || []);
-        
+        const hardwaresActivos =
+          json.hardwares?.filter((hardware) => hardware.estatus !== false) || [];
+        console.log(json.hardwares);
+        setHardwares(hardwaresActivos || []);
       }
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
-      
       console.error(error);
     }
   }, []);
+  const handleEditarHardware = async (data) => {
+    try {
+      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+      const response = await actualizarHardware(data,tkn)
+      
+      if (response.status) {
+        console.log(response);
+        if (response.status) {
+          setRespuestaModalOk({ msg: response.msg, status: true });
+          setEstaActivoModalOk(true);
+        }
+      }
+      console.log(response);
+
+      setRespuestaModal(response);;
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleCreateHardware = async (data) => {
     try {
@@ -46,13 +82,6 @@ export const useHardwareService = () => {
         setEstaActivo(true);
         setRespuestaModal(response);
       }
-    } catch (error) {
-      console.error(error);
-    }
-  };
-  const handleEliminarHardware = async (data) => {
-    try {
-         console.log("sdasd")
     } catch (error) {
       console.error(error);
     }
@@ -97,12 +126,25 @@ export const useHardwareService = () => {
 
   return {
     hardwares,
+    hardware,    
     isLoading,
+    idHardwareSeleccionado,
     estaActivo,
     respuestaModal,
+    estaActivoModalOk,
+    respuestaModalOk,
+    estaActivoModalConfirmacion,
+    respuestaModalConfirmacion,
+    cerrarModalOk,
+    cerrarModalConfirmacion,
+    setEstaActivoModalConfirmacion,
+    setIdHardwareSeleccionado,
     fetchHardwares,
+    fetchHardware,
     handleCreateHardware,
-    handleEliminarHardware,
-    setEstaActivo
+    handleDeshabilitarHardware,
+    handleEditarHardware,
+    setEstaActivo,
+    
   };
 };
