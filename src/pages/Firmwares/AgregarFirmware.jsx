@@ -2,20 +2,19 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { TextField, Button, Grid, Paper,} from "@mui/material";
 import Typography from "@mui/material/Typography";
-import InputLabel from "@mui/material/InputLabel";
 import HeaderContent from "../HeaderContent";
-import ModalGenerico from "../../components/ModalGenerico";
+import RespuestaModal from "../../components/ModalGenerico";
 import { crearFirmware } from "../../api/firmwaresApi";
 import Home from "../Home/Home";
 const AgregarFirmware = (props) => {
   const { setSelectedComponent } = props;
   const onSubmit = (data) => {
-    data.idFirmware = parseInt(data.idFirmware);
+
     console.log("submit");
     console.log(data);
     handleCloseRegister(data);
   };
-
+  
   const cerrarModal = () => {
     setEstaActivo(false); // Restablecer el estado a false cuando se cierra el modal
   };
@@ -24,7 +23,6 @@ const AgregarFirmware = (props) => {
   const handleCloseRegister = async (data) => {
 
     console.log(data);
-
     const response = await crearFirmware(
       data,
       JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token
@@ -48,6 +46,7 @@ const AgregarFirmware = (props) => {
       event.target.value = inputValue.slice(0, -1);
     }
   };
+  
   const handleOnCLickSalir = () => {
     setSelectedComponent(<Home></Home>);
   };  
@@ -64,31 +63,30 @@ const AgregarFirmware = (props) => {
         <Paper style={{ padding: 20 }} >
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={3}>
-
+              <Grid item xs={12}>
+                <Typography>Id Firmware</Typography>
+                <TextField
+                  {...register("idFirmwareInterno", { required: true })}
+                  fullWidth
+                  placeholder="id Firmware"
+                  variant="outlined"
+                  error={errors.idFirmwareInterno ? true : false}
+                  helperText={errors.idFirmwareInterno ? "Este campo es requerido" : ""}
+                  onChange={handleOnChangeInput}
+                />
+              </Grid>
               <Grid item xs={12}>
                 <Typography>Nombre firmware</Typography>
                 <TextField
                   {...register("nombre", { required: true })}
                   fullWidth
-                  placeholder="Nombre"
+                  placeholder="Nombre firmware"
                   variant="outlined"
                   error={errors.nombre ? true : false}
                   helperText={errors.nombre ? "Este campo es requerido" : ""}
                   onChange={handleOnChangeInput}
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <InputLabel>Descripción firmware</InputLabel>
-                <TextField
-                  {...register("descripcion", { required: true })}
-                  fullWidth
-                  placeholder="Descripción"
-                  variant="outlined"
-                  error={errors.descripcion ? true : false}
-                  helperText={errors.descripcion ? "Este campo es requerido" : ""}
-                  onChange={handleOnChangeInput}
-                />
-              </Grid>
+              </Grid>              
 
               <Grid item xs={12}>
                 <Grid container sx={{ justifyContent: "space-around" }} spacing={2}>
@@ -110,9 +108,9 @@ const AgregarFirmware = (props) => {
                       fullWidth
                       onClick={handleOnCLickSalir}
                     >
-                      Salir
+                      salir
                     </Button>
-                  </Grid>                       
+                  </Grid>                  
                 </Grid>
               </Grid>
             </Grid>
@@ -120,7 +118,7 @@ const AgregarFirmware = (props) => {
         </Paper>
       </Grid>
        {/* Renderiza el componente de Snackbar */}
-       <ModalGenerico activo={estaActivo} respuesta={respuestaModal} autoCierre={false} onClose={cerrarModal}/>
+       <RespuestaModal activo={estaActivo} respuesta={respuestaModal} autoCierre={true} onClose={cerrarModal}/>
     </Grid>
   );
 };

@@ -1,26 +1,20 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { TextField, Button, Grid, Paper } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
 import HeaderContent from "../HeaderContent";
-import RespuestaModal from "../../components/ModalGenerico";
-import { crearGae } from "../../api/gaesApi";
 import { useGaeService } from "../../hooks/useGaeServices";
 import Home from "../Home/Home";
 import ModalGenerico from "../../components/ModalGenerico";
 const EditarGae = (props) => {
-  const { idGae, setSelectedComponent, auth, onResponse } = props;
-  const [estaActivo, setEstaActivo] = useState(false);
-  const [respuestaModal, setRespuestaModal] = useState(false);
-  const { handleEditarGae,gae,gaes, isLoading, fetchGaes,fetchGae, handleDeshabilitarGae, cerrarModalOk, cerrarModalConfirmacion,
-    setEstaActivoModalConfirmacion, estaActivoModalOk,respuestaModalOk,estaActivoModalConfirmacion,respuestaModalConfirmacion } = useGaeService(onResponse);  
+  const { idGae, setSelectedComponent, onResponse } = props;
+  const { handleEditarGae,gae,fetchGae,  cerrarModalOk,  estaActivoModalOk,respuestaModalOk} = useGaeService(onResponse);  
 
 
   const {
     register,
     handleSubmit,
-    setValue, // Añadido para establecer los valores del formulario
     formState: { errors },
   } = useForm();
 
@@ -29,10 +23,6 @@ const EditarGae = (props) => {
     console.log("submit");
     console.log(data);
     handleEditarGae(data);
-  };
-
-  const cerrarModal = () => {
-    setEstaActivo(false); // Restablecer el estado a false cuando se cierra el modal
   };
 
   const handleOnChangeInput = (event) => {
@@ -76,12 +66,26 @@ const EditarGae = (props) => {
       />      
       {/* Modal Confirmación */}
 
-
       <Grid item xs={7}>
         <HeaderContent titulo="Editar GAE" />
         <Paper style={{ padding: 20 }}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={3}>
+            <Grid item xs={12}>
+                <Typography>Id GAE</Typography>
+                <TextField
+                  {...register("idGaeInterno")}
+                  fullWidth
+                  placeholder="Id Gae"
+                  variant="outlined"
+                  error={errors.idGaeInterno ? true : false}
+                  helperText={errors.idGaeInterno ? "Este campo es requerido" : ""}
+                  onChange={handleOnChangeInput}
+                  defaultValue={gae.idGaeInterno}
+                  name="idGaeInterno"
+                  disabled={true}
+                />
+              </Grid>              
               <Grid item xs={12}>
                 <Typography>Nombre GAE</Typography>
                 <TextField
@@ -99,7 +103,7 @@ const EditarGae = (props) => {
               <Grid item xs={12}>
                 <InputLabel>Código GAE</InputLabel>
                 <TextField
-                  {...register("codigo", { required: true })}
+                  {...register("codigo")}
                   fullWidth
                   placeholder="Código"
                   variant="outlined"
@@ -108,6 +112,7 @@ const EditarGae = (props) => {
                   onChange={handleOnChangeInput}
                   defaultValue={gae.codigo}
                   name="codigo"
+                  disabled={true}
                 />
               </Grid>
 
@@ -140,7 +145,7 @@ const EditarGae = (props) => {
           </form>
         </Paper>
       </Grid>
-      <RespuestaModal activo={estaActivo} respuesta={respuestaModal} autoCierre={true} onClose={cerrarModal} />
+
     </Grid>
   );
 };

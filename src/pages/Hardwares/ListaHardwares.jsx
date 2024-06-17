@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect} from "react";
 import { Button, Grid, Paper } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import HeaderContent from "../HeaderContent";
@@ -18,6 +18,7 @@ function transformarDatos(hardwares) {
     return {
       id: index+1 || "",
       idHardware:hardware.idHardware || "",
+      idHardwareInterno:hardware.idHardwareInterno || "",
       nombre: hardware.nombre || "",
       descripcion: hardware.descripcion || "",
     };
@@ -26,7 +27,7 @@ function transformarDatos(hardwares) {
 const ListaHardwares = (props) => {
   const { setSelectedComponent, auth, onResponse } = props;
   const { hardwares, isLoading, fetchHardwares, handleDeshabilitarHardware, cerrarModalOk, cerrarModalConfirmacion,
-    setEstaActivoModalConfirmacion, estaActivoModalOk,respuestaModalOk,estaActivoModalConfirmacion,respuestaModalConfirmacion } = useHardwareService(onResponse); 
+    estaActivoModalOk,respuestaModalOk,estaActivoModalConfirmacion,respuestaModalConfirmacion } = useHardwareService(onResponse); 
   const handleEditarHardware = (idHardware) => {
     setSelectedComponent(
       <EditarHardware
@@ -48,6 +49,7 @@ const ListaHardwares = (props) => {
 
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
+    { field: "idHardwareInterno", headerName: "ID hardware", width: 90 },
     { field: "nombre", headerName: "Nombre", width: 350 },
     { field: "descripcion", headerName: "Descripcion", width: 150 },
     {
@@ -56,7 +58,7 @@ const ListaHardwares = (props) => {
       sortable: false,
       width: 90,
       renderCell: (params) => (
-        <IconButton onClick={() => handleEditarHardware(params.row.id)}>
+        <IconButton onClick={() => handleEditarHardware(params.row.idHardware)}>
           <EditIcon />
         </IconButton>
       ),

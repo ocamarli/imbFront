@@ -18,6 +18,7 @@ function transformarDatos(firmwares) {
     return {
       id: index+1 || "",
       idFirmware:firmware.idFirmware || "",
+      idFirmwareInterno:firmware.idFirmwareInterno || "",
       nombre: firmware.nombre || "",
       descripcion: firmware.descripcion || "",
     };
@@ -48,6 +49,7 @@ const ListaFirmwares = (props) => {
 
   const columns = [
     { field: "id", headerName: "ID", width: 90 },
+    { field: "idFirmwareInterno", headerName: "ID Firmware", width: 90 },
     { field: "nombre", headerName: "Nombre", width: 350 },
     { field: "descripcion", headerName: "Descripcion", width: 150 },
     {

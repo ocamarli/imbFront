@@ -29,13 +29,13 @@ export async function obtenerHardware(token,idHardware) {
       return await response.json();
     } else {
       return {
-        usuarios: [],
+        hardware: [],
         status: false,
         msg: "No se pudo obtener la información del hardware",
       };
     }
   } catch (error) {
-    return { usuarios: [], status: false, msg: error.message};
+    return { hardware: [], status: false, msg: error.message};
   }
 }
 export async function obtenerHardwares(token) {

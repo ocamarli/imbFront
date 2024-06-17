@@ -2,26 +2,41 @@ import { useForm } from "react-hook-form";
 import { useState } from "react";
 import { TextField, Button, Grid, Paper,} from "@mui/material";
 import Typography from "@mui/material/Typography";
-import InputLabel from "@mui/material/InputLabel";
 import HeaderContent from "../HeaderContent";
-import ModalGenerico from "../../components/ModalGenerico";
-import { useHardwareService } from "../../hooks/useHardwareService";
+import RespuestaModal from "../../components/ModalGenerico";
+import { crearHardware } from "../../api/hardwaresApi";
 import Home from "../Home/Home";
 const AgregarHardware = (props) => {
-  const {setSelectedComponent} = props
+  const { setSelectedComponent } = props;
   const onSubmit = (data) => {
+
     console.log("submit");
     console.log(data);
-    handleCreate(data)
+    handleCloseRegister(data);
   };
+  
   const cerrarModal = () => {
     setEstaActivo(false); // Restablecer el estado a false cuando se cierra el modal
   };
-  const {handleCreate,estaActivo,setEstaActivo,respuestaModal}=useHardwareService()
+  const [estaActivo, setEstaActivo] = useState(false);
+  const [respuestaModal, setRespuestaModal] = useState(false);
+  const handleCloseRegister = async (data) => {
+
+    console.log(data);
+    const response = await crearHardware(
+      data,
+      JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token
+    );
+    console.log(response);
+    console.log(response.status);
+    setEstaActivo(true);
+    setRespuestaModal(response);
+  };
   const handleOnChangeInput = (event) => {
     // Expresión regular que permite letras (mayúsculas y minúsculas) y espacios en blanco
-    const regex = /^[A-Za-z0-9\s_-]*$/;
+    const regex = /^[A-Za-z\s]*$/;
     const inputValue = event.target.value;
+
     // Validar si el texto ingresado cumple con la expresión regular
     if (regex.test(inputValue)) {
       // Si cumple, convertir a mayúsculas y establecer en el campo de texto
@@ -31,9 +46,10 @@ const AgregarHardware = (props) => {
       event.target.value = inputValue.slice(0, -1);
     }
   };
+  
   const handleOnCLickSalir = () => {
     setSelectedComponent(<Home></Home>);
-  };    
+  };  
   const {
     register,
     handleSubmit,
@@ -48,29 +64,29 @@ const AgregarHardware = (props) => {
           <form onSubmit={handleSubmit(onSubmit)}>
             <Grid container spacing={3}>
               <Grid item xs={12}>
+                <Typography>Id Hardware</Typography>
+                <TextField
+                  {...register("idHardwareInterno", { required: true })}
+                  fullWidth
+                  placeholder="id hardware"
+                  variant="outlined"
+                  error={errors.idHardwareInterno ? true : false}
+                  helperText={errors.idHardwareInterno ? "Este campo es requerido" : ""}
+                  onChange={handleOnChangeInput}
+                />
+              </Grid>
+              <Grid item xs={12}>
                 <Typography>Nombre hardware</Typography>
                 <TextField
                   {...register("nombre", { required: true })}
                   fullWidth
                   placeholder="Nombre hardware"
                   variant="outlined"
-                  error={errors.descripcion ? true : false}
-                  helperText={errors.descripcion ? "Este campo es requerido" : ""}
+                  error={errors.nombre ? true : false}
+                  helperText={errors.nombre ? "Este campo es requerido" : ""}
                   onChange={handleOnChangeInput}
                 />
-              </Grid>
-              <Grid item xs={12}>
-                <InputLabel>Descripción hardware</InputLabel>
-                <TextField
-                  {...register("descripcion", { required: true })}
-                  fullWidth
-                  placeholder="Descripción"
-                  variant="outlined"
-                  error={errors.descripcion ? true : false}
-                  helperText={errors.descripcion ? "Este campo es requerido" : ""}
-                  onChange={handleOnChangeInput}
-                />
-              </Grid>
+              </Grid>              
 
               <Grid item xs={12}>
                 <Grid container sx={{ justifyContent: "space-around" }} spacing={2}>
@@ -92,17 +108,17 @@ const AgregarHardware = (props) => {
                       fullWidth
                       onClick={handleOnCLickSalir}
                     >
-                      Salir
+                      salir
                     </Button>
-                  </Grid>                     
+                  </Grid>                  
                 </Grid>
               </Grid>
             </Grid>
           </form>
         </Paper>
       </Grid>
-
-       <ModalGenerico activo={estaActivo} respuesta={respuestaModal} autoCierre={false} onClose={cerrarModal}/>
+       {/* Renderiza el componente de Snackbar */}
+       <RespuestaModal activo={estaActivo} respuesta={respuestaModal} autoCierre={true} onClose={cerrarModal}/>
     </Grid>
   );
 };
