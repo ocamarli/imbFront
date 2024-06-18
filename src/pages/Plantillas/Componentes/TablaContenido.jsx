@@ -8,7 +8,7 @@ import {
   Typography,
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback} from "react";
 import ModalGenerico from "../../../components/ModalGenerico";
 import { obtenerPlantilla } from "../../../api/plantillasApi";
 import { actualizarParametroPlantilla } from "../../../api/plantillasApi";
@@ -38,13 +38,12 @@ const TablaContenido = (props) => {
     const nuevoValor = e.target.value;
     const idParametro = parametro.row.id;
     const valorActual = parametro.row.valor;    
-    const noProgramacion = parametro.row.noProgramacion;
     const valorMin = parametro.row.valor_min;
     const valorMax = parametro.row.valor_max;
     const tipoCampo = parametro.row.tipoCampo;
-    const tipoParametro = parametro.row.tipoParametro;
 
-    if (tipoCampo == "rango")
+
+    if (tipoCampo === "rango")
     {
       if (/^-?[0-9]*(\.[0-9]+)?$/.test(nuevoValor) || nuevoValor === "") {
         // Si cumple con el patrón o está vacío, actualizar el valor en el estado
@@ -103,32 +102,29 @@ const TablaContenido = (props) => {
   const fetchActualizarParametroPlantilla = useCallback(
     async (idPlantilla, idParametro, valor, noProgramacion) => {
       try {
-        const tkn = JSON.parse(
-          sessionStorage.getItem("ACCSSTKN")
-        )?.access_token;;
+        const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
         if (tkn !== undefined) {
           console.log("actualizarParametro");
           console.log(idPlantilla);
           const data = {
-            "idPlantilla": idPlantilla,
-            "idParametro": idParametro,
-            "valor": valor,
-            "noProgramacion": noProgramacion
+            idPlantilla: idPlantilla,
+            idParametro: idParametro,
+            valor: valor,
+            noProgramacion: noProgramacion
           };
-          
-          const json = await actualizarParametroPlantilla(
-            data,
-            tkn
-          );
+  
+          const json = await actualizarParametroPlantilla(data, tkn);
           console.log(json);
         } else {
-
+          console.warn("No token found");
         }
       } catch (error) {
         console.error(error);
       }
-    }
+    },
+    []
   );
+  
 
   useEffect(() => {
     fetchObtenerPlantilla();

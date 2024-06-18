@@ -92,9 +92,9 @@ export async function actualizarUsuario(data, token) {
       return { status: false, msg: error.message };
     }
   }
-  export async function setRegister(data, token) {
+  export async function crearUsuario(data, token) {
     try {
-      const response = await postData(ENV.setRegister(), data, token);
+      const response = await postData(ENV.crearUsuario(), data, token);
       console.log(response.status)
       if (response.status === 200) {
         return await response.json();

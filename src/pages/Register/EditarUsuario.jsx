@@ -1,66 +1,31 @@
 import { useForm } from "react-hook-form";
-import { useState,useCallback,useEffect } from "react";
+import { useEffect } from "react";
 import {
   TextField, FormGroup, FormControlLabel, Checkbox, Button, FormControl, Grid, Paper,CircularProgress} from "@mui/material";
 import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
-import { setRegister } from "../../api/usuariosApi";
 import HeaderContent from "../HeaderContent";
 import ModalGenerico from "../../components/ModalGenerico";
-import { obtenerUsuario } from "../../api/usuariosApi";
-import { actualizarUsuario } from "../../api/usuariosApi";
+import { useUsuarioService } from "../../hooks/useUsuarioService";
 import Home from "../Home/Home";
 
 const EditarUsuario = (props) => {
-  const {idUsuario,setSelectedComponent,auth} = props
+  const {idUsuario,setSelectedComponent,onResponse} = props
   const onSubmit = (data) => {
     console.log("submit");
     console.log(data);
     handleCloseRegister(data);
   };
+  const {setAutorizaciones,autorizaciones,isLoading, handleEditarUsuario,usuario,fetchUsuario,  cerrarModalOk,  estaActivoModalOk,respuestaModalOk} = useUsuarioService(onResponse); 
 console.log("----ID----",idUsuario)
-  const [usuario, setUsuario] = useState(null);
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [estaActivo, setEstaActivo] = useState(false);
-  const [respuestaModal, setRespuestaModal] = useState(false);
-  const [autorizaciones, setAutorizaciones] = useState();
-  const fetchObtenerUsuario = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-      if (tkn !== undefined) {
 
-        const json = await obtenerUsuario(tkn, idUsuario);
-        console.log(json);
-
-        setUsuario(json.usuario || null);
-        setAutorizaciones(json.usuario.permisos || null);
-        setIsLoading(false);
-      } else {
-        setUsuario(null);
-      }
-    } catch (error) {
-      setIsLoading(false);
-      console.error(error);
-    }
-  }, [setIsLoading, setUsuario, idUsuario,setAutorizaciones]);
-  const cerrarModal = () => {
-    setEstaActivo(false); // Restablecer el estado a false cuando se cierra el modal
-  };
-
-  
   const handleCloseRegister = async (data) => {
     let newData;
     newData = { idUsuario:idUsuario,...data, permisos:autorizaciones };
     data=newData
-    const response = await actualizarUsuario(
-      data,
-      JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token
-    );
-    console.log(response);
-    setEstaActivo(true);
-    setRespuestaModal(response);
+    handleEditarUsuario(data)
+
   };
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
@@ -96,16 +61,25 @@ console.log("----ID----",idUsuario)
     formState: { errors },
   } = useForm();
   useEffect(() => {
-    fetchObtenerUsuario(idUsuario);
-  }, [fetchObtenerUsuario]);
+    fetchUsuario(idUsuario);
+  }, [fetchUsuario,idUsuario]);
   return (
-    <Grid container padding={2}>
+    <Grid container padding={2} justifyContent={"center"}>
       {isLoading || usuario == null ? ( // Agrega el loader condicionalmente
         <Grid item xs={12} align="center" mt="25%">
           <CircularProgress size={50} />
         </Grid>
       ) : (
-      <Grid item xs={12}>
+        
+      <Grid item xs={7}>
+<ModalGenerico
+            tipoModal={"correcto"}          
+            open={estaActivoModalOk}
+            onClose={cerrarModalOk}
+            title="Correcto"
+            message={respuestaModalOk.msg}
+            autoCierre={true}
+      />           
         <HeaderContent titulo={"Editar usuario ("+usuario.correo+")"}></HeaderContent>
         <Paper style={{ padding: 20 }}>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -214,7 +188,7 @@ console.log("----ID----",idUsuario)
             </Grid>
           </form>
         </Paper>
-        <ModalGenerico activo={estaActivo} respuesta={respuestaModal} autoCierre={true} onClose={cerrarModal}/>
+
       </Grid>
 
 

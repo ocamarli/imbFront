@@ -1,55 +1,33 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, {  useEffect } from "react";
 import Typography from "@mui/material/Typography";
 import HeaderContent from "../HeaderContent";
 import { ListItemAvatar } from "@mui/material";
 import { Grid, Divider, List, ListItem, ListItemText,
-  IconButton, Avatar, Tooltip, Button, Paper
+  IconButton, Avatar, Tooltip, Paper
 } from "@mui/material";
 import EditIcon from "@mui/icons-material/ModeEdit";
 import AddIcon from "@mui/icons-material/Add";
-import { obtenerUsuarios } from "../../api/usuariosApi";
 import { CircularProgress } from "@mui/material";
 import AgregarUsuario from "./AgregarUsuario";
 import { useTheme } from "@mui/material/styles";
 import UsuarioAutorizado from "../../components/UsuarioAutorizado";
 import EditarUsuario from "./EditarUsuario";
 import PersonOffIcon from "@mui/icons-material/PersonOff";
-import { actualizarEstatusUsuario } from "../../api/usuariosApi";
 import ModalGenerico from "../../components/ModalGenerico";
-
+import { useUsuarioService } from "../../hooks/useUsuarioService.jsx";
 const ListaUsuarios = (props) => {
   const theme = useTheme();
-  const [estaActivoModalConfirmacion, setEstaActivoModalConfirmacion] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [usuarios, setUsuarios] = useState([]);
-  const { onResponse, setSelectedComponent, auth } = props;
-  const [idUsuarioSelecionado,setIdUsuarioSeleccionado] = useState("");
-  const [respuestaModalConfirmacion, setRespuestaModalConfirmacion] = useState({msg:"¡Confirma para deshabilitar el usuario!",status:false});
-  const [estaActivoModalOk, setEstaActivoModalOk] = useState(false);
-  const [respuestaModalOk, setRespuestaModalOk] = useState({msg:"¡Usuario deshabilitado!",status:true});
-  const [estaActivoModalError, setEstaActivoModalError] = useState(false);
-  const [respuestaModalError, setRespuestaModalError] = useState({msg:"¡Error al deshabilitar el usuario!",status:false});
+  const { setSelectedComponent, auth, onResponse } = props;
+  const { usuarios, isLoading, fetchUsuarios, handleDeshabilitarUsuario, cerrarModalOk, cerrarModalConfirmacion,
+    estaActivoModalOk,respuestaModalOk,estaActivoModalConfirmacion,respuestaModalConfirmacion } = useUsuarioService(onResponse); 
+  
   const handleClickAgregarUsuario = () => {
     setSelectedComponent(<AgregarUsuario
       setSelectedComponent={setSelectedComponent}
     ></AgregarUsuario>);
   };
-  const cerrarModal = (confirmacion) => {
-    console.log("confirmacion", confirmacion);
-    if(confirmacion){
-      const estatus = false;
-      console.log("idUsuarioSelecionado")
-      console.log(idUsuarioSelecionado)
-      fetchActualizarEstatusUsuario(estatus,idUsuarioSelecionado)
-    }
-    setEstaActivoModalConfirmacion(false); // Restablecer el estado a false cuando se cierra el modal
-    setEstaActivoModalOk(false)
-  };
-  const handleEstatusUsuario = (idUsuario) => {
-    setIdUsuarioSeleccionado(idUsuario);
-    setEstaActivoModalConfirmacion(true);
-    //fetchActualizarEstatusUsuario(estatus,idUsuario);
-  };
+
+
   const handleEditarUsuario = (idUsuario) => {
     setSelectedComponent(
       <EditarUsuario
@@ -61,48 +39,9 @@ const ListaUsuarios = (props) => {
     console.log("Editar usuario con ID:", idUsuario);
   };
 
-  const fetchActualizarEstatusUsuario = useCallback(async (estatus, idUsuario) => {
-      try {
-        setIsLoading(true);
-        const tkn = JSON.parse(
-          sessionStorage.getItem("ACCSSTKN")
-        )?.access_token;
-        if (tkn !== undefined) {
-          const data = { idUsuario: idUsuario, estatus: estatus };
-          const json = await actualizarEstatusUsuario(data, tkn);
-          console.log(json);
-          setIsLoading(false);
-          setEstaActivoModalOk(true)
-          cObtenerUsuarios()
-        } else {
-        }
-      } catch (error) {
-        setIsLoading(false);
-        console.error(error);
-      }
-    },
-    [setIsLoading]
-  );
-  const cObtenerUsuarios = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-      if (tkn !== undefined) {
-        const json = await obtenerUsuarios(tkn);
-        setUsuarios(json.usuarios);
-        onResponse({ status: json.status, msg: json.msg });
-        setIsLoading(false);
-        console.log(json.usuarios);
-      }
-    } catch (error) {
-      setIsLoading(false);
-      onResponse({ status: false, msg: "Error" });
-    }
-  }, [onResponse, setIsLoading]);
-
   useEffect(() => {
-    cObtenerUsuarios();
-  }, [cObtenerUsuarios]);
+    fetchUsuarios();
+  }, [fetchUsuarios]);
 
   return (
     <Grid container padding={2} >
@@ -113,6 +52,27 @@ const ListaUsuarios = (props) => {
           </Grid>
         ) : (
           <Grid>
+          <ModalGenerico
+            tipoModal={"correcto"}          
+            open={estaActivoModalOk}
+            onClose={cerrarModalOk}
+            title="Correcto"
+            message={respuestaModalOk.msg}
+            autoCierre={true}
+      />      
+      {/* Modal Confirmación */}
+
+      <ModalGenerico
+
+            open={estaActivoModalConfirmacion}
+            onClose={cerrarModalConfirmacion}
+            title="Confirmación"
+            message={respuestaModalConfirmacion.msg}
+            actions={[
+              { label: "Confirmar", handler: () => { cerrarModalConfirmacion(true); }, color: "primary" },
+              { label: "Cancelar", handler: () => { cerrarModalConfirmacion(false); }, color: "error" },
+            ]}
+      />        
             <HeaderContent titulo="Lista de usuarios"></HeaderContent>
             <Paper style={{ padding: 20 }}>
             <Grid container spacing={3}>
@@ -223,7 +183,7 @@ const ListaUsuarios = (props) => {
                             <Tooltip title="Deshabilitar usuario">
                               <IconButton
                                 onClick={() => {
-                                  handleEstatusUsuario(usuario.idUsuario);
+                                  handleDeshabilitarUsuario(usuario.idUsuario);
                                 }}
                                 aria-label="edit"
                               >
@@ -256,20 +216,7 @@ const ListaUsuarios = (props) => {
         )}
       </Grid>
       {/* Modal Respuesta Ok */}
-      <ModalGenerico
-        activo={estaActivoModalOk}
-        respuesta={respuestaModalOk}
-        autoCierre={true}
-        onClose={cerrarModal}
-      />      
-      {/* Modal Confirmación */}
 
-      <ModalGenerico
-        activo={estaActivoModalConfirmacion}
-        respuesta={respuestaModalConfirmacion}
-        autoCierre={false}
-        onClose={cerrarModal}
-      />
     </Grid>
   );
 };

@@ -30,6 +30,7 @@ const api = {
     crearGae:"gae/crearGae",
     actualizarGae:"gae/actualizarGae",
     obtenerCodigos:"codigo/obtenerCodigos",
+    crearUsuario:"usuario/crearUsuario"
   },
 };
 /*
@@ -70,6 +71,6 @@ export const ENV = {
     user:()=> api.baseuri+api.endpoints.user,
     obtenerParametros: () => api.baseuri + api.endpoints.obtenerParametros,
     crearParametro:() => api.baseuri + api.endpoints.crearParametro,
-    setRegister:()=>api.baseuri+api.endpoints.registerSet,
+    crearUsuario:()=>api.baseuri+api.endpoints.crearUsuario,
     obtenerCodigos:()=>api.baseuri+api.endpoints.obtenerCodigos,
 };

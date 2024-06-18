@@ -5,23 +5,20 @@ import { TextField, FormGroup, FormControlLabel, Checkbox, Button,
 } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import InputLabel from "@mui/material/InputLabel";
-import { setRegister } from "../../api/usuariosApi";
 import HeaderContent from "../HeaderContent";
 import ModalGenerico from "../../components/ModalGenerico";
 import Home from "../Home/Home";
+import { useUsuarioService } from "../../hooks/useUsuarioService.jsx";
 const AgregarUsuario = (props) => {
-  const { setSelectedComponent } = props;
+  const { setSelectedComponent,onResponse } = props;
+  const {  cerrarModalOk,  handleCrearUsuario,estaActivoModalOk,respuestaModalOk } = useUsuarioService(onResponse); 
   const onSubmit = (data) => {
     console.log("submit");
     console.log(data);
     handleCloseRegister(data);
   };
 
-  const cerrarModal = () => {
-    setEstaActivo(false); // Restablecer el estado a false cuando se cierra el modal
-  };
-  const [estaActivo, setEstaActivo] = useState(false);
-  const [respuestaModal, setRespuestaModal] = useState(false);
+
   const handleCloseRegister = async (data) => {
     let newData;
     console.log(data);
@@ -30,14 +27,7 @@ const AgregarUsuario = (props) => {
     console.log(newData);
     console.log(autorizaciones);
     data=newData
-    const response = await setRegister(
-      data,
-      JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token
-    );
-    console.log(response);
-    console.log(response.status);
-    setEstaActivo(true);
-    setRespuestaModal(response);
+    handleCrearUsuario(data)
   };
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;
@@ -74,23 +64,24 @@ const AgregarUsuario = (props) => {
   const handleOnCLickSalir = () => {
     setSelectedComponent(<Home></Home>);
   };  
-  const inicializarFormulario = () => {
-    reset({
-      nombre: "John Doe",
-      correo: "johndoe@example.com",
-      descripcion: "Lorem ipsum dolor sit amet",
-    });
-  };
+
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm();
 
   return (
     <Grid container padding={2}>
       <Grid item xs={12}>
+      <ModalGenerico
+            tipoModal={"correcto"}          
+            open={estaActivoModalOk}
+            onClose={cerrarModalOk}
+            title="Correcto"
+            message={respuestaModalOk.msg}
+            autoCierre={true}
+      />   
         <HeaderContent titulo="Agregar usuario"></HeaderContent>
         <Paper style={{ padding: 20 }}>
           <form onSubmit={handleSubmit(onSubmit)}>
@@ -212,7 +203,7 @@ const AgregarUsuario = (props) => {
         </Paper>
       </Grid>
        {/* Renderiza el componente de Snackbar */}
-       <ModalGenerico activo={estaActivo} respuesta={respuestaModal} autoCierre={true} onClose={cerrarModal}/>
+
     </Grid>
   );
 };
