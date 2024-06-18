@@ -1,7 +1,7 @@
-import React, { useState, useEffect,useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
-import { Typography, FormLabel } from '@mui/material';
+import { Typography, FormLabel, Switch } from '@mui/material';
 
 function GrupoCheckbox(props) {
     const { setCheckboxSeleccionado } = props;
@@ -25,23 +25,26 @@ function GrupoCheckbox(props) {
         }
     };
 
-
     useEffect(() => {
         if (mostrarTodos) {
             setCheckboxSeleccionados(totalDeProgramas);
             setCheckboxSeleccionado(totalDeProgramas);
+        } else {
+            setCheckboxSeleccionados([]);
+            setCheckboxSeleccionado([]);
         }
-    }, [mostrarTodos, setCheckboxSeleccionado,setCheckboxSeleccionados,totalDeProgramas]);
+    }, [mostrarTodos, setCheckboxSeleccionado, totalDeProgramas]);
 
     return (
         <div>
-          <Typography variant="body1" fontWeight={600} >Habilitar programas</Typography>
-          <FormLabel component="legend">
-                      Selecciona un programa
-                    </FormLabel>
+            <Typography variant="body1" fontWeight={600}>Habilitar programas</Typography>
+            <FormLabel component="legend">Selecciona un programa</FormLabel>
+            <FormControlLabel
+                control={<Switch checked={mostrarTodos} onChange={() => setMostrarTodos(!mostrarTodos)} />}
+                label="Mostrar todos los programas"
+            />
             {totalDeProgramas.map((programa) => (
                 <FormControlLabel
-                    
                     key={programa}
                     control={<Checkbox id={programa} size="small" onChange={handleChange(programa)} />}
                     label={programa}
@@ -49,7 +52,6 @@ function GrupoCheckbox(props) {
                     checked={checkboxSeleccionados.includes(programa)}
                 />
             ))}
-            
         </div>
     );
 }

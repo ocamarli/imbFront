@@ -21,6 +21,8 @@ const TablaContenido = (props) => {
     status:false,
     msg:"valor no válido",
   });
+  setRespuestaModal({    status:false,
+    msg:"valor no válido",})
   const [estaActivo, setEstaActivo] = useState(false);
   const handleOnChange = (e) => {
     const inputValue = e.target.value;

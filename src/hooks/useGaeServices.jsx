@@ -135,6 +135,7 @@ const fetchGae = useCallback(async (idGae) => {
     cerrarModalOk,
     cerrarModalConfirmacion,
     setEstaActivoModalConfirmacion,
+    setRespuestaModalConfirmacion,
     setIdGaeSeleccionado,
     fetchGaes,
     fetchGae,

@@ -138,6 +138,7 @@ export const useHardwareService = () => {
     cerrarModalOk,
     cerrarModalConfirmacion,
     setEstaActivoModalConfirmacion,
+    setRespuestaModalConfirmacion,
     setIdHardwareSeleccionado,
     fetchHardwares,
     fetchHardware,
