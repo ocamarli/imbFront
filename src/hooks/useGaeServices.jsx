@@ -1,35 +1,37 @@
-// hooks/useSoftwareService.js
 import { useState, useCallback } from "react";
-import { crearGae, obtenerGaes, actualizarGae , obtenerGae} from "../api/gaesApi";
+import { crearGae, obtenerGaes, actualizarGae, obtenerGae } from "../api/gaesApi";
+
 export const useGaeService = () => {
   const [gaes, setGaes] = useState([]);
   const [gae, setGae] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [estaActivo, setEstaActivo] = useState(false);
-  const [respuestaModal, setRespuestaModal] = useState(false);
   const [idGaeSeleccionado, setIdGaeSeleccionado] = useState("");
   const [estaActivoModalOk, setEstaActivoModalOk] = useState(false);
-  const [respuestaModalOk, setRespuestaModalOk] = useState({
-    msg: "¡GAE deshabilitado!",
-    status: true,
+  const [respuestaModalOk, setRespuestaModalOk] = useState({ msg: "¡GAE deshabilitado!", status: true });
+  const [estaActivoModalConfirmacionHabilitar, setEstaActivoModalConfirmacionHabilitar] = useState(false);
+  const [respuestaModalConfirmacionHabilitar, setRespuestaModalConfirmacionHabilitar] = useState({
+    msg: "¡Confirma para habilitar GAE!",
+    status: false,
   });
-  const [estaActivoModalConfirmacion, setEstaActivoModalConfirmacion] =
-    useState(false);
-  const [respuestaModalConfirmacion, setRespuestaModalConfirmacion] = useState({
+  const [estaActivoModalConfirmacionDeshabilitar, setEstaActivoModalConfirmacionDeshabilitar] = useState(false);
+  const [respuestaModalConfirmacionDeshabilitar, setRespuestaModalConfirmacionDeshabilitar] = useState({
     msg: "¡Confirma para deshabilitar GAE!",
     status: false,
   });
+  const [activeTab, setActiveTab] = useState(1);
 
-  const fetchGaes = useCallback(async () => {
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
+    fetchGaes(Boolean(newValue));
+  };
+
+  const fetchGaes = useCallback(async (estatus) => {
     try {
       setIsLoading(true);
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
       if (tkn) {
-        const json = await obtenerGaes(tkn);
-        const gaesActivos =
-          json.gaes?.filter((gae) => gae.estatus !== false) || [];
-        console.log(json.gaes);
-        setGaes(gaesActivos || []);
+        const json = await obtenerGaes(tkn, estatus);
+        setGaes(json.gaes || []);
       }
       setIsLoading(false);
     } catch (error) {
@@ -37,49 +39,44 @@ export const useGaeService = () => {
       console.error(error);
     }
   }, []);
-const fetchGae = useCallback(async (idGae) => {
-  try {
-    setIsLoading(true);
-    const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-    if (tkn) {
-      const json = await obtenerGae(tkn,idGae);
 
-      console.log(json.gae);
-      setGae(json.gae || []);
-    }
-    setIsLoading(false);
-  } catch (error) {
-    setIsLoading(false);
-    console.error(error);
-  }
-}, []);
-  const handleCreateGae = async (data) => {
+  const fetchGae = useCallback(async (idGae) => {
     try {
+      setIsLoading(true);
+      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+      if (tkn) {
+        const json = await obtenerGae(tkn, idGae);
+        setGae(json.gae || []);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.error(error);
+    }
+  }, []);
+
+  const handleCrearGae = async (data) => {
+    try {
+      setIsLoading(true);
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
       if (tkn) {
         const response = await crearGae(data, tkn);
-        setEstaActivo(true);
-        setRespuestaModal(response);
+        setRespuestaModalOk({ msg: response.msg, status: response.status });
+        setEstaActivoModalOk(true);
       }
+      setIsLoading(false);
     } catch (error) {
       console.error(error);
+      setIsLoading(false);
     }
   };
+
   const handleEditarGae = async (data) => {
     try {
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-      const response = await actualizarGae(data,tkn)
-      
-      if (response.status) {
-        console.log(response);
-        if (response.status) {
-          setRespuestaModalOk({ msg: response.msg, status: true });
-          setEstaActivoModalOk(true);
-        }
-      }
-      console.log(response);
-
-      setRespuestaModal(response);;
+      const response = await actualizarGae(data, tkn);
+      setRespuestaModalOk({ msg: response.msg, status: response.status });
+      setEstaActivoModalOk(true);
     } catch (error) {
       console.error(error);
     }
@@ -88,61 +85,82 @@ const fetchGae = useCallback(async (idGae) => {
   const deshabilitarGae = async (idGae) => {
     try {
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-      const data = { idGae: idGae, estatus: false };
+      const data = { idGae, estatus: false };
       const response = await actualizarGae(data, tkn);
       if (response.status) {
-        console.log(response);
-        if (response.status) {
-          setRespuestaModalOk({ msg: "¡GAE deshabilitado exitosamente!", status: true });
-          setEstaActivoModalOk(true);
-          fetchGaes();
-        }
+        setRespuestaModalOk({ msg: "¡GAE deshabilitado exitosamente!", status: true });
+        setEstaActivoModalOk(true);
+        fetchGaes(true);
       }
     } catch (error) {
       console.error(error);
     }
   };
+
+  const habilitarGae = async (idGae) => {
+    try {
+      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+      const data = { idGae, estatus: true };
+      const response = await actualizarGae(data, tkn);
+      if (response.status) {
+        setRespuestaModalOk({ msg: "¡GAE habilitado exitosamente!", status: true });
+        setEstaActivoModalOk(true);
+        fetchGaes(false);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
   const cerrarModalOk = () => {
     setEstaActivoModalOk(false);
   };
-  const cerrarModalConfirmacion = (respuestaSeleccionada) => {
-    console.log("respuestaSeleccionada", respuestaSeleccionada);
+
+  const cerrarModalConfirmacionHabilitar = (respuestaSeleccionada) => {
     if (respuestaSeleccionada) {
-      console.log("idGaeSeleccionado", idGaeSeleccionado);
-
-      deshabilitarGae(idGaeSeleccionado);
+      habilitarGae(idGaeSeleccionado);
     }
-    setEstaActivoModalConfirmacion(false); // Restablecer el estado a false cuando se cierra el modal
-
+    setEstaActivoModalConfirmacionHabilitar(false);
   };
 
-  const handleDeshabilitarGae = async (idGae) => {
+  const cerrarModalConfirmacionDeshabilitar = (respuestaSeleccionada) => {
+    if (respuestaSeleccionada) {
+      deshabilitarGae(idGaeSeleccionado);
+    }
+    setEstaActivoModalConfirmacionDeshabilitar(false);
+  };
+
+  const handleDeshabilitarGae = (idGae) => {
     setIdGaeSeleccionado(idGae);
-    setEstaActivoModalConfirmacion(true);
+    setEstaActivoModalConfirmacionDeshabilitar(true);
+  };
+
+  const handleHabilitarGae = (idGae) => {
+    setIdGaeSeleccionado(idGae);
+    setEstaActivoModalConfirmacionHabilitar(true);
   };
 
   return {
+    activeTab,
     gaes,
-    gae,    
+    gae,
     isLoading,
     idGaeSeleccionado,
-    estaActivo,
-    respuestaModal,
     estaActivoModalOk,
     respuestaModalOk,
-    estaActivoModalConfirmacion,
-    respuestaModalConfirmacion,
-    cerrarModalOk,
-    cerrarModalConfirmacion,
-    setEstaActivoModalConfirmacion,
-    setRespuestaModalConfirmacion,
-    setIdGaeSeleccionado,
+    handleTabChange,
     fetchGaes,
     fetchGae,
-    handleCreateGae,
-    handleDeshabilitarGae,
+    handleCrearGae,
     handleEditarGae,
-    setEstaActivo,
-    
+    handleDeshabilitarGae,
+    handleHabilitarGae,
+    cerrarModalOk,
+    cerrarModalConfirmacionHabilitar,
+    estaActivoModalConfirmacionHabilitar,
+    respuestaModalConfirmacionHabilitar,
+    cerrarModalConfirmacionDeshabilitar,
+    estaActivoModalConfirmacionDeshabilitar,
+    respuestaModalConfirmacionDeshabilitar,
   };
 };

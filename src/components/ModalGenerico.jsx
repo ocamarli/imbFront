@@ -12,12 +12,18 @@ const ModalGenerico = ({ open, onClose, title, message, actions, autoCierre, tip
       return () => clearTimeout(timer);
     }
   }, [open, autoCierre, onClose]);
+  const handleClose = (event, reason) => {
+    if (reason && reason === "backdropClick") {
+      return;
+    }
+    onClose();
+  };
 
   const iconoModal = () => {
     switch (tipoModal) {
-      case "correcto":
+      case true:
         return <CheckCircleOutlineIcon sx={{ color: "green", mb: 2 }} fontSize="large" />;
-      case "error":
+      case false:
         return <ErrorOutlineIcon sx={{ color: "red", mb: 2 }} fontSize="large" />;
       default:
         return null;
@@ -25,7 +31,7 @@ const ModalGenerico = ({ open, onClose, title, message, actions, autoCierre, tip
   };
 
   return (
-    <Modal open={open} onClose={onClose}>
+    <Modal open={open} onClose={handleClose}>
       <Box
         sx={{
           position: "absolute",
