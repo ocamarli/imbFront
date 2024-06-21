@@ -1,124 +1,89 @@
-import { useForm } from "react-hook-form";
-import { useState } from "react";
-import { TextField, Button, Grid, Paper,} from "@mui/material";
-import Typography from "@mui/material/Typography";
-import HeaderContent from "../HeaderContent";
-import RespuestaModal from "../../components/ModalGenerico";
-import { crearHardware } from "../../api/hardwaresApi";
-import Home from "../Home/Home";
-const AgregarHardware = (props) => {
-  const { setSelectedComponent } = props;
-  const onSubmit = (data) => {
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import { TextField, Button, Grid, Paper, Typography } from '@mui/material';
+import HeaderContent from '../HeaderContent';
+import Home from '../Home/Home';
+import ModalGenerico from '../../components/ModalGenerico';
+import { useHardwareService } from '../../hooks/useHardwareService';
+import LoadingComponent from '../LoadingComponent';
+import { handleOnChangeInputTexto, handleOnChangeInputIds} from '../utils';
 
-    console.log("submit");
-    console.log(data);
-    handleCloseRegister(data);
-  };
-  
-  const cerrarModal = () => {
-    setEstaActivo(false); // Restablecer el estado a false cuando se cierra el modal
-  };
-  const [estaActivo, setEstaActivo] = useState(false);
-  const [respuestaModal, setRespuestaModal] = useState(false);
-  const handleCloseRegister = async (data) => {
+const AgregarHardware = ({ setSelectedComponent, onResponse }) => {
+  const { isLoading, estaActivoModalOk, respuestaModalOk, handleCrearHardware, cerrarModalOk } = useHardwareService(onResponse);
+  const { register, handleSubmit, formState: { errors } } = useForm();
 
-    console.log(data);
-    const response = await crearHardware(
-      data,
-      JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token
-    );
-    console.log(response);
-    console.log(response.status);
-    setEstaActivo(true);
-    setRespuestaModal(response);
-  };
-  const handleOnChangeInput = (event) => {
-    // Expresión regular que permite letras (mayúsculas y minúsculas) y espacios en blanco
-    const regex = /^[A-Za-z\s]*$/;
-    const inputValue = event.target.value;
+  const onSubmit = (data) => handleCrearHardware({...data, estatus:true});
+  const handleOnCLickSalir = () => setSelectedComponent(<Home />);
 
-    // Validar si el texto ingresado cumple con la expresión regular
-    if (regex.test(inputValue)) {
-      // Si cumple, convertir a mayúsculas y establecer en el campo de texto
-      event.target.value = inputValue.toUpperCase();
-    } else {
-      // Si no cumple, eliminar el último caracter ingresado
-      event.target.value = inputValue.slice(0, -1);
-    }
-  };
-  
-  const handleOnCLickSalir = () => {
-    setSelectedComponent(<Home></Home>);
-  };  
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm();
+  if (isLoading) {
+    return <LoadingComponent />;
+  }
+
+  const renderModal = () => (
+    <ModalGenerico
+      tipoModal={respuestaModalOk.status}
+      open={estaActivoModalOk}
+      onClose={cerrarModalOk}
+      title={respuestaModalOk.status ? "Correcto" : "Advertencia"}
+      message={respuestaModalOk.msg}
+      autoCierre={true}
+    />
+  );
+
+  const renderForm = () => (
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <Grid container spacing={3}>
+        <Grid item xs={12}>
+          <Typography>Id hardware</Typography>
+          <TextField
+            {...register('idHardwareInterno', { required: true })}
+            fullWidth
+            placeholder="id hardware"
+            variant="outlined"
+            error={errors.idHardwareInterno}
+            helperText={errors.idHardwareInterno && "Este campo es requerido"}
+            onChange={handleOnChangeInputIds}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Typography>Nombre hardware</Typography>
+          <TextField
+            {...register('nombre', { required: true })}
+            fullWidth
+            placeholder="Nombre hardware"
+            variant="outlined"
+            error={errors.nombre}
+            helperText={errors.nombre && "Este campo es requerido"}
+            onChange={handleOnChangeInputTexto}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <Grid container sx={{ justifyContent: 'space-around' }} spacing={2}>
+            <Grid item xs={6}>
+              <Button variant="contained" type="submit" sx={{ height: '50px' }} fullWidth>
+                Agregar
+              </Button>
+            </Grid>
+            <Grid item xs={6}>
+              <Button color="error" variant="contained" sx={{ height: '50px' }} fullWidth onClick={handleOnCLickSalir}>
+                Salir
+              </Button>
+            </Grid>
+          </Grid>
+        </Grid>
+      </Grid>
+    </form>
+  );
 
   return (
-    <Grid container padding={2}  justifyContent={"center"}>
+    <Grid container padding={2} justifyContent={"center"}>
+      {renderModal()}
       <Grid item xs={7}>
-        <HeaderContent titulo="Agregar Hardware"></HeaderContent>
-        <Paper style={{ padding: 20 }} >
-          <form onSubmit={handleSubmit(onSubmit)}>
-            <Grid container spacing={3}>
-              <Grid item xs={12}>
-                <Typography>Id Hardware</Typography>
-                <TextField
-                  {...register("idHardwareInterno", { required: true })}
-                  fullWidth
-                  placeholder="id hardware"
-                  variant="outlined"
-                  error={errors.idHardwareInterno ? true : false}
-                  helperText={errors.idHardwareInterno ? "Este campo es requerido" : ""}
-                  onChange={handleOnChangeInput}
-                />
-              </Grid>
-              <Grid item xs={12}>
-                <Typography>Nombre hardware</Typography>
-                <TextField
-                  {...register("nombre", { required: true })}
-                  fullWidth
-                  placeholder="Nombre hardware"
-                  variant="outlined"
-                  error={errors.nombre ? true : false}
-                  helperText={errors.nombre ? "Este campo es requerido" : ""}
-                  onChange={handleOnChangeInput}
-                />
-              </Grid>              
-
-              <Grid item xs={12}>
-                <Grid container sx={{ justifyContent: "space-around" }} spacing={2}>
-                  <Grid item xs={6}>
-                    <Button
-                      variant="contained"
-                      type="submit"
-                      sx={{ height: "50px" }}
-                      fullWidth
-                    >
-                      Agregar
-                    </Button>
-                  </Grid>
-                  <Grid item xs={6}>
-                    <Button
-                      color="error"
-                      variant="contained"
-                      sx={{ height: "50px" }}
-                      fullWidth
-                      onClick={handleOnCLickSalir}
-                    >
-                      salir
-                    </Button>
-                  </Grid>                  
-                </Grid>
-              </Grid>
-            </Grid>
-          </form>
+        <HeaderContent titulo="Agregar hardware" />
+        <Paper style={{ padding: 20 }}>
+          {renderForm()}
         </Paper>
       </Grid>
-       {/* Renderiza el componente de Snackbar */}
-       <RespuestaModal activo={estaActivo} respuesta={respuestaModal} autoCierre={true} onClose={cerrarModal}/>
     </Grid>
   );
 };

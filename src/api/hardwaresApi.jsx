@@ -1,29 +1,48 @@
-import { postData,getData } from "./axios";
+import { postData, getData } from "./axios";
 import { ENV } from "../utils";
+
+// Función para actualizar un hardware
 export async function actualizarHardware(data, token) {
   try {
-    const response = await postData(
-     ENV.actualizarHardware(),
-      data,
-      token
-    );
-    console.log(data)
+    const response = await postData(ENV.actualizarHardware(), data, token);
     if (response.status === 200) {
       return await response.json();
     } else {
-      return { status: false, msg: "Erro al actualizar Hardware" };
+      return { status: false, msg: "Error al actualizar hardware" };
     }
   } catch (error) {
     return { status: false, msg: error.message };
   }
-} 
-export async function obtenerHardware(token,idHardware) {
+}
+
+// Función para obtener todos los GAEs
+export async function obtenerHardwares(token, estatus = null) {
   try {
-    console.log("ID2", idHardware);
-    const response = await getData(
-      ENV.obtenerHardware(idHardware),
-      token
-    );
+    let url = ENV.obtenerHardwares();
+    if (estatus !== null) {
+      url += `?estatus=${estatus}`;
+    }
+
+    const response = await getData(url, token);
+
+    if (response.status === 200) {
+      return await response.json();
+    } else {
+      return {
+        hardwares: [],
+        status: false,
+        msg: "No se pudo obtener la información de los GAEs.",
+      };
+    }
+  } catch (error) {
+    return { hardwares: [], status: false, msg: error.message };
+  }
+}
+
+// Función para obtener un hardware por su ID
+export async function obtenerHardware(token, idHardware) {
+  try {
+    const response = await getData(ENV.obtenerHardware(idHardware), token);
 
     if (response.status === 200) {
       return await response.json();
@@ -31,47 +50,24 @@ export async function obtenerHardware(token,idHardware) {
       return {
         hardware: [],
         status: false,
-        msg: "No se pudo obtener la información del hardware",
+        msg: "No se pudo obtener la información de hardware",
       };
     }
   } catch (error) {
-    return { hardware: [], status: false, msg: error.message};
+    return { hardware: [], status: false, msg: error.message };
   }
 }
-export async function obtenerHardwares(token) {
-    try {
-      const response = await getData(
-        ENV.obtenerHardwares(),
-        token
-      );
-  
-      if (response.status === 200) {
-        return await response.json();
-      } else {
-        return {
-          hardwares: [],
-          status: false,
-          msg: "No se pudo obtener información de los hardwares.",
-        };
-      }
-    } catch (error) {
-      return { hardwares: [], status: false, msg: error.message};
+
+// Función para crear un nuevo hardware
+export async function crearHardware(data, token) {
+  try {
+    const response = await postData(ENV.crearHardware(), data, token);
+    if (response.status === 200) {
+      return await response.json();
+    } else {
+      return { status: false, msg: "Error al guardar hardware." };
     }
+  } catch (error) {
+    return { status: false, msg: error.message };
   }
-  export async function crearHardware(data, token) {
-    try {
-      const response = await postData(
-       ENV.crearHardware(),
-        data,
-        token
-      );
-      console.log(data)
-      if (response.status === 200) {
-        return await response.json();
-      } else {
-        return { status: false, msg: "No se pudo guardar hardware." };
-      }
-    } catch (error) {
-      return { status: false, msg: error.message };
-    }
-  }
+}

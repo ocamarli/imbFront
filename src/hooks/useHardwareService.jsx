@@ -1,34 +1,51 @@
-// hooks/useSoftwareService.js
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from "react";
+import { crearHardware, obtenerHardwares, actualizarHardware, obtenerHardware } from "../api/hardwaresApi";
 
-import { crearHardware,obtenerHardwares,actualizarHardware,obtenerHardware } from '../api/hardwaresApi';
 export const useHardwareService = () => {
   const [hardwares, setHardwares] = useState([]);
-  const [hardware, setHardware] = useState(null);  
+  const [hardware, setHardware] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [estaActivo, setEstaActivo] = useState(false);
-  const [respuestaModal, setRespuestaModal] = useState(false);
   const [idHardwareSeleccionado, setIdHardwareSeleccionado] = useState("");
   const [estaActivoModalOk, setEstaActivoModalOk] = useState(false);
-  const [respuestaModalOk, setRespuestaModalOk] = useState({
-    msg: "¡Hardware deshabilitado!",
-    status: true,
-  });
-  const [estaActivoModalConfirmacion, setEstaActivoModalConfirmacion] =
-    useState(false);
-  const [respuestaModalConfirmacion, setRespuestaModalConfirmacion] = useState({
-    msg: "¡Confirma para deshabilitar Hardware!",
+  const [respuestaModalOk, setRespuestaModalOk] = useState({ msg: "¡hardware deshabilitado!", status: true });
+  const [estaActivoModalConfirmacionHabilitar, setEstaActivoModalConfirmacionHabilitar] = useState(false);
+  const [respuestaModalConfirmacionHabilitar, setRespuestaModalConfirmacionHabilitar] = useState({
+    msg: "¡Confirma para habilitar hardware!",
     status: false,
   });
+  const [estaActivoModalConfirmacionDeshabilitar, setEstaActivoModalConfirmacionDeshabilitar] = useState(false);
+  const [respuestaModalConfirmacionDeshabilitar, setRespuestaModalConfirmacionDeshabilitar] = useState({
+    msg: "¡Confirma para deshabilitar hardware!",
+    status: false,
+  });
+  const [activeTab, setActiveTab] = useState(1);
+
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
+    fetchHardwares(Boolean(newValue));
+  };
+
+  const fetchHardwares = useCallback(async (estatus) => {
+    try {
+      setIsLoading(true);
+      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+      if (tkn) {
+        const json = await obtenerHardwares(tkn, estatus);
+        setHardwares(json.hardwares || []);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.error(error);
+    }
+  }, []);
 
   const fetchHardware = useCallback(async (idHardware) => {
     try {
       setIsLoading(true);
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
       if (tkn) {
-        const json = await obtenerHardware(tkn,idHardware);
-  
-        console.log(json.hardware);
+        const json = await obtenerHardware(tkn, idHardware);
         setHardware(json.hardware || []);
       }
       setIsLoading(false);
@@ -37,51 +54,29 @@ export const useHardwareService = () => {
       console.error(error);
     }
   }, []);
-  const fetchHardwares = useCallback(async () => {
+
+  const handleCrearHardware = async (data) => {
     try {
       setIsLoading(true);
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
       if (tkn) {
-        const json = await obtenerHardwares(tkn);
-        const hardwaresActivos =
-          json.hardwares?.filter((hardware) => hardware.estatus !== false) || [];
-        console.log(json.hardwares);
-        setHardwares(hardwaresActivos || []);
+        const response = await crearHardware(data, tkn);
+        setRespuestaModalOk({ msg: response.msg, status: response.status });
+        setEstaActivoModalOk(true);
       }
       setIsLoading(false);
     } catch (error) {
+      console.error(error);
       setIsLoading(false);
-      console.error(error);
-    }
-  }, []);
-  const handleEditarHardware = async (data) => {
-    try {
-      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-      const response = await actualizarHardware(data,tkn)
-      
-      if (response.status) {
-        console.log(response);
-        if (response.status) {
-          setRespuestaModalOk({ msg: response.msg, status: true });
-          setEstaActivoModalOk(true);
-        }
-      }
-      console.log(response);
-
-      setRespuestaModal(response);;
-    } catch (error) {
-      console.error(error);
     }
   };
 
-  const handleCreateHardware = async (data) => {
+  const handleEditarHardware = async (data) => {
     try {
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-      if (tkn) {
-        const response = await crearHardware(data, tkn);
-        setEstaActivo(true);
-        setRespuestaModal(response);
-      }
+      const response = await actualizarHardware(data, tkn);
+      setRespuestaModalOk({ msg: response.msg, status: response.status });
+      setEstaActivoModalOk(true);
     } catch (error) {
       console.error(error);
     }
@@ -90,15 +85,27 @@ export const useHardwareService = () => {
   const deshabilitarHardware = async (idHardware) => {
     try {
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-      const data = { idHardware: idHardware, estatus: false };
+      const data = { idHardware, estatus: false };
       const response = await actualizarHardware(data, tkn);
       if (response.status) {
-        console.log(response);
-        if (response.status) {
-          setRespuestaModalOk({ msg: "¡Hardware deshabilitado exitosamente!", status: true });
-          setEstaActivoModalOk(true);
-          fetchHardwares();
-        }
+        setRespuestaModalOk({ msg: "¡Hardware deshabilitado exitosamente!", status: true });
+        setEstaActivoModalOk(true);
+        fetchHardwares(true);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const habilitarHardware = async (idHardware) => {
+    try {
+      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+      const data = { idHardware, estatus: true };
+      const response = await actualizarHardware(data, tkn);
+      if (response.status) {
+        setRespuestaModalOk({ msg: "¡Hardware habilitado exitosamente!", status: true });
+        setEstaActivoModalOk(true);
+        fetchHardwares(false);
       }
     } catch (error) {
       console.error(error);
@@ -108,44 +115,54 @@ export const useHardwareService = () => {
   const cerrarModalOk = () => {
     setEstaActivoModalOk(false);
   };
-  const cerrarModalConfirmacion = (respuestaSeleccionada) => {
-    console.log("respuestaSeleccionada", respuestaSeleccionada);
+
+  const cerrarModalConfirmacionHabilitar = (respuestaSeleccionada) => {
     if (respuestaSeleccionada) {
-      console.log("idHardwareSeleccionado", idHardwareSeleccionado);
-
-      deshabilitarHardware(idHardwareSeleccionado);
+      habilitarHardware(idHardwareSeleccionado);
     }
-    setEstaActivoModalConfirmacion(false); // Restablecer el estado a false cuando se cierra el modal
-
+    setEstaActivoModalConfirmacionHabilitar(false);
   };
 
-  const handleDeshabilitarHardware = async (idHardware) => {
+  const cerrarModalConfirmacionDeshabilitar = (respuestaSeleccionada) => {
+    if (respuestaSeleccionada) {
+      deshabilitarHardware(idHardwareSeleccionado);
+    }
+    setEstaActivoModalConfirmacionDeshabilitar(false);
+  };
+
+  const handleDeshabilitarHardware = (idHardware) => {
     setIdHardwareSeleccionado(idHardware);
-    setEstaActivoModalConfirmacion(true);
+    setEstaActivoModalConfirmacionDeshabilitar(true);
+  };
+
+  const handleHabilitarHardware = (idHardware) => {
+    setIdHardwareSeleccionado(idHardware);
+    setEstaActivoModalConfirmacionHabilitar(true);
   };
 
   return {
+    activeTab,
     hardwares,
-    hardware,    
+    hardware,
     isLoading,
     idHardwareSeleccionado,
-    estaActivo,
-    respuestaModal,
     estaActivoModalOk,
     respuestaModalOk,
-    estaActivoModalConfirmacion,
-    respuestaModalConfirmacion,
-    cerrarModalOk,
-    cerrarModalConfirmacion,
-    setEstaActivoModalConfirmacion,
-    setRespuestaModalConfirmacion,
-    setIdHardwareSeleccionado,
+    handleTabChange,
     fetchHardwares,
     fetchHardware,
-    handleCreateHardware,
-    handleDeshabilitarHardware,
+    handleCrearHardware,
     handleEditarHardware,
-    setEstaActivo,
-    
+    handleDeshabilitarHardware,
+    handleHabilitarHardware,
+    cerrarModalOk,
+    cerrarModalConfirmacionHabilitar,
+    estaActivoModalConfirmacionHabilitar,
+    respuestaModalConfirmacionHabilitar,
+    cerrarModalConfirmacionDeshabilitar,
+    estaActivoModalConfirmacionDeshabilitar,
+    respuestaModalConfirmacionDeshabilitar,
+    setRespuestaModalConfirmacionHabilitar,
+    setRespuestaModalConfirmacionDeshabilitar
   };
 };

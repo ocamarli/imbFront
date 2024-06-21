@@ -1,57 +1,87 @@
-import React, { useEffect} from "react";
-import { Button, Grid, Paper } from "@mui/material";
-import Typography from "@mui/material/Typography";
-import HeaderContent from "../HeaderContent";
-import IconButton from "@mui/material/IconButton";
-import AddIcon from "@mui/icons-material/Add";
-import AgregarHardware from "./AgregarHardware.jsx";
+import React, { useEffect } from "react";
+import {
+  Button,
+  Grid,
+  Paper,
+  Typography,
+  IconButton,
+  Tab,
+  Tabs,
+} from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import Home from "../Home/Home.jsx"
-import EditarHardware from "./EditarHardware.jsx";
-import { DeleteOutline as DeleteIcon, Edit as EditIcon } from "@mui/icons-material";
+import {
+  Check as CheckIcon,
+  Add as AddIcon,
+  ArrowBack as ArrowBackIcon,
+  DeleteOutline as DeleteIcon,
+  Edit as EditIcon,
+} from "@mui/icons-material";
+import HeaderContent from "../HeaderContent";
+import AgregarHardware from "./AgregarHardware";
+import EditarHardware from "./EditarHardware";
+import UsuarioAutorizado from "../../components/UsuarioAutorizado";
 import ModalGenerico from "../../components/ModalGenerico";
-import { useHardwareService } from "../../hooks/useHardwareService.jsx";
+import { useHardwareService } from "../../hooks/useHardwareService";
+import Home from "../Home/Home";
+import LoadingComponent from "../LoadingComponent";
+
 function transformarDatos(hardwares) {
-  console.log(hardwares);
-  return hardwares.map((hardware,index) => {
-    return {
-      id: index+1 || "",
-      idHardware:hardware.idHardware || "",
-      idHardwareInterno:hardware.idHardwareInterno || "",
-      nombre: hardware.nombre || "",
-      descripcion: hardware.descripcion || "",
-    };
-  });
+  return hardwares.map((hardware, index) => ({
+    id: index + 1 || "",
+    idHardwareInterno: hardware.idHardwareInterno,
+    idHardware: hardware.idHardware || "",
+    nombre: hardware.nombre || "",
+  }));
 }
-const ListaHardwares = (props) => {
-  const { setSelectedComponent, auth, onResponse } = props;
-  const { hardwares, isLoading, fetchHardwares, handleDeshabilitarHardware, cerrarModalOk, cerrarModalConfirmacion,
-    estaActivoModalOk,respuestaModalOk,estaActivoModalConfirmacion,respuestaModalConfirmacion } = useHardwareService(onResponse); 
+
+const ListaHardwares = ({ setSelectedComponent, auth, onResponse }) => {
+  const {
+    activeTab,
+    handleTabChange,
+    handleHabilitarHardware,
+    hardwares,
+    isLoading,
+    fetchHardwares,
+    handleDeshabilitarHardware,
+    cerrarModalOk,
+    estaActivoModalOk,
+    respuestaModalOk,
+    estaActivoModalConfirmacionHabilitar,
+    respuestaModalConfirmacionHabilitar,
+    cerrarModalConfirmacionHabilitar,
+    estaActivoModalConfirmacionDeshabilitar,
+    respuestaModalConfirmacionDeshabilitar,
+    cerrarModalConfirmacionDeshabilitar,
+  } = useHardwareService(onResponse);
+
+  useEffect(() => {
+    fetchHardwares(true);
+  }, [fetchHardwares]);
+
+  const manejarAgregarPlantilla = () => {
+    setSelectedComponent(
+      <AgregarHardware
+        setSelectedComponent={setSelectedComponent}
+        auth={auth}
+        onResponse={onResponse}
+      />
+    );
+  };
+
   const handleEditarHardware = (idHardware) => {
     setSelectedComponent(
       <EditarHardware
         idHardware={idHardware}
         setSelectedComponent={setSelectedComponent}
         auth={auth}
-      ></EditarHardware>
+      />
     );
-    console.log(`Editar hardware con ID ${idHardware}`);
   };
 
-  useEffect(() => {
-    fetchHardwares();
-  }, [fetchHardwares]);
-
-  const manejarAgregarHardware = () => {
-    setSelectedComponent(<AgregarHardware setSelectedComponent={setSelectedComponent} auth={auth}></AgregarHardware>);
-  };
-
-  const columns = [
-    { field: "id", headerName: "ID", width: 90 },
-    { field: "idHardwareInterno", headerName: "ID hardware", width: 90 },
-    { field: "nombre", headerName: "Nombre", width: 350 },
-    { field: "descripcion", headerName: "Descripcion", width: 150 },
+  const columnsActivas = [
+    { field: "id", headerName: "ID" },
+    { field: "idHardwareInterno", headerName: "ID hardware" },
+    { field: "nombre", headerName: "Nombre" },
     {
       field: "editar",
       headerName: "Editar",
@@ -65,7 +95,7 @@ const ListaHardwares = (props) => {
     },
     {
       field: "eliminar",
-      headerName: "Eliminar",
+      headerName: "Deshabilitar",
       sortable: false,
       width: 110,
       renderCell: (params) => (
@@ -76,92 +106,119 @@ const ListaHardwares = (props) => {
     },
   ];
 
+  const columnsDeshabilitadas = [
+    { field: "id", headerName: "ID" },
+    { field: "idHardwareInterno", headerName: "ID hardware" },
+    { field: "nombre", headerName: "Nombre" },
+    {
+      field: "habilitar",
+      headerName: "Habilitar",
+      sortable: false,
+      width: 110,
+      renderCell: (params) => (
+        <IconButton onClick={() => handleHabilitarHardware(params.row.idHardware)}>
+          <CheckIcon />
+        </IconButton>
+      ),
+    },
+  ];
+
+  const renderModals = () => (
+    <>
+      <ModalGenerico
+        tipoModal={respuestaModalOk.status}
+        open={estaActivoModalOk}
+        onClose={cerrarModalOk}
+        title="Correcto"
+        message={respuestaModalOk.msg}
+        autoCierre={true}
+      />
+      <ModalGenerico
+        open={estaActivoModalConfirmacionHabilitar}
+        onClose={cerrarModalConfirmacionHabilitar}
+        title="Confirmación"
+        message={respuestaModalConfirmacionHabilitar.msg}
+        actions={[
+          { label: "Confirmar", handler: () => cerrarModalConfirmacionHabilitar(true), color: "primary" },
+          { label: "Cancelar", handler: () => cerrarModalConfirmacionHabilitar(false), color: "error" },
+        ]}
+      />
+      <ModalGenerico
+        open={estaActivoModalConfirmacionDeshabilitar}
+        onClose={cerrarModalConfirmacionDeshabilitar}
+        title="Confirmación"
+        message={respuestaModalConfirmacionDeshabilitar.msg}
+        actions={[
+          { label: "Confirmar", handler: () => cerrarModalConfirmacionDeshabilitar(true), color: "primary" },
+          { label: "Cancelar", handler: () => cerrarModalConfirmacionDeshabilitar(false), color: "error" },
+        ]}
+      />
+    </>
+  );
+
+  if (isLoading) {
+    return <LoadingComponent />;
+  }
+
   return (
     <Grid container padding={2}>
-      {!isLoading ? (
-        <Grid item xs={12}>
-          <ModalGenerico
-            tipoModal={"correcto"}          
-            open={estaActivoModalOk}
-            onClose={cerrarModalOk}
-            title="Correcto"
-            message={respuestaModalOk.msg}
-            autoCierre={true}
-      />      
-      {/* Modal Confirmación */}
-
-      <ModalGenerico
-
-            open={estaActivoModalConfirmacion}
-            onClose={cerrarModalConfirmacion}
-            title="Confirmación"
-            message={respuestaModalConfirmacion.msg}
-            actions={[
-              { label: "Confirmar", handler: () => { cerrarModalConfirmacion(true); }, color: "primary" },
-              { label: "Cancelar", handler: () => { cerrarModalConfirmacion(false); }, color: "error" },
-            ]}
-      />          
-          <HeaderContent titulo="Lista de hardwares"></HeaderContent>
-          <Paper style={{ padding: 20 }}>
-            <Grid container spacing={3}>
-              <Grid
-                item
-                xs={8}
-                sx={{ display: "flex", justifyContent: "left" }}
-              >
-              </Grid>
-
-              <Grid
-                item
-                xs={4}
-                sx={{
-                  display: "flex",
-                  justifyContent: "right",
-                  alignItems: "center",
-                }}
-              >
-                <Typography variant="h6">Agregar hardware</Typography>
-                <IconButton
-                  variant={"contained"}
-                  sx={{
-                    borderRadius: "50%",
-                    backgroundColor: "green",
-                    color: "white",
-                    marginLeft: "10px",
-                  }}
-                  onClick={manejarAgregarHardware}
-                >
-                  <AddIcon />
-                </IconButton>
-              </Grid>
-
-              <Grid item xs={12}>
-                
-                  <DataGrid
-                    /*rows={activeTab === "activas" ? dataActivas : dataObsoletas}*/
-                    sx={{ maxHeight: "calc(100vh - 330px)", width: "100%" }}
-                    rows={transformarDatos(hardwares)}
-                    columns={columns}
-                    pageSize={5}
-                    rowsPerPageOptions={[5, 10, 20]}
-                  />
-                
-              </Grid>
-
+      <Grid item xs={12}>
+        {renderModals()}
+        <HeaderContent titulo="Lista de hardwares" />
+        <Paper style={{ padding: 20 }}>
+          <Grid container spacing={3}>
+            <Grid item xs={8} sx={{ display: "flex", justifyContent: "left" }}>
+              <UsuarioAutorizado usuario={auth} permisosRequeridos={["superusuario"]}>
+                <Tabs value={activeTab} onChange={handleTabChange}>
+                  <Tab label="Activos" value={1} />
+                  <Tab label="Deshabilitados" value={0} />
+                </Tabs>
+              </UsuarioAutorizado>
             </Grid>
-            <Button sx={{mt:5}}
-      variant="contained"
-      color="success" 
-      onClick={() => setSelectedComponent(<Home></Home>)}
-      startIcon={<ArrowBackIcon />} 
-    >
-      Salir
-    </Button>
-          </Paper>
-        </Grid>
-      ) : (
-        <></>
-      )}
+            <Grid
+              item
+              xs={4}
+              sx={{
+                display: "flex",
+                justifyContent: "right",
+                alignItems: "center",
+              }}
+            >
+              <Typography variant="h6">Agregar código hardware</Typography>
+              <IconButton
+                variant="contained"
+                sx={{
+                  borderRadius: "50%",
+                  backgroundColor: "green",
+                  color: "white",
+                  marginLeft: "10px",
+                }}
+                onClick={manejarAgregarPlantilla}
+              >
+                <AddIcon />
+              </IconButton>
+            </Grid>
+            <Grid item xs={12}>
+              <DataGrid
+                sx={{ maxHeight: "calc(100vh - 330px)", width: "100%" }}
+                rows={transformarDatos(hardwares)}
+                columns={activeTab === 1 ? columnsActivas : columnsDeshabilitadas}
+                pageSize={5}
+                rowsPerPageOptions={[5, 10, 20]}
+              />
+            </Grid>
+          </Grid>
+          <Button
+            sx={{ mt: 5 }}
+            variant="contained"
+            color="success"
+            onClick={() => setSelectedComponent(<Home />)}
+            startIcon={<ArrowBackIcon />}
+          >
+            Salir
+          </Button>
+        </Paper>
+      </Grid>
     </Grid>
   );
 };

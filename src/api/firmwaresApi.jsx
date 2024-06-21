@@ -1,77 +1,73 @@
-import { postData,getData } from "./axios";
+import { postData, getData } from "./axios";
 import { ENV } from "../utils";
+
+// Función para actualizar un firmware
 export async function actualizarFirmware(data, token) {
   try {
-    const response = await postData(
-     ENV.actualizarFirmware(),
-      data,
-      token
-    );
-    console.log(data)
+    const response = await postData(ENV.actualizarFirmware(), data, token);
     if (response.status === 200) {
       return await response.json();
     } else {
-      return { status: false, msg: "Erro al actualizar Firmware" };
+      return { status: false, msg: "Error al actualizar firmware" };
     }
   } catch (error) {
     return { status: false, msg: error.message };
   }
-} 
-export async function obtenerFirmware(token,idFirmware) {
+}
+
+// Función para obtener todos los GAEs
+export async function obtenerFirmwares(token, estatus = null) {
   try {
-    console.log("ID2", idFirmware);
-    const response = await getData(
-      ENV.obtenerFirmware(idFirmware),
-      token
-    );
+    let url = ENV.obtenerFirmwares();
+    if (estatus !== null) {
+      url += `?estatus=${estatus}`;
+    }
+
+    const response = await getData(url, token);
 
     if (response.status === 200) {
       return await response.json();
     } else {
       return {
-        usuarios: [],
+        firmwares: [],
         status: false,
-        msg: "No se pudo obtener la información del Firmware",
+        msg: "No se pudo obtener la información de los GAEs.",
       };
     }
   } catch (error) {
-    return { usuarios: [], status: false, msg: error.message};
+    return { firmwares: [], status: false, msg: error.message };
   }
 }
-export async function obtenerFirmwares(token) {
-    try {
-      const response = await getData(
-        ENV.obtenerFirmwares(),
-        token
-      );
-  
-      if (response.status === 200) {
-        return await response.json();
-      } else {
-        return {
-          firmwares: [],
-          status: false,
-          msg: "No se pudo obtener información de los firmwares.",
-        };
-      }
-    } catch (error) {
-      return { firmwares: [], status: false, msg: error.message};
+
+// Función para obtener un firmware por su ID
+export async function obtenerFirmware(token, idFirmware) {
+  try {
+    const response = await getData(ENV.obtenerFirmware(idFirmware), token);
+
+    if (response.status === 200) {
+      return await response.json();
+    } else {
+      return {
+        firmware: [],
+        status: false,
+        msg: "No se pudo obtener la información de firmware",
+      };
     }
+  } catch (error) {
+    return { firmware: [], status: false, msg: error.message };
   }
-  export async function crearFirmware(data, token) {
-    try {
-      const response = await postData(
-       ENV.crearFirmware(),
-        data,
-        token
-      );
-      console.log(data)
-      if (response.status === 200) {
-        return await response.json();
-      } else {
-        return { status: false, msg: "No se pudo guardar firmware." };
-      }
-    } catch (error) {
-      return { status: false, msg: error.message };
+}
+
+// Función para crear un nuevo firmware
+export async function crearFirmware(data, token) {
+  try {
+    const response = await postData(ENV.crearFirmware(), data, token);
+    if (response.status === 200) {
+      return await response.json();
+    } else {
+      return { status: false, msg: "Error al guardar firmware." };
     }
+  } catch (error) {
+    return { status: false, msg: error.message };
   }
+}

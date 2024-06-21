@@ -1,34 +1,51 @@
-// hooks/useSoftwareService.js
-import { useState, useCallback } from 'react';
+import { useState, useCallback } from "react";
+import { crearFirmware, obtenerFirmwares, actualizarFirmware, obtenerFirmware } from "../api/firmwaresApi";
 
-import { crearFirmware,obtenerFirmwares,actualizarFirmware,obtenerFirmware } from '../api/firmwaresApi';
 export const useFirmwareService = () => {
   const [firmwares, setFirmwares] = useState([]);
-  const [firmware, setFirmware] = useState(null);  
+  const [firmware, setFirmware] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [estaActivo, setEstaActivo] = useState(false);
-  const [respuestaModal, setRespuestaModal] = useState(false);
   const [idFirmwareSeleccionado, setIdFirmwareSeleccionado] = useState("");
   const [estaActivoModalOk, setEstaActivoModalOk] = useState(false);
-  const [respuestaModalOk, setRespuestaModalOk] = useState({
-    msg: "¡Firmware deshabilitado!",
-    status: true,
-  });
-  const [estaActivoModalConfirmacion, setEstaActivoModalConfirmacion] =
-    useState(false);
-  const [respuestaModalConfirmacion, setRespuestaModalConfirmacion] = useState({
-    msg: "¡Confirma para deshabilitar Firmware!",
+  const [respuestaModalOk, setRespuestaModalOk] = useState({ msg: "¡firmware deshabilitado!", status: true });
+  const [estaActivoModalConfirmacionHabilitar, setEstaActivoModalConfirmacionHabilitar] = useState(false);
+  const [respuestaModalConfirmacionHabilitar, setRespuestaModalConfirmacionHabilitar] = useState({
+    msg: "¡Confirma para habilitar firmware!",
     status: false,
   });
+  const [estaActivoModalConfirmacionDeshabilitar, setEstaActivoModalConfirmacionDeshabilitar] = useState(false);
+  const [respuestaModalConfirmacionDeshabilitar, setRespuestaModalConfirmacionDeshabilitar] = useState({
+    msg: "¡Confirma para deshabilitar firmware!",
+    status: false,
+  });
+  const [activeTab, setActiveTab] = useState(1);
+
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
+    fetchFirmwares(Boolean(newValue));
+  };
+
+  const fetchFirmwares = useCallback(async (estatus) => {
+    try {
+      setIsLoading(true);
+      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+      if (tkn) {
+        const json = await obtenerFirmwares(tkn, estatus);
+        setFirmwares(json.firmwares || []);
+      }
+      setIsLoading(false);
+    } catch (error) {
+      setIsLoading(false);
+      console.error(error);
+    }
+  }, []);
 
   const fetchFirmware = useCallback(async (idFirmware) => {
     try {
       setIsLoading(true);
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
       if (tkn) {
-        const json = await obtenerFirmware(tkn,idFirmware);
-  
-        console.log(json.firmware);
+        const json = await obtenerFirmware(tkn, idFirmware);
         setFirmware(json.firmware || []);
       }
       setIsLoading(false);
@@ -37,51 +54,29 @@ export const useFirmwareService = () => {
       console.error(error);
     }
   }, []);
-  const fetchFirmwares = useCallback(async () => {
+
+  const handleCrearFirmware = async (data) => {
     try {
       setIsLoading(true);
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
       if (tkn) {
-        const json = await obtenerFirmwares(tkn);
-        const firmwaresActivos =
-          json.firmwares?.filter((firmware) => firmware.estatus !== false) || [];
-        console.log(json.firmwares);
-        setFirmwares(firmwaresActivos || []);
+        const response = await crearFirmware(data, tkn);
+        setRespuestaModalOk({ msg: response.msg, status: response.status });
+        setEstaActivoModalOk(true);
       }
       setIsLoading(false);
     } catch (error) {
+      console.error(error);
       setIsLoading(false);
-      console.error(error);
-    }
-  }, []);
-  const handleEditarFirmware = async (data) => {
-    try {
-      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-      const response = await actualizarFirmware(data,tkn)
-      
-      if (response.status) {
-        console.log(response);
-        if (response.status) {
-          setRespuestaModalOk({ msg: response.msg, status: true });
-          setEstaActivoModalOk(true);
-        }
-      }
-      console.log(response);
-
-      setRespuestaModal(response);;
-    } catch (error) {
-      console.error(error);
     }
   };
 
-  const handleCreateFirmware = async (data) => {
+  const handleEditarFirmware = async (data) => {
     try {
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-      if (tkn) {
-        const response = await crearFirmware(data, tkn);
-        setEstaActivo(true);
-        setRespuestaModal(response);
-      }
+      const response = await actualizarFirmware(data, tkn);
+      setRespuestaModalOk({ msg: response.msg, status: response.status });
+      setEstaActivoModalOk(true);
     } catch (error) {
       console.error(error);
     }
@@ -90,15 +85,27 @@ export const useFirmwareService = () => {
   const deshabilitarFirmware = async (idFirmware) => {
     try {
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-      const data = { idFirmware: idFirmware, estatus: false };
+      const data = { idFirmware, estatus: false };
       const response = await actualizarFirmware(data, tkn);
       if (response.status) {
-        console.log(response);
-        if (response.status) {
-          setRespuestaModalOk({ msg: "¡Firmware deshabilitado exitosamente!", status: true });
-          setEstaActivoModalOk(true);
-          fetchFirmwares();
-        }
+        setRespuestaModalOk({ msg: "¡Firmware deshabilitado exitosamente!", status: true });
+        setEstaActivoModalOk(true);
+        fetchFirmwares(true);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const habilitarFirmware = async (idFirmware) => {
+    try {
+      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+      const data = { idFirmware, estatus: true };
+      const response = await actualizarFirmware(data, tkn);
+      if (response.status) {
+        setRespuestaModalOk({ msg: "¡Firmware habilitado exitosamente!", status: true });
+        setEstaActivoModalOk(true);
+        fetchFirmwares(false);
       }
     } catch (error) {
       console.error(error);
@@ -108,44 +115,52 @@ export const useFirmwareService = () => {
   const cerrarModalOk = () => {
     setEstaActivoModalOk(false);
   };
-  const cerrarModalConfirmacion = (respuestaSeleccionada) => {
-    console.log("respuestaSeleccionada", respuestaSeleccionada);
+
+  const cerrarModalConfirmacionHabilitar = (respuestaSeleccionada) => {
     if (respuestaSeleccionada) {
-      console.log("idFirmwareSeleccionado", idFirmwareSeleccionado);
-
-      deshabilitarFirmware(idFirmwareSeleccionado);
+      habilitarFirmware(idFirmwareSeleccionado);
     }
-    setEstaActivoModalConfirmacion(false); // Restablecer el estado a false cuando se cierra el modal
-
+    setEstaActivoModalConfirmacionHabilitar(false);
   };
 
-  const handleDeshabilitarFirmware = async (idFirmware) => {
+  const cerrarModalConfirmacionDeshabilitar = (respuestaSeleccionada) => {
+    if (respuestaSeleccionada) {
+      deshabilitarFirmware(idFirmwareSeleccionado);
+    }
+    setEstaActivoModalConfirmacionDeshabilitar(false);
+  };
+
+  const handleDeshabilitarFirmware = (idFirmware) => {
     setIdFirmwareSeleccionado(idFirmware);
-    setEstaActivoModalConfirmacion(true);
+    setEstaActivoModalConfirmacionDeshabilitar(true);
+  };
+
+  const handleHabilitarFirmware = (idFirmware) => {
+    setIdFirmwareSeleccionado(idFirmware);
+    setEstaActivoModalConfirmacionHabilitar(true);
   };
 
   return {
+    activeTab,
     firmwares,
-    firmware,    
+    firmware,
     isLoading,
     idFirmwareSeleccionado,
-    estaActivo,
-    respuestaModal,
     estaActivoModalOk,
     respuestaModalOk,
-    estaActivoModalConfirmacion,
-    respuestaModalConfirmacion,
-    setRespuestaModalConfirmacion,
-    cerrarModalOk,
-    cerrarModalConfirmacion,
-    setEstaActivoModalConfirmacion,
-    setIdFirmwareSeleccionado,
+    handleTabChange,
     fetchFirmwares,
     fetchFirmware,
-    handleCreateFirmware,
-    handleDeshabilitarFirmware,
+    handleCrearFirmware,
     handleEditarFirmware,
-    setEstaActivo,
-    
+    handleDeshabilitarFirmware,
+    handleHabilitarFirmware,
+    cerrarModalOk,
+    cerrarModalConfirmacionHabilitar,
+    estaActivoModalConfirmacionHabilitar,
+    respuestaModalConfirmacionHabilitar,
+    cerrarModalConfirmacionDeshabilitar,
+    estaActivoModalConfirmacionDeshabilitar,
+    respuestaModalConfirmacionDeshabilitar,
   };
 };
