@@ -17,7 +17,6 @@ const ListaUsuarios = ({ setSelectedComponent, auth, onResponse }) => {
   const theme = useTheme();
   const {
     activeTab,
-    setActiveTab,
     handleTabChange,
     usuarios,
     isLoading,

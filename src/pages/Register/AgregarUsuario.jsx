@@ -5,7 +5,7 @@ import HeaderContent from "../HeaderContent";
 import ModalGenerico from "../../components/ModalGenerico";
 import Home from "../Home/Home";
 import { useUsuarioService } from "../../hooks/useUsuarioService.jsx";
-import { handleOnChangeInputTexto, handleOnChangeInputIds, handleOnChangeInputTextoNumero } from "../utils.js";
+import { handleOnChangeInputTexto } from "../utils.js";
 
 const AgregarUsuario = ({ setSelectedComponent, onResponse }) => {
   const { cerrarModalOk, handleCrearUsuario, estaActivoModalOk, respuestaModalOk } = useUsuarioService(onResponse);

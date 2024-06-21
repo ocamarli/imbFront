@@ -162,5 +162,7 @@ export const useFirmwareService = () => {
     cerrarModalConfirmacionDeshabilitar,
     estaActivoModalConfirmacionDeshabilitar,
     respuestaModalConfirmacionDeshabilitar,
+    setRespuestaModalConfirmacionHabilitar,
+    setRespuestaModalConfirmacionDeshabilitar
   };
 };

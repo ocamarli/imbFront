@@ -162,5 +162,7 @@ export const useGaeService = () => {
     cerrarModalConfirmacionDeshabilitar,
     estaActivoModalConfirmacionDeshabilitar,
     respuestaModalConfirmacionDeshabilitar,
+    setRespuestaModalConfirmacionHabilitar,
+    setRespuestaModalConfirmacionDeshabilitar    
   };
 };
