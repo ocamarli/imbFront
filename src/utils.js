@@ -1,5 +1,5 @@
 const api = {
-  baseuri: "https://black-field-0c24d120f.4.azurestaticapps.net:5000/api/v1/",
+  baseuri: "https://imbvikkonapi.azurewebsites.net/api/v1/",
   endpoints: {
     login: "login",
     user: "user",
