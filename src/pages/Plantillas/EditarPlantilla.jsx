@@ -1,24 +1,24 @@
 import { useForm } from "react-hook-form";
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useTheme } from "@mui/material/styles";
 import {
   TextField, FormControlLabel, Radio, RadioGroup, FormLabel, FormControl,
-  Grid, Button, Paper, Select, MenuItem, Typography, InputLabel,
-  CircularProgress} from "@mui/material";
+  Grid, Button, Paper, Select, MenuItem, Typography, InputLabel} from "@mui/material";
 import HeaderContent from "../HeaderContent";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
-import { obtenerPlantilla } from "../../api/plantillasApi.jsx";
 import TablaContenido from "./Componentes/TablaContenido";
 import Home from "../Home/Home.jsx";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack.js";
 import GrupoCheckbox from "../../components/GrupoCheckbox.jsx";
+import { usePlantillaService } from "../../hooks/usePlantillaService.jsx";
+import LoadingComponent from "../LoadingComponent.jsx";
 
-const EditarPlantilla = (props) => {
-  const { idPlantilla, setSelectedComponent, auth } = props;
+const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth ,onResponse}) => {
+  const { isLoading, plantilla, fetchPlantilla } = usePlantillaService(onResponse);
+  
   const totalDeProgramas = useMemo(() => ["1", "2", "3", "4", "5", "6"], []);
-  const [isLoading, setIsLoading] = useState(false);
-  const [plantilla, setPlantilla] = useState(null);
+
   const [checkboxSeleccionados, setCheckboxSeleccionados] = useState([]);
   const theme = useTheme();
   const [bloqueado, setBloqueado] = useState(false);
@@ -40,46 +40,24 @@ const EditarPlantilla = (props) => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({
-    defaultValues: {
-      nombrePlantilla: plantilla?.plantilla.nombrePlantilla || "",
-      hardware: plantilla?.plantilla.hardware || "",
-      firmware: plantilla?.plantilla.nombrePlantilla || "",
-    },
-  });
-  const fetchObtenerPlantilla = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-      if (tkn !== undefined) {
-        console.log("obtenerPlantilla");
-        const json = await obtenerPlantilla(tkn, idPlantilla);
-        console.log(json);
-        setPlantilla(json || null);
-        setIsLoading(false);
-      } else {
-        setPlantilla(null);
-      }
-    } catch (error) {
-      setIsLoading(false);
-      console.error(error);
-    }
-  }, [setIsLoading, setPlantilla, idPlantilla]);
+  } = useForm();
 
   useEffect(() => {
-    fetchObtenerPlantilla();
-  }, [fetchObtenerPlantilla]);
-
+    fetchPlantilla(idPlantilla);
+  }, [fetchPlantilla,idPlantilla]);
+  if (isLoading || plantilla == null ) {
+    console.log("plantilla-----",plantilla)
+    return <LoadingComponent />;
+  }
+  else{
   return (
+    
     <Grid container padding={1}>
-      {isLoading || plantilla == null ? ( // Agrega el loader condicionalmente
-        <Grid item xs={12} align="center" mt="25%">
-          <CircularProgress size={50} />
-        </Grid>
-      ) : (
+        {console.log("plantilla_______",plantilla)}
+
         <Grid>
           <HeaderContent
-            titulo={plantilla.plantilla.nombrePlantilla}
+            titulo={plantilla?.nombrePlantilla}
           ></HeaderContent>
           <Paper style={{ padding: 10 }}>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -90,7 +68,7 @@ const EditarPlantilla = (props) => {
                     {...register("nombrePlantilla", { required: true })}
                     size="small"
                     fullWidth
-                    placeholder={plantilla?.plantilla.nombrePlantilla || ""}
+                    placeholder={plantilla?.nombrePlantilla || ""}
                     variant="outlined"
                     error={errors.nombrePlantilla ? true : false}
                     helperText={
@@ -111,7 +89,7 @@ const EditarPlantilla = (props) => {
                         if (!selected) {
                           return (
                             <em style={{ color: "rgba(0, 0, 0, 0.54)" }}>
-                              {plantilla?.plantilla.firmware}
+                              {plantilla?.firmware}
                             </em>
                           );
                         }
@@ -121,8 +99,6 @@ const EditarPlantilla = (props) => {
                       <MenuItem disabled value="">
                         <em>Selecciona una firmware</em>
                       </MenuItem>
-                      <MenuItem value={"Firmware 1"}>Firmware 1</MenuItem>
-                      <MenuItem value={"Firmware 2"}>Firmware 2</MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
@@ -139,18 +115,16 @@ const EditarPlantilla = (props) => {
                         if (!selected) {
                           return (
                             <em style={{ color: "rgba(0, 0, 0, 0.54)" }}>
-                              {plantilla?.plantilla.hardware}
+                              {plantilla?.hardware}
                             </em>
                           );
                         }
                         return selected;
                       }}
                     >
-                      <MenuItem disabled value={plantilla?.plantilla.hardware}>
+                      <MenuItem disabled value={plantilla?.hardware}>
                         <em>Selecciona una hardware</em>
                       </MenuItem>
-                      <MenuItem value={"Hardware 1"}>Hardware 1</MenuItem>
-                      <MenuItem value={"Hardware 2"}>Hardware 2</MenuItem>
                     </Select>
                   </FormControl>
                 </Grid>
@@ -170,7 +144,7 @@ const EditarPlantilla = (props) => {
                 </Grid>
                 <Grid item xs={12}>
                   <InputLabel>Creado por</InputLabel>
-                  <InputLabel>{plantilla.plantilla.creadoPor}</InputLabel>
+                  <InputLabel>{plantilla.creadoPor}</InputLabel>
                 </Grid>
                 <Grid item xs={12}>
                   <Button
@@ -233,6 +207,7 @@ const EditarPlantilla = (props) => {
                     setSelectedComponent={setSelectedComponent}
                     auth={auth}
                     checkboxSeleccionados={checkboxSeleccionados}
+                    onResponse={onResponse}
                   ></TablaContenido>
                 </Grid>
               </Grid>
@@ -248,8 +223,9 @@ const EditarPlantilla = (props) => {
       </Button>
           </Paper>
         </Grid>
-      )}
+      
     </Grid>
   );
+}
 };
 export default EditarPlantilla;

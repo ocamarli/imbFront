@@ -3,19 +3,20 @@ import { Dialog, Typography,IconButton } from "@mui/material";
 import React, { useState, useEffect, useCallback } from "react";
 import store from "../../store";
 import { Provider } from "react-redux";
-import { obtenerParametros } from "../../api/parametrosApi.jsx";
 import { Grid, Paper, CircularProgress,Button } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import HeaderContent from "../HeaderContent";
 import AddIcon from "@mui/icons-material/Add";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
 import Home from "../Home/Home.jsx"
+import { useParametroService } from "../../hooks/useParametroService";
+import ModalGenerico from "../../components/ModalGenerico.jsx";
+import LoadingComponent from "../LoadingComponent.jsx";
 const columns = [
   { field: "id", headerName: "ID", flex: .4 },
   { field: "rango", headerName: "RANGO", flex: .7, editable: true },
   { field: "unidad", headerName: "UNIDAD", flex: .5, editable: true },
   { field: "descripcion", headerName: "DESCRIPCIÓN", flex: 2, editable: true},
-  { field: "logicaFuncionamiento", headerName: "LÓGICA DE FUNCIONAMIENTO", flex: 2,   editable: false},
   { field: "tipoParameto", headerName: "TIPO DE PARÁMETRO", flex: 1, editable: true},
   { field: "grupo", headerName: "GRUPO", flex: 1, editable: true},  
 
@@ -23,12 +24,11 @@ const columns = [
 
 function transformarDatos(parametros) {
   console.log(parametros);
-  return parametros.map((parametro) => {
+  return parametros.map((parametro,index) => {
     let tipoCampoData = "";
     let unidadValor = "";
     let rango;
-    let logicaFuncionamiento = "";
-    console.log(logicaFuncionamiento, tipoCampoData, unidadValor);
+    console.log(tipoCampoData, unidadValor);
     if (parametro.tipoCampo === "rango") {
       unidadValor = parametro.unidad;
       rango =
@@ -44,9 +44,6 @@ function transformarDatos(parametros) {
         .map((opcion, index) => `${index + 1} ,`)
         .join("");
 
-      logicaFuncionamiento = parametro.opciones
-        .map((opcion, index) => opcion.valor + "-" + opcion.nombre)
-        .join(",");
       rango = "(" + rango.slice(0, -1);
       rango = rango + ")";
     } else {
@@ -54,63 +51,96 @@ function transformarDatos(parametros) {
     }
 
     return {
-      id: parametro.idParametro,
-      valor: parametro.valor,
+      id: index + 1 || "",
+      idParametroInterno:parametro.idParametroInterno,
+      idParametro:parametro.idParametro,
       descripcion: parametro.descripcion || "",
       tipoParameto: parametro.tipoParametro || "",
       tipoCampo: parametro.tipoCampo || "",
-      logicaFuncionamiento: logicaFuncionamiento || "",
-      rango: rango,
+      rango: rango || "",
+      unidad:parametro.unidad || "",
     };
   });
 }
-function ListaParametros(props) {
-  
-  const {setSelectedComponent, onResponse } = props;
-  const [isLoading, setIsLoading] = useState(false);
+function ListaParametros({setSelectedComponent, onResponse }) {
+  const {
+
+    parametros,
+    isLoading,
+    fetchParametros,
+
+    cerrarModalOk,
+    estaActivoModalOk,
+    respuestaModalOk,
+
+    estaActivoModalConfirmacionHabilitar,
+    respuestaModalConfirmacionHabilitar,
+    cerrarModalConfirmacionHabilitar,
+    estaActivoModalConfirmacionDeshabilitar,
+    respuestaModalConfirmacionDeshabilitar,
+    cerrarModalConfirmacionDeshabilitar,
+  } = useParametroService(onResponse);  
+
+
   const [open, setOpen] = useState(false); // Define el estado "open" en el componente padre
-  const [parametros, setParametros] = useState([]);
+
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
-  const fetchparametros = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-      console.log(tkn);
-      if (tkn !== undefined) {
-        const json = await obtenerParametros(tkn);
-        console.log(json);
-        setParametros(json.parametros || []);
-        onResponse(json);
-        setIsLoading(false);
-      } else {
-        setParametros([]);
-        onResponse({ status: false, msg: "Unauthorized Access" });
-      }
-    } catch (error) {
-      setIsLoading(false);
-      onResponse({ status: false, msg: error });
-      console.error(error);
-    }
-  }, [setIsLoading, setParametros, onResponse]);
 
   const handleClose = useCallback(async () => {
     
-    await fetchparametros();
+    await fetchParametros();
     setOpen(false);
-  }, [fetchparametros]);
+  }, [fetchParametros]);
 
   useEffect(() => {
-    fetchparametros();
+    fetchParametros();
     
-  }, [fetchparametros]);
+  }, [fetchParametros]);
+  const renderModals = () => (
+    <>
+      <ModalGenerico
+        tipoModal={respuestaModalOk.status}
+        open={estaActivoModalOk}
+        onClose={cerrarModalOk}
+        title="Correcto"
+        message={respuestaModalOk.msg}
+        autoCierre={true}
+      />
+      <ModalGenerico
+        open={estaActivoModalConfirmacionHabilitar}
+        onClose={cerrarModalConfirmacionHabilitar}
+        title="Confirmación"
+        message={respuestaModalConfirmacionHabilitar.msg}
+        actions={[
+          { label: "Confirmar", handler: () => cerrarModalConfirmacionHabilitar(true), color: "primary" },
+          { label: "Cancelar", handler: () => cerrarModalConfirmacionHabilitar(false), color: "error" },
+        ]}
+      />
+      <ModalGenerico
+        open={estaActivoModalConfirmacionDeshabilitar}
+        onClose={cerrarModalConfirmacionDeshabilitar}
+        title="Confirmación"
+        message={respuestaModalConfirmacionDeshabilitar.msg}
+        actions={[
+          { label: "Confirmar", handler: () => cerrarModalConfirmacionDeshabilitar(true), color: "primary" },
+          { label: "Cancelar", handler: () => cerrarModalConfirmacionDeshabilitar(false), color: "error" },
+        ]}
+      />
+    </>
+  );
+
+  if (isLoading) {
+    return <LoadingComponent />;
+  }
 
   return (
     <Provider store={store}>
       <Grid container padding={2}>
+        {renderModals()}
         <Grid item xs={12}>
           <Dialog open={open} onClose={handleClose}>
             <AddParameter open={open} handleClose={handleClose}></AddParameter>

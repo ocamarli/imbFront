@@ -1,102 +1,78 @@
-import React, { useState, useEffect, useCallback } from "react";
-import { Button, Grid, Paper } from "@mui/material";
-import Typography from "@mui/material/Typography";
-import HeaderContent from "../HeaderContent";
-import IconButton from "@mui/material/IconButton";
-import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/ModeEdit";
-import FileCopyIcon from "@mui/icons-material/FileCopy";
-import LockIcon from "@mui/icons-material/Lock";
-import AddIcon from "@mui/icons-material/Add";
-import AgregarPlantilla from "./AgregarPlantilla";
+import React, { useEffect } from "react";
+import { Button, Grid, Paper, IconButton, Typography,Tab,Tabs } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { obtenerPlantillas } from "../../api/plantillasApi.jsx";
-import ModalClonarPlantilla from "./Componentes/ModalClonarPlantila.jsx";
-import EditarPlantilla from "./EditarPlantilla.jsx";
-import ArrowBackIcon from "@mui/icons-material/ArrowBack";
-import Home from "../Home/Home.jsx";
+import { Add as AddIcon, ArrowBack as ArrowBackIcon, DeleteOutline as DeleteIcon, Edit as EditIcon, FileCopy as FileCopyIcon, Lock as LockIcon } from "@mui/icons-material";
+import HeaderContent from "../HeaderContent";
+import { usePlantillaService } from "../../hooks/usePlantillaService";
+import AgregarPlantilla from "./AgregarPlantilla";
+import EditarPlantilla from "./EditarPlantilla";
+import ModalClonarPlantilla from "./Componentes/ModalClonarPlantila";
+import ModalGenerico from "../../components/ModalGenerico";
+import Home from "../Home/Home";
+import LoadingComponent from "../LoadingComponent";
+import UsuarioAutorizado from "../../components/UsuarioAutorizado";
+
 function transformarDatos(plantillas) {
   console.log(plantillas);
   return plantillas.map((plantilla, index) => {
     return {
       id: index + 1 || "",
       nombrePlantilla: plantilla.nombrePlantilla || "",
-      firmware: plantilla.firmware || "",
+      plantilla: plantilla.plantilla || "",
       hardware: plantilla.hardware || "",
       creadoPor: plantilla.creadoPor || "",
-      _id: plantilla._id || "",
+      idPlantilla: plantilla.idPlantilla || "",
     };
   });
 }
-const ListaPlantillas = (props) => {
-  const { setSelectedComponent, auth, onResponse } = props;
-  const [isLoading, setIsLoading] = useState(false);
-  const [activeTab, setActiveTab] = useState("activas"); // Estado para controlar la pestaña activa
-  const [plantillas, setPlantillas] = useState([]);
-  const [modalActiva, setModalActiva] = useState(false);
-  const [plantillaAClonar, setPlantillaAClonar] = useState(false);
-  const [respuesta, setRespuesta] = useState({
-    status: true,
-    msg: "Operación exitosa",
-  });
-  const manejarAbrirModal = (nombrePlantilla) => {};
+const ListaPlantillas = ( { setSelectedComponent, auth, onResponse }) => {
+  const {
+    activeTab,
+    handleTabChange,
+    plantillas,
+    isLoading,
+    fetchPlantillas,
+    handleDeshabilitarPlantilla,
+    handleClonarPlantilla,
+    handleCongelarPlantilla,
+    cerrarModalOk,
+    estaActivoModalOk,
+    respuestaModalOk,
+    setRespuestaModalOk,
+    estaActivoModalConfirmacionHabilitar,
+    respuestaModalConfirmacionHabilitar,
+    cerrarModalConfirmacionHabilitar,
+    estaActivoModalConfirmacionDeshabilitar,
+    respuestaModalConfirmacionDeshabilitar,
+    cerrarModalConfirmacionDeshabilitar,
+    plantillaAClonar,
+    estaActivoModalClonar,
+    setEstaActivoModalClonar,
+    setEstaActivoModalOk
+  } = usePlantillaService(onResponse);  
+
 
   const manejarCerrarModal = () => {
-    setModalActiva(false);
+    setEstaActivoModalClonar(false);
   };
 
-  const fetchPlantillas = useCallback(async () => {
-    try {
-      setIsLoading(true);
-      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-      if (tkn !== undefined) {
-        const json = await obtenerPlantillas(tkn);
-        console.log(json);
-        setPlantillas(json.plantillas || []);
-        setRespuesta(json);
-        onResponse(json);
-        setIsLoading(false);
-      }
-    } catch (error) {
-      setIsLoading(false);
-      onResponse({ status: false, msg: error });
-      console.error(error);
-    }
-  }, [setIsLoading, setPlantillas, onResponse]);
+
   useEffect(() => {
-    fetchPlantillas();
+    fetchPlantillas(true);
   }, [fetchPlantillas]);
-  const manejarEditar = (id) => {
+  const handleEditarPlantilla = (idPlantilla) => {
     setSelectedComponent(
       <EditarPlantilla
-        idPlantilla={id}
+        idPlantilla={idPlantilla}
         setSelectedComponent={setSelectedComponent}
         auth={auth}
+        onResponse={onResponse}
       ></EditarPlantilla>
     );
-    console.log("Editar plantilla con ID:", id);
+    console.log("Editar plantilla con ID:", idPlantilla);
   };
 
-  const manejarBloquear = (id) => {
-    manejarAbrirModal();
-  };
-
-  const manejarClonar = (idPlantilla) => {
-    console.log("plantilla a clonar");
-    console.log(idPlantilla);
-
-    const plantillaSelecionada = plantillas.find(
-      (plantilla) => plantilla._id === idPlantilla
-    );
-    console.log(plantillaSelecionada);
-    setPlantillaAClonar(plantillaSelecionada);
-    setModalActiva(true);
-  };
-
-  const manejarBorrar = (id) => {
-    console.log("Eliminar plantilla con ID:", id);
-  };
-  const manejarAgregarPlantilla = () => {
+  const handeleAgregarPlantilla = () => {
     setSelectedComponent(
       <AgregarPlantilla
         setSelectedComponent={setSelectedComponent}
@@ -105,63 +81,105 @@ const ListaPlantillas = (props) => {
     );
   };
 
-  const manejarTabChange = (tab) => {
-    setActiveTab(tab);
-  };
 
   const columns = [
     { field: "id", headerName: "ID" },
-    { field: "nombrePlantilla", headerName: "NOMBRE" },
-    { field: "firmware", headerName: "FIRMWARE" },
-    { field: "hardware", headerName: "HARDWARE" },
-    { field: "creadoPor", headerName: "CREADO POR" },
+    { field: "nombrePlantilla", headerName: "Nombre" },
+    { field: "plantilla", headerName: "Firmware" },
+    { field: "hardware", headerName: "Hardware" },
+    { field: "creadoPor", headerName: "Creado por" },
 
     {
-      field: "clone",
-      headerName: "CLONAR",
+      field: "clonar",
+      headerName: "Clonar",
 
       renderCell: (params) => (
-        <IconButton onClick={() => manejarClonar(params.row._id)}>
+        <IconButton onClick={() => handleClonarPlantilla(params.row.idPlantilla)}>
           <FileCopyIcon />
         </IconButton>
       ),
     },
     {
-      field: "edit",
-      headerName: "EDITAR",
+      field: "editar",
+      headerName: "Editar",
 
       renderCell: (params) => (
-        <IconButton onClick={() => manejarEditar(params.row._id)}>
+        <IconButton onClick={() => handleEditarPlantilla(params.row.idPlantilla)}>
           <EditIcon />
         </IconButton>
       ),
     },
     {
-      field: "block",
-      headerName: "CONGELAR",
+      field: "congelar",
+      headerName: "Congelar",
 
       renderCell: (params) => (
-        <IconButton onClick={() => manejarBloquear(params.row.id)}>
+        <IconButton onClick={() => handleCongelarPlantilla(params.row.idPlantilla)}>
           <LockIcon />
         </IconButton>
       ),
     },
     {
-      field: "delete",
-      headerName: "ELIMINAR",
+      field: "eliminar",
+      headerName: "Deshabilitar",
 
       renderCell: (params) => (
-        <IconButton onClick={() => manejarBorrar(params.row.id)}>
+        <IconButton onClick={() => handleDeshabilitarPlantilla(params.row.idPlantilla)}>
           <DeleteIcon />
         </IconButton>
       ),
     },
   ];
-
+  const renderModals = () => (
+    <>
+      <ModalGenerico
+        tipoModal={respuestaModalOk.status}
+        open={estaActivoModalOk}
+        onClose={cerrarModalOk}
+        title={respuestaModalOk.status ? "Correcto" : "Advertencia"}
+        message={respuestaModalOk.msg}
+        autoCierre={true}
+      />
+      <ModalGenerico
+        open={estaActivoModalConfirmacionHabilitar}
+        onClose={cerrarModalConfirmacionHabilitar}
+        title="Confirmación"
+        message={respuestaModalConfirmacionHabilitar.msg}
+        actions={[
+          { label: "Confirmar", handler: () => cerrarModalConfirmacionHabilitar(true), color: "primary" },
+          { label: "Cancelar", handler: () => cerrarModalConfirmacionHabilitar(false), color: "error" },
+        ]}
+      />
+      <ModalGenerico
+        open={estaActivoModalConfirmacionDeshabilitar}
+        onClose={cerrarModalConfirmacionDeshabilitar}
+        title="Confirmación"
+        message={respuestaModalConfirmacionDeshabilitar.msg}
+        actions={[
+          { label: "Confirmar", handler: () => cerrarModalConfirmacionDeshabilitar(true), color: "primary" },
+          { label: "Cancelar", handler: () => cerrarModalConfirmacionDeshabilitar(false), color: "error" },
+        ]}
+      />
+      <ModalClonarPlantilla
+        plantillaAClonar={plantillaAClonar}
+        setSelectedComponent={setSelectedComponent}
+        auth={auth}
+        activo={estaActivoModalClonar}
+        autoCierre={false}
+        onClose={manejarCerrarModal}
+        onResponse={onResponse}
+        setEstaActivoModalOk={setEstaActivoModalOk}
+        setRespuestaModalOk={setRespuestaModalOk}
+      />      
+    </>
+  );
+  if (isLoading) {
+    return <LoadingComponent />;
+  }
   return (
     <Grid container padding={2}>
-      {!isLoading ? (
         <Grid item xs={12}>
+          {renderModals()}
           <HeaderContent titulo="Lista de plantillas"></HeaderContent>
           <Paper style={{ padding: 20 }}>
             <Grid container spacing={3}>
@@ -170,30 +188,12 @@ const ListaPlantillas = (props) => {
                 xs={8}
                 sx={{ display: "flex", justifyContent: "left" }}
               >
-                <Button
-                  variant={"contained"}
-                  onClick={() => manejarTabChange("activas")}
-                  style={{
-                    backgroundColor:
-                      activeTab === "activas" ? "green" : "#cccccc",
-                    color: "white",
-                    cursor: "pointer",
-                  }}
-                >
-                  Plantillas Activas
-                </Button>
-                <Button
-                  variant={"contained"}
-                  onClick={() => manejarTabChange("obsoletas")}
-                  style={{
-                    backgroundColor:
-                      activeTab === "obsoletas" ? "orange" : "#cccccc",
-                    color: "white",
-                    cursor: "pointer",
-                  }}
-                >
-                  Plantillas Obsoletas
-                </Button>
+              <UsuarioAutorizado usuario={auth} permisosRequeridos={["superusuario"]}>
+                <Tabs value={activeTab} onChange={handleTabChange}>
+                  <Tab label="Activos" value={1} />
+                  <Tab label="Deshabilitados" value={0} />
+                </Tabs>
+              </UsuarioAutorizado>                
               </Grid>
 
               <Grid
@@ -214,7 +214,7 @@ const ListaPlantillas = (props) => {
                     color: "white",
                     marginLeft: "10px",
                   }}
-                  onClick={manejarAgregarPlantilla}
+                  onClick={handeleAgregarPlantilla}
                 >
                   <AddIcon />
                 </IconButton>
@@ -230,15 +230,7 @@ const ListaPlantillas = (props) => {
                   rowsPerPageOptions={[5, 10, 20]}
                 />
               </Grid>
-              <ModalClonarPlantilla
-                plantillaAClonar={plantillaAClonar}
-                setSelectedComponent={setSelectedComponent}
-                auth={auth}
-                activo={modalActiva}
-                respuesta={respuesta}
-                autoCierre={false}
-                onClose={manejarCerrarModal}
-              ></ModalClonarPlantilla>
+
             </Grid>
             <Button
               sx={{ mt: 5 }}
@@ -251,9 +243,7 @@ const ListaPlantillas = (props) => {
             </Button>
           </Paper>
         </Grid>
-      ) : (
-        <></>
-      )}
+
     </Grid>
   );
 };

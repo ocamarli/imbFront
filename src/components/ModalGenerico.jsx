@@ -3,15 +3,15 @@ import { Modal, Box, Typography, Button, Grid } from "@mui/material";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
 
-const ModalGenerico = ({ open, onClose, title, message, actions, autoCierre, tipoModal }) => {
+const ModalGenerico = ({ open, onClose, title, message, actions, autoCierre, tipoModal ,msActiva=2200}) => {
   useEffect(() => {
     if (open && autoCierre) {
       const timer = setTimeout(() => {
         onClose();
-      }, 2200);
+      }, msActiva);
       return () => clearTimeout(timer);
     }
-  }, [open, autoCierre, onClose]);
+  }, [open, autoCierre, onClose,msActiva]);
   const handleClose = (event, reason) => {
     if (reason && reason === "backdropClick") {
       return;
