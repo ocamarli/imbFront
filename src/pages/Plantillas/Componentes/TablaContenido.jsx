@@ -6,7 +6,7 @@ import { usePlantillaService } from "../../../hooks/usePlantillaService.jsx";
 import LoadingComponent from "../../LoadingComponent.jsx";
 
 import ModalGenerico from "../../../components/ModalGenerico.jsx";
-const TablaContenido = ({ idPlantilla, checkboxSeleccionados, onResponse }) => {
+const TablaContenido = ({ idPlantilla, checkboxSeleccionados, onResponse,estaCongelado}) => {
   const {fetchActualizarParametroPlantilla, 
     isLoading, plantilla, fetchPlantilla, 
     setEstaActivoModalOk,
@@ -38,17 +38,17 @@ const TablaContenido = ({ idPlantilla, checkboxSeleccionados, onResponse }) => {
         // Si cumple con el patrón o está vacío, actualizar el valor en el estado
         if (nuevoValor >= valorMin && nuevoValor <= valorMax) {
           console.log("ok");
-          fetchActualizarParametroPlantilla(idPlantilla, idParametro, nuevoValor, noProgramacion);          
+          fetchActualizarParametroPlantilla(idPlantilla, idParametro, nuevoValor, noProgramacion,true);          
         } else {
           setRespuestaModalOk({ msg: "valor invalido", status: false });
           setEstaActivoModalOk(true);
-          parametro.row.valor = "s";
+          e.target.value = "";
 
 
         }
       } else {
         // Si no cumple con el patrón, restaurar el valor actual
-        parametro.row.valor = "s";
+        e.target.value = "";
       }
     }
     console.log("id:", idParametro);
@@ -65,7 +65,7 @@ const TablaContenido = ({ idPlantilla, checkboxSeleccionados, onResponse }) => {
       noProgramacion=0;
     }
     // Llamar a la función actualizarParametroPlantilla() aquí
-    fetchActualizarParametroPlantilla(idPlantilla, idParametro, valor, noProgramacion);
+    fetchActualizarParametroPlantilla(idPlantilla, idParametro, valor, noProgramacion,true);
   };
 
 
@@ -76,6 +76,7 @@ const TablaContenido = ({ idPlantilla, checkboxSeleccionados, onResponse }) => {
   const columns = [
     { field: "id", headerName: "ID", flex: 0.5 },
     { field: "idParametro", headerName: "ID parametro", flex: 0.5 },
+
     {
       field: "valor",   
       headerName: "Valor",
@@ -107,7 +108,7 @@ const TablaContenido = ({ idPlantilla, checkboxSeleccionados, onResponse }) => {
                   }
                   return selected;
                 }}
-                disabled={parametro.row.esValorFijo}
+                disabled={estaCongelado||parametro.row.esValorFijo}
               >
                 <MenuItem disabled value="">
                   <em>Selecciona una opción</em>
@@ -128,7 +129,7 @@ const TablaContenido = ({ idPlantilla, checkboxSeleccionados, onResponse }) => {
                 id={"search-input-" + parametro.row.idParametro}
                 onBlur={(e) => handleOnBlur(e, parametro)}
 
-                disabled={parametro.row.esValorFijo}
+                disabled={estaCongelado||parametro.row.esValorFijo}
                 defaultValue={
                   parametro.row.esValorFijo ? parametro.row.valorFijo : parametro.row.valor
                 }
@@ -139,6 +140,7 @@ const TablaContenido = ({ idPlantilla, checkboxSeleccionados, onResponse }) => {
         }
       },
     },
+    { field: "unidad", headerName: "Unidad", flex: 0.5 },    
     {
       field: "rango",
       headerName: "Rango",

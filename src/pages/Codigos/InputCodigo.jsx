@@ -1,12 +1,21 @@
-import React, { useState, useRef, useEffect, useCallback } from "react";
+import React, { useRef, useEffect} from "react";
 import { Button, Box, Grid, Divider } from "@mui/material";
 import CodeEditor from "@uiw/react-textarea-code-editor";
 import { useTheme } from "@mui/material";
-import { obtenerCodigos } from "../../api/axios";
-import { setFileTemplate } from "../../api/axios";
+import { usePlantillaService } from "../../../src/hooks/usePlantillaService";
+import LoadingComponent from "../LoadingComponent";
 function InputCodigo(props) {
-  const { setMatches, onClose,tipoCodigo } = props;
-  const [codigo, setCodigo] = useState("");
+  const { setMatches, onResponse } = props;
+
+  const {
+    isLoading,
+    fetchCodigos,
+    codigo,
+    setCodigo
+
+  } = usePlantillaService(onResponse);
+  console.log("codigo")
+  console.log(codigo)
   const theme = useTheme();
   const fileInputRef = useRef(null);
 
@@ -15,48 +24,10 @@ function InputCodigo(props) {
   };
 
   const handleUpdate = () => {
-    setFetchFileTemplate({ text: codigo, id_template: "id_template" });
-    onClose();
+    //setFetchFileTemplate({ text: codigo, id_template: "id_template" });
+    //onClose();
   };
 
-  const setFetchFileTemplate = useCallback(async (data) => {
-    try {
-      
-      if (
-        JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token !==
-        undefined
-      ) {
-        const response = await setFileTemplate(
-          data,
-          JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token
-        );
-        console.log(response);
-      }
-    } catch (error) {
-      
-      console.log("error");
-    }
-  },[]);
-  const fetchObtenerCodigos =  useCallback(async (data) => {
-    try {
-      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-      if (tkn !== undefined)
-      {
-        const respuesta = await obtenerCodigos(tkn);
-        respuesta.codigos.forEach(codigo => {
-          if (codigo.nombre === tipoCodigo) {
-              setCodigo(codigo.valor);
-              console.log(codigo.nombre);
-          } else if (codigo.nombre === "codigoProgramaciones") {
-              console.log(codigo.nombre);
-          }
-      });
-      }
-    } catch (error) { 
-      console.log("error");
-      setCodigo("");
-    }
-  },[tipoCodigo]);
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
@@ -84,8 +55,15 @@ function InputCodigo(props) {
     }
   }, [codigo, setMatches]);
   useEffect(() => {
-    fetchObtenerCodigos();
-  }, [fetchObtenerCodigos]);
+    console.log("fetchCodigos")
+    fetchCodigos();
+  }, [fetchCodigos]);
+
+
+    if (isLoading  ) {
+      return <LoadingComponent />;
+    }
+
   return (
     <Grid container spacing={1}>
       <Grid item xs={12}>

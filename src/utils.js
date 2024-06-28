@@ -1,5 +1,5 @@
 const api = {
-  baseuri: "https://imbvikkonapi.azurewebsites.net/api/v1/",
+  baseuri: "http://127.0.0.1:5000/api/v1/",
   endpoints: {
     login: "login",
     user: "user",
@@ -19,6 +19,7 @@ const api = {
     obtenerPlantilla:"plantilla/obtenerPlantilla",
     crearPlantilla:"plantilla/crearPlantilla",    
     clonarPlantilla:"plantilla/clonarPlantilla",    
+    verificarParametros:"plantilla/verificarParametros",
     obtenerRecetas:"receta/obtenerRecetas",
     obtenerFirmwares: "firmware/obtenerFirmwares",
     obtenerFirmware: "firmware/obtenerFirmware",
@@ -33,7 +34,9 @@ const api = {
     crearGae:"gae/crearGae",
     actualizarGae:"gae/actualizarGae",
     obtenerCodigos:"codigo/obtenerCodigos",
-    crearUsuario:"usuario/crearUsuario"
+    crearUsuario:"usuario/crearUsuario",
+    obtenerArchivosBase:"plantilla/obtenerArchivosBase"
+    
   },
 };
 /*
@@ -47,7 +50,7 @@ function Encode2Url(obj) {
 }
 */
 export const ENV = {
-
+    obtenerArchivosBase:()=>api.baseuri+api.endpoints.obtenerArchivosBase,
     obtenerGaes:()=> api.baseuri+api.endpoints.obtenerGaes,
     obtenerGae:(idGae)=>api.baseuri+api.endpoints.obtenerGae+"/"+idGae,
     crearGae:()=> api.baseuri+api.endpoints.crearGae,
@@ -79,4 +82,5 @@ export const ENV = {
     crearParametro:() => api.baseuri + api.endpoints.crearParametro,
     crearUsuario:()=>api.baseuri+api.endpoints.crearUsuario,
     obtenerCodigos:()=>api.baseuri+api.endpoints.obtenerCodigos,
+    verificarParametros:()=>api.baseuri+api.endpoints.verificarParametros,
 };

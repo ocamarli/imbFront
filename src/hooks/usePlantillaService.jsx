@@ -1,7 +1,15 @@
-import { useState, useCallback } from "react";
-import { crearPlantilla, obtenerPlantillas, actualizarPlantilla, obtenerPlantilla,actualizarParametroPlantilla, clonarPlantilla as clonarPlantillaAPI } from "../api/plantillasApi";
+import { useState, useCallback, useMemo } from "react";
+import { obtenerCodigos,
+
+  crearPlantilla, 
+  obtenerPlantillas, 
+  actualizarPlantilla, 
+  obtenerPlantilla,actualizarParametroPlantilla, clonarPlantilla as clonarPlantillaAPI, verificarParametros } from "../api/plantillasApi";
 
 export const usePlantillaService = () => {
+  const [matches, setMatches] = useState([]);  
+  const [abrirImprimirPlantilla, setAbrirImprimirPlantilla] = useState(false);
+  const [tipoCodigo, setTipoCodigo] = useState("codigoProgramaciones");
   const [plantillas, setPlantillas] = useState([]);
   const [plantilla, setPlantilla] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -21,7 +29,14 @@ export const usePlantillaService = () => {
   const [activeTab, setActiveTab] = useState(1);
   const [plantillaAClonar, setPlantillaAClonar] = useState(false);
   const [estaActivoModalClonar, setEstaActivoModalClonar] = useState(false);  
-
+  const [checkboxSeleccionados, setCheckboxSeleccionados] = useState([]);
+  
+  const totalDeProgramas = useMemo(() => ["1", "2", "3", "4", "5", "6"], []);
+  const [programaSeleccionado, setProgramaSeleccionado] = useState(totalDeProgramas[0]);
+  const [estaCongelado, setEstaCongelado] = useState(false);
+  const [codigo, setCodigo] = useState("");
+  const [codigos, setCodigos] = useState("");
+  const [abrirEditarCodigo, setAbrirEditarCodigo] = useState(false);
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
     fetchPlantillas(Boolean(newValue));
@@ -41,7 +56,20 @@ export const usePlantillaService = () => {
       console.error(error);
     }
   }, []);
-
+  const fetchCodigos =  useCallback(async (data) => {
+    try {
+      const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+      if (tkn !== undefined)
+      {
+        const respuesta = await obtenerCodigos(tkn);
+        console.log(respuesta.codigos)
+        setCodigos(respuesta.codigos)
+      }
+    } catch (error) { 
+      console.log("error");
+      setCodigo("");
+    }
+  },[]);
   const fetchPlantilla = useCallback(async (idPlantilla) => {
     try {
       setIsLoading(true);
@@ -49,6 +77,11 @@ export const usePlantillaService = () => {
       if (tkn) {
         const json = await obtenerPlantilla(tkn, idPlantilla);
         setPlantilla(json.plantilla || []);
+        setCheckboxSeleccionados(json.plantilla.programasHabilitados || [])
+        setProgramaSeleccionado(json.plantilla.programaSeleccionado || "")
+        setEstaCongelado(json.plantilla.estaCongelado)
+        console.log("progr",json.plantilla.programasHabilitados)
+        console.log("selec",json.plantilla.programaSeleccionado)
       }
       setIsLoading(false);
     } catch (error) {
@@ -68,16 +101,19 @@ export const usePlantillaService = () => {
         // Filtrar parámetros y modificarlos según su tipo
         parametros.filter((param) => {
           let valor = ""
+          let estatus = false
           if(param.esValorFijo === true ){
             valor=param.valorFijo
+            estatus = true
           }
+
           if (param.tipoParametro === "general") {
             // Modificar el parámetro y agregarlo a la lista de generales
 
             listaParametrosGenerales.push({
               idParametroInterno: param.idParametroInterno,
               valor: valor,
-              estado: false,
+              estatus: estatus,
             });
             return false; // No incluir este parámetro en la lista final
           } else if (param.tipoParametro === "programacion") {
@@ -86,7 +122,7 @@ export const usePlantillaService = () => {
             listaParametrosProgramacion.push({
               idParametroInterno: param.idParametroInterno,
               valor:valor,
-              estado: false,
+              estatus: estatus,
             });
             return false; // No incluir este parámetro en la lista final
           }
@@ -102,7 +138,7 @@ export const usePlantillaService = () => {
         const newData = {
           ...data,
           creadoPor: auth.correo,
-          numeroProgramaciones: 1,
+          programasHabilitados: ["1"],
           parametrosGenerales: listaParametrosGenerales,
           programaciones: [
             { noProgramacion: "1", parametros: listaParametrosProgramacion },
@@ -133,7 +169,7 @@ export const usePlantillaService = () => {
     }
   };
   const fetchActualizarParametroPlantilla = useCallback(
-    async (idPlantilla, idParametro, valor, noProgramacion) => {
+    async (idPlantilla, idParametro, valor, noProgramacion,estatus) => {
       try {
         const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
         if (tkn !== undefined) {
@@ -144,6 +180,7 @@ export const usePlantillaService = () => {
             idParametro: idParametro,
             valor: valor,
             noProgramacion: noProgramacion,
+            estatus:estatus
           };
 
           const response = await actualizarParametroPlantilla(data, tkn);
@@ -172,7 +209,28 @@ export const usePlantillaService = () => {
       console.error(error);
     }
   };
-
+  const handleImprimirPlantilla = async (idPlantilla) => {
+    try {
+      
+      console.log("imprimirPlantilla")
+      setAbrirImprimirPlantilla(true)
+      setIdPlantillaSeleccionado(idPlantilla)
+      //const response = await actualizarPlantilla(data, tkn);
+      //setRespuestaModalOk({ msg: response.msg, status: response.status });
+      //setEstaActivoModalOk(true);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleEditarCodigo = async (data) => {
+    try {
+      
+      console.log("editarCodigo")
+      setAbrirEditarCodigo(true)
+    } catch (error) {
+      console.error(error);
+    }
+  };
   const handleClonarPlantilla = async (idPlantilla) => {
     try {
       const plantillaSelecionada = plantillas.find(
@@ -262,9 +320,49 @@ export const usePlantillaService = () => {
     setIdPlantillaSeleccionado(idPlantilla);
     setEstaActivoModalConfirmacionHabilitar(true);
   };
-  const handleCongelarPlantilla = (idPlantilla) => {
-    console.log(idPlantilla);
+  const handleCongelarPlantilla = async (idPlantilla,estatus) => {
+    console.log("idPlantilla",idPlantilla);
+    console.log("estatus",estatus);
+    const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+    const response = await verificarParametros(tkn,idPlantilla)
+    if(response.status)
+      {
+        await handleEditarPlantilla({"idPlantilla":idPlantilla,"estaCongelado":estatus})
+        fetchPlantilla(idPlantilla)
+      }
+      else{
+        setRespuestaModalOk({ msg: response.msg, status: response.status});
+        setEstaActivoModalOk(true)
+      }
+
+
   };
+  const actualizarProgramasHabilitados = async (idPlantilla) => {
+    console.log("idPlantilla",idPlantilla);
+    const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+    const response = await verificarParametros(tkn,idPlantilla)
+    console.log("Congelar",response)
+  };
+
+  const setFileTemplate = useCallback(async (data) => {
+    try {
+      
+      if (
+        JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token !==
+        undefined
+      ) {
+        const response = await setFileTemplate(
+          data,
+          JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token
+        );
+        console.log(response);
+      }
+    } catch (error) {
+      
+      console.log("error");
+    }
+  },[]);
+
 
   return {
     activeTab,
@@ -299,5 +397,28 @@ export const usePlantillaService = () => {
     setEstaActivoModalClonar,
     clonarPlantilla: clonarPlantillaService,
     fetchActualizarParametroPlantilla,
+    checkboxSeleccionados,
+    setCheckboxSeleccionados,
+    programaSeleccionado,
+    setProgramaSeleccionado,
+    totalDeProgramas,
+    estaCongelado,
+    setEstaCongelado,
+    fetchCodigos,
+    codigo,
+    setCodigo,
+    setFileTemplate,
+    tipoCodigo,
+    handleImprimirPlantilla,
+    abrirEditarCodigo,
+    setAbrirEditarCodigo,
+    matches,
+    setMatches,
+    setAbrirImprimirPlantilla,
+    abrirImprimirPlantilla,
+    codigos,
+    setTipoCodigo,
+    actualizarProgramasHabilitados,
+    handleEditarCodigo
   };
 };

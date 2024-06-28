@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import React, { useState, useEffect, useMemo } from "react";
+import React, {  useEffect} from "react";
 import { useTheme } from "@mui/material/styles";
 import {
   TextField, FormControlLabel, Radio, RadioGroup, FormLabel, FormControl,
@@ -10,25 +10,34 @@ import LockOpenIcon from "@mui/icons-material/LockOpen";
 import TablaContenido from "./Componentes/TablaContenido";
 import Home from "../Home/Home.jsx";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack.js";
-import GrupoCheckbox from "../../components/GrupoCheckbox.jsx";
+import GrupoCheckbox from "./Componentes/GrupoCheckbox.jsx";
 import { usePlantillaService } from "../../hooks/usePlantillaService.jsx";
 import LoadingComponent from "../LoadingComponent.jsx";
+import ModalGenerico from "../../components/ModalGenerico.jsx";
 
 const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth ,onResponse}) => {
-  const { isLoading, plantilla, fetchPlantilla } = usePlantillaService(onResponse);
-  
-  const totalDeProgramas = useMemo(() => ["1", "2", "3", "4", "5", "6"], []);
+  const {
+    cerrarModalOk,
+    estaActivoModalOk,
+    respuestaModalOk,
+    handleEditarPlantilla,
+    programaSeleccionado,
+    setProgramaSeleccionado,
+    totalDeProgramas,
+    checkboxSeleccionados,
+    setCheckboxSeleccionados,
+    isLoading,
+    plantilla,
+     fetchPlantilla,
+     handleCongelarPlantilla,estaCongelado } = usePlantillaService(onResponse);
 
-  const [checkboxSeleccionados, setCheckboxSeleccionados] = useState([]);
+
   const theme = useTheme();
-  const [bloqueado, setBloqueado] = useState(false);
-  const [programaSeleccionado, setProgramaSeleccionado] = useState(totalDeProgramas[0]);
 
   const handleChange = (event) => {
     setProgramaSeleccionado(event.target.value);
-  };
-  const alternarBloqueo = () => {
-    setBloqueado(!bloqueado);
+    handleEditarPlantilla({"idPlantilla":idPlantilla,"programaSeleccionado":event.target.value})
+
   };
 
   const onSubmit = (data) => {
@@ -45,6 +54,21 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth ,onResponse})
   useEffect(() => {
     fetchPlantilla(idPlantilla);
   }, [fetchPlantilla,idPlantilla]);
+
+
+  const renderModal = () => (
+    <ModalGenerico
+      tipoModal={respuestaModalOk.status}
+      open={estaActivoModalOk}
+      onClose={cerrarModalOk}
+      title={respuestaModalOk.status ? "Correcto" : "Advertencia"}
+      message={respuestaModalOk.msg}
+      autoCierre={true}
+    />
+  );
+
+
+
   if (isLoading || plantilla == null ) {
     console.log("plantilla-----",plantilla)
     return <LoadingComponent />;
@@ -54,7 +78,7 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth ,onResponse})
     
     <Grid container padding={1}>
         {console.log("plantilla_______",plantilla)}
-
+        {renderModal()}
         <Grid>
           <HeaderContent
             titulo={plantilla?.nombrePlantilla}
@@ -66,6 +90,7 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth ,onResponse})
                   <Typography>Nombre de plantilla</Typography>
                   <TextField
                     {...register("nombrePlantilla", { required: true })}
+                    disabled={estaCongelado}
                     size="small"
                     fullWidth
                     placeholder={plantilla?.nombrePlantilla || ""}
@@ -81,6 +106,7 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth ,onResponse})
                   <FormControl variant="outlined" sx={{ width: "100%" }}>
                     <Select
                       {...register("firmware", { required: true })}
+                      disabled={estaCongelado}
                       size="small"
                       error={errors.firmware ? true : false}
                       defaultValue="" // Asegúrate de dejar este defaultValue vacío
@@ -107,6 +133,7 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth ,onResponse})
                   <FormControl variant="outlined" sx={{ width: "100%" }}>
                     <Select
                       {...register("hardware", { required: true })}
+                      disabled={estaCongelado}
                       size="small"
                       error={errors.hardware ? true : false}
                       defaultValue="" // Asegúrate de dejar este defaultValue vacío
@@ -132,6 +159,7 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth ,onResponse})
                   <Typography>Última nota</Typography>
                   <TextField
                     {...register("ultima_nota", { required: true })}
+                    disabled={estaCongelado}
                     size="small"
                     fullWidth
                     placeholder="Última nota"
@@ -147,28 +175,33 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth ,onResponse})
                   <InputLabel>{plantilla.creadoPor}</InputLabel>
                 </Grid>
                 <Grid item xs={12}>
-                  <Button
-                    {...register("congelar", { required: true })}
-                    size="small"
-                    onClick={alternarBloqueo}
-                    variant="contained"
-                    style={{
-                      backgroundColor: bloqueado
-                        ? theme.palette.grey[400]
-                        : theme.palette.primary.light,
-                    }}
-                    startIcon={bloqueado ? <LockIcon /> : <LockOpenIcon />}
-                    error={errors.congelar ? true : false}
-                    helperText={
-                      errors.congelar ? "Este campo es requerido" : ""
-                    }
-                  >
-                    {bloqueado ? "Congelado" : "Congelar"}
-                  </Button>
+                <Button
+                  {...register("congelar", { required: true })}
+                  size="small"
+                  onClick={() => handleCongelarPlantilla(idPlantilla, !estaCongelado)}
+                  variant="contained"
+                  style={{
+                    backgroundColor: estaCongelado
+                      ? theme.palette.grey[400]
+                      : theme.palette.primary.light,
+                  }}
+                  startIcon={estaCongelado ? <LockIcon /> : <LockOpenIcon />}
+                  error={errors.congelar ? true : false}
+                  helperText={
+                    errors.congelar ? "Este campo es requerido" : ""
+                  }
+                >
+                  {estaCongelado ? "Congelado" : "Congelar"}
+                </Button>
                 </Grid>
                 <Grid item xs={6}>
                   <GrupoCheckbox
                     setCheckboxSeleccionado={setCheckboxSeleccionados}
+                    setCheckboxSeleccionados={setCheckboxSeleccionados}
+                    checkboxSeleccionados={checkboxSeleccionados}
+                    idPlantilla={idPlantilla}
+                    onResponse={onResponse}
+                    estaCongelado={estaCongelado}
                   ></GrupoCheckbox>
                 </Grid>
                 <Grid item xs={6}>
@@ -184,6 +217,7 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth ,onResponse})
                       row
                       value={programaSeleccionado}
                       onChange={handleChange}
+                      disabled={estaCongelado}
                     >
                       <Grid container>
                         {totalDeProgramas.map((programa) => (
@@ -192,6 +226,7 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth ,onResponse})
                               value={programa}
                               control={<Radio />}
                               label={programa}
+                              disabled={estaCongelado||!checkboxSeleccionados.includes(programa)}
                             />
                           </Grid>
                         ))}
@@ -208,6 +243,7 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth ,onResponse})
                     auth={auth}
                     checkboxSeleccionados={checkboxSeleccionados}
                     onResponse={onResponse}
+                    estaCongelado={estaCongelado}
                   ></TablaContenido>
                 </Grid>
               </Grid>

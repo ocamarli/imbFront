@@ -1,6 +1,9 @@
 import { postData,getData } from "./axios";
 import { ENV } from "../utils";
 // Función para actualizar un plantilla
+
+
+
 export async function actualizarPlantilla(data, token) {
   try {
     const response = await postData(ENV.actualizarPlantilla(), data, token);
@@ -13,6 +16,27 @@ export async function actualizarPlantilla(data, token) {
     return { status: false, msg: error.message };
   }
 }
+export async function obtenerCodigos(token) {
+  try {
+    const response = await getData(
+      ENV.obtenerCodigos(),
+      token
+    );
+
+    if (response.status === 200) {
+      return await response.json();
+    } else {
+      return {
+        text:"",
+        status: false,
+        msg: "No pudo obtener información de los códigos",
+      };
+    }
+  } catch (error) {
+    return { text: "", status: false, msg: error.message};
+  }
+}
+
 
 // Función para obtener todos los GAEs
 export async function obtenerPlantillas(token, estatus = null) {
@@ -58,6 +82,32 @@ export async function obtenerPlantillas(token, estatus = null) {
       return { parameters: [], status: false, msg: error.message};
     }
   }
+  export async function verificarParametros(token,idPlantilla) {
+    try {
+
+      let url = ENV.verificarParametros();
+      if (idPlantilla !== null) {
+        url += `?idPlantilla=${idPlantilla}`;
+      }
+  
+      const response = await getData(
+       url,
+        token
+      );
+  
+      if (response.status === 200) {
+        return await response.json();
+      } else {
+        return {
+          parameters: [],
+          status: false,
+          msg: "No se pudo obtener información de las plantillas."
+        };
+      }
+    } catch (error) {
+      return { parameters: [], status: false, msg: error.message};
+    }
+  }  
   export async function crearPlantilla(data, token) {
     try {
       const response = await postData(
@@ -116,3 +166,19 @@ export async function obtenerPlantillas(token, estatus = null) {
       return {  status: false, msg: error.message};
     }
   }
+  
+export async function setFileTemplate(data, token) {
+  try {
+    const response = await postData(ENV.setFileTemplate(), data, token);
+    console.log("data")
+    console.log(data)
+    if (response.status === 200) {
+      return await response.json();
+    } else {
+      return { status: false, msg: "Could not retrieve file data" };
+    }
+  } catch (error) {
+    return { status: false, msg: error.message };
+  }
+}
+

@@ -2,13 +2,22 @@ import React, { useState, useEffect, useMemo } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { Typography, FormLabel, Switch } from '@mui/material';
+import { usePlantillaService } from "../../../hooks/usePlantillaService.jsx";
+import LoadingComponent from '../../LoadingComponent.jsx';
+function GrupoCheckbox({ estaCongelado,checkboxSeleccionados,setCheckboxSeleccionados,setCheckboxSeleccionado,idPlantilla,onResponse }) {
+    const {
+        isLoading,
+        handleCrearPlantilla,
+        handleEditarPlantilla,
+        cerrarModalOk,
+        estaActivoModalOk,
+        respuestaModalOk,
 
-function GrupoCheckbox(props) {
-    const { setCheckboxSeleccionado } = props;
+      } = usePlantillaService(onResponse);  
     const totalDeProgramas = useMemo(() => ["1", "2", "3", "4", "5", "6"], []);
 
     // Estado para almacenar los checkboxes seleccionados
-    const [checkboxSeleccionados, setCheckboxSeleccionados] = useState([]);
+
     // Estado para controlar si se muestra todos o solo los seleccionados
     const [mostrarTodos, setMostrarTodos] = useState(false);
 
@@ -16,6 +25,8 @@ function GrupoCheckbox(props) {
     const handleChange = (value) => (event) => {
         if (event.target.checked) {
             // Agregar el valor a la lista si el checkbox está marcado
+            console.log("siiiiiiii",idPlantilla)
+            handleEditarPlantilla({"idPlantilla":idPlantilla,"programasHabilitados":[...checkboxSeleccionados, value]})
             setCheckboxSeleccionados([...checkboxSeleccionados, value]);
             setCheckboxSeleccionado([...checkboxSeleccionados, value]);
         } else {
@@ -29,12 +40,12 @@ function GrupoCheckbox(props) {
         if (mostrarTodos) {
             setCheckboxSeleccionados(totalDeProgramas);
             setCheckboxSeleccionado(totalDeProgramas);
-        } else {
-            setCheckboxSeleccionados([]);
-            setCheckboxSeleccionado([]);
-        }
+        } 
     }, [mostrarTodos, setCheckboxSeleccionado, totalDeProgramas]);
 
+    if (isLoading) {
+        return <LoadingComponent />;
+      }
     return (
         <div>
             <Typography variant="body1" fontWeight={600}>Habilitar programas</Typography>
@@ -42,13 +53,14 @@ function GrupoCheckbox(props) {
             <FormControlLabel
                 control={<Switch checked={mostrarTodos} onChange={() => setMostrarTodos(!mostrarTodos)} />}
                 label="Mostrar todos los programas"
+                disabled={estaCongelado}
             />
             {totalDeProgramas.map((programa) => (
                 <FormControlLabel
                     key={programa}
                     control={<Checkbox id={programa} size="small" onChange={handleChange(programa)} />}
                     label={programa}
-                    disabled={mostrarTodos}
+                    disabled={estaCongelado || mostrarTodos}
                     checked={checkboxSeleccionados.includes(programa)}
                 />
             ))}

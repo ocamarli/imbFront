@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
-import { Button, Grid, Paper, IconButton, Typography,Tab,Tabs } from "@mui/material";
+import { Button, Grid, Paper, IconButton, Typography,Tab,Tabs, Dialog } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { Add as AddIcon, ArrowBack as ArrowBackIcon, DeleteOutline as DeleteIcon, Edit as EditIcon, FileCopy as FileCopyIcon, Lock as LockIcon } from "@mui/icons-material";
+import {FileDownload as DownloadIcon, Add as AddIcon, ArrowBack as ArrowBackIcon, DeleteOutline as DeleteIcon, Edit as EditIcon, FileCopy as FileCopyIcon, Lock as LockIcon } from "@mui/icons-material";
 import HeaderContent from "../HeaderContent";
 import { usePlantillaService } from "../../hooks/usePlantillaService";
 import AgregarPlantilla from "./AgregarPlantilla";
@@ -11,7 +11,8 @@ import ModalGenerico from "../../components/ModalGenerico";
 import Home from "../Home/Home";
 import LoadingComponent from "../LoadingComponent";
 import UsuarioAutorizado from "../../components/UsuarioAutorizado";
-
+import EditarCodigo from "./EditarCodigo";
+import ImprimirPlantilla from "./ImprimirPlantilla";
 function transformarDatos(plantillas) {
   console.log(plantillas);
   return plantillas.map((plantilla, index) => {
@@ -48,15 +49,26 @@ const ListaPlantillas = ( { setSelectedComponent, auth, onResponse }) => {
     plantillaAClonar,
     estaActivoModalClonar,
     setEstaActivoModalClonar,
-    setEstaActivoModalOk
+    setEstaActivoModalOk,
+    handleImprimirPlantilla,
+    abrirEditarCodigo,
+    setAbrirEditarCodigo,
+    abrirImprimirPlantilla,
+    setAbrirImprimirPlantilla,
+    idPlantillaSeleccionado,
+    
   } = usePlantillaService(onResponse);  
 
 
   const manejarCerrarModal = () => {
     setEstaActivoModalClonar(false);
   };
-
-
+  const handleCloseEdit = (props) => {
+    setAbrirEditarCodigo(false);
+  };
+  const handleCerrarImprimirPlantilla = (props) => {
+    setAbrirImprimirPlantilla(false)
+  };
   useEffect(() => {
     fetchPlantillas(true);
   }, [fetchPlantillas]);
@@ -71,7 +83,6 @@ const ListaPlantillas = ( { setSelectedComponent, auth, onResponse }) => {
     );
     console.log("Editar plantilla con ID:", idPlantilla);
   };
-
   const handeleAgregarPlantilla = () => {
     setSelectedComponent(
       <AgregarPlantilla
@@ -80,8 +91,6 @@ const ListaPlantillas = ( { setSelectedComponent, auth, onResponse }) => {
       ></AgregarPlantilla>
     );
   };
-
-
   const columns = [
     { field: "id", headerName: "ID" },
     { field: "nombrePlantilla", headerName: "Nombre" },
@@ -129,9 +138,36 @@ const ListaPlantillas = ( { setSelectedComponent, auth, onResponse }) => {
         </IconButton>
       ),
     },
+    {
+      field: "generarArchivos",
+      headerName: "Generar archivos",
+
+      renderCell: (params) => (
+        <IconButton onClick={() => handleImprimirPlantilla(params.row.idPlantilla)}>
+          <DownloadIcon/>
+        </IconButton>
+      ),
+    },    
   ];
   const renderModals = () => (
     <>
+        <Dialog open={abrirImprimirPlantilla} onClose={handleCerrarImprimirPlantilla}>
+          <ImprimirPlantilla
+            open={abrirImprimirPlantilla}
+            handleClose={handleCerrarImprimirPlantilla}
+            onResponse={onResponse}
+            idPlantilla={idPlantillaSeleccionado}
+          ></ImprimirPlantilla>
+        </Dialog>
+        <Dialog open={abrirEditarCodigo} onClose={handleCloseEdit}>
+          <EditarCodigo
+            open={abrirEditarCodigo}
+            handleClose={handleCloseEdit}
+            onResponse={onResponse}
+          ></EditarCodigo>
+        </Dialog>   
+
+
       <ModalGenerico
         tipoModal={respuestaModalOk.status}
         open={estaActivoModalOk}
