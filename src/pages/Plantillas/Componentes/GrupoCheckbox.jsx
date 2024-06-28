@@ -7,11 +7,8 @@ import LoadingComponent from '../../LoadingComponent.jsx';
 function GrupoCheckbox({ estaCongelado,checkboxSeleccionados,setCheckboxSeleccionados,setCheckboxSeleccionado,idPlantilla,onResponse }) {
     const {
         isLoading,
-        handleCrearPlantilla,
         handleEditarPlantilla,
-        cerrarModalOk,
-        estaActivoModalOk,
-        respuestaModalOk,
+
 
       } = usePlantillaService(onResponse);  
     const totalDeProgramas = useMemo(() => ["1", "2", "3", "4", "5", "6"], []);
@@ -41,7 +38,7 @@ function GrupoCheckbox({ estaCongelado,checkboxSeleccionados,setCheckboxSeleccio
             setCheckboxSeleccionados(totalDeProgramas);
             setCheckboxSeleccionado(totalDeProgramas);
         } 
-    }, [mostrarTodos, setCheckboxSeleccionado, totalDeProgramas]);
+    }, [mostrarTodos, setCheckboxSeleccionado,setCheckboxSeleccionados, totalDeProgramas]);
 
     if (isLoading) {
         return <LoadingComponent />;
