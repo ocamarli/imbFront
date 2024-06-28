@@ -1,6 +1,3 @@
-import { ENV } from "../utils";
-
-
 
 
 export async function postData(url = "", data = {}, token = undefined) {
