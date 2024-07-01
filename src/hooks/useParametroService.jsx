@@ -21,6 +21,7 @@ export const useParametroService = () => {
   const [activeTab, setActiveTab] = useState(1);
 
   const handleTabChange = (event, newValue) => {
+    console.log(newValue)
     setActiveTab(newValue);
     fetchParametros(Boolean(newValue));
   };
@@ -57,10 +58,12 @@ export const useParametroService = () => {
 
   const handleCrearParametro = async (data) => {
     try {
+      const newData={...data,status:true}
+      console.log("newData",newData)
       setIsLoading(true);
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
       if (tkn) {
-        const response = await crearParametro(data, tkn);
+        const response = await crearParametro(newData, tkn);
         setRespuestaModalOk({ msg: response.msg, status: response.status });
         setEstaActivoModalOk(true);
       }

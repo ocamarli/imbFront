@@ -4,9 +4,19 @@ import { TextField, Button } from "@mui/material";
 import Paper from "@mui/material/Paper";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
+import { useForm } from "react-hook-form";
 import "../ParametersCss.css";
 // Estilos personalizados para el modal
 const AddOptions = ({ open, handleClose }) => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+  const onSubmit = (data) => {
+    handleClose(data);
+  };
+
   const [inputValue, setInputValue] = useState("");
   const [inputName, setInputName] = useState("");
   const [validateValue, setValidateValue] = useState(false);
@@ -63,6 +73,7 @@ const AddOptions = ({ open, handleClose }) => {
           maxWidth: "calc(20vw)",
         }}
       >
+        <form onSubmit={handleSubmit(onSubmit)}>
         <Grid container direction="column" spacing={2}>
           <Grid item xs={12}>
             {" "}
@@ -70,6 +81,7 @@ const AddOptions = ({ open, handleClose }) => {
           </Grid>
           <Grid item xs={12}>
             <TextField
+            {...register("valor", { required: true })}
               onChange={(e) => handleInputValue(e)}
               label="Valor"
               error={validateValue}
@@ -80,6 +92,7 @@ const AddOptions = ({ open, handleClose }) => {
           </Grid>
           <Grid item xs={12}>
             <TextField
+              {...register("nombre", { required: true })}
               onChange={(e) => handleInputName(e)}
               error={validateName}
               helperText={validateName ? "Este campo es requerido" : ""}
@@ -103,6 +116,7 @@ const AddOptions = ({ open, handleClose }) => {
             </Grid>
           </Grid>
         </Grid>
+        </form>
       </Paper>
     </Modal>
   );

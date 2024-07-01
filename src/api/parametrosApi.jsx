@@ -17,10 +17,14 @@ export async function crearParametro(data, token) {
       return { status: false, msg: error.message };
     }
   }
-  export async function obtenerParametros(token) {
+  export async function obtenerParametros(token, estatus=null) {
     try {
+      let url = ENV.obtenerParametros();
+      if (estatus !== null) {
+        url += `?estatus=${estatus}`;
+      }
       const response = await getData(
-        ENV.obtenerParametros(),
+        url,
         token
       );
   
@@ -30,7 +34,7 @@ export async function crearParametro(data, token) {
         return {
           parameters: [],
           status: false,
-          msg: "Could not retrieve parameters",
+          msg: "No se pudo obtener la información de parametro",
         };
       }
     } catch (error) {

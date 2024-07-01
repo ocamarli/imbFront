@@ -33,7 +33,7 @@ export const usePlantillaService = () => {
   
   const totalDeProgramas = useMemo(() => ["1", "2", "3", "4", "5", "6"], []);
   const [programaSeleccionado, setProgramaSeleccionado] = useState(totalDeProgramas[0]);
-  const [estaCongelado, setEstaCongelado] = useState(false);
+  const [estaCongelado, setEstaCongelado] = useState();
   const [codigo, setCodigo] = useState("");
   const [codigos, setCodigos] = useState("");
   const [abrirEditarCodigo, setAbrirEditarCodigo] = useState(false);
@@ -328,14 +328,26 @@ export const usePlantillaService = () => {
     if(response.status)
       {
         await handleEditarPlantilla({"idPlantilla":idPlantilla,"estaCongelado":estatus})
-        fetchPlantilla(idPlantilla)
+        fetchPlantillas()
       }
       else{
         setRespuestaModalOk({ msg: response.msg, status: response.status});
         setEstaActivoModalOk(true)
       }
+  };
+  const handleDescongelarPlantilla = async (idPlantilla,estatus) => {
+    console.log("idPlantilla",idPlantilla);
+    console.log("estatus",estatus);
+    const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+    const response = await actualizarPlantilla({"idPlantilla":idPlantilla,"estaCongelado":estatus},tkn)
+    if(response.status)
+      { 
+        fetchPlantilla(idPlantilla)     
 
-
+      }
+        setRespuestaModalOk({ msg: response.msg, status: response.status});
+        setEstaActivoModalOk(true)
+  
   };
   const actualizarProgramasHabilitados = async (idPlantilla) => {
     console.log("idPlantilla",idPlantilla);
@@ -383,6 +395,7 @@ export const usePlantillaService = () => {
     handleHabilitarPlantilla,
     handleClonarPlantilla,
     handleCongelarPlantilla,
+    handleDescongelarPlantilla,    
     cerrarModalOk,
     cerrarModalConfirmacionHabilitar,
     estaActivoModalConfirmacionHabilitar,

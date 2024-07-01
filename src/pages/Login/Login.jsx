@@ -142,11 +142,15 @@ export default function Login() {
         </Box>
       </Grid>
       <ModalGenerico
-        activo={estaActivo}
-        respuesta={respuestaModal}
-        autoCierre={true}
+        tipoModal={respuestaModal.status}
+        open={estaActivo}
         onClose={cerrarModal}
-      />
+        title={respuestaModal.status ? "Correcto" : "Advertencia"}
+        message={respuestaModal.msg}
+        autoCierre={true}
+      />      
+
     </Grid>
+    
   );
 }
