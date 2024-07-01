@@ -11,7 +11,7 @@ const AddOptions = ({ open, handleClose }) => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+
   } = useForm();
   const onSubmit = (data) => {
     handleClose(data);
