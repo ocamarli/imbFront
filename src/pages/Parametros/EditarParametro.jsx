@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { useEffect } from 'react';
 import { TextField, Button, Grid, Paper, FormLabel, FormControl, InputLabel, MenuItem, FormHelperText, Select, RadioGroup, FormControlLabel, Radio, Dialog, IconButton } from '@mui/material';
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import HeaderContent from '../HeaderContent';
@@ -31,13 +30,13 @@ const EditarParametro = ({ setSelectedComponent, onResponse, idParametro }) => {
     setTipoCampo,
     esValorFijo,
     setEsValorFijo,
-    reset
+
   } = useParametroService(onResponse);
 
   useEffect(() => {
     
     fetchParametro(idParametro)
-  }, [fetchParametro,esValorFijo, setValue]);
+  }, [fetchParametro,idParametro]);
 
   const handleClickOpenOptions = () => {
     setOpenOptions(true);
