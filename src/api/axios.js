@@ -15,7 +15,7 @@ export async function postData(url = "", data = {}, token = undefined) {
     body: JSON.stringify(data), // body data type must match "Content-Type" header
     
   });
-  console.log(JSON.stringify(data))
+
   return response;
 }
 export async function getData(url = "", token = undefined) {

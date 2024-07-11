@@ -11,6 +11,7 @@ import ModalGenerico from "../../components/ModalGenerico.jsx";
 import LoadingComponent from "../LoadingComponent.jsx";
 import AgregarParametro from "./AgregarParametro.jsx";
 import UsuarioAutorizado from "../../components/UsuarioAutorizado.jsx";
+
 import {
   Check as CheckIcon,
   Add as AddIcon,
@@ -18,6 +19,7 @@ import {
   DeleteOutline as DeleteIcon,
   Edit as EditIcon,
 } from "@mui/icons-material";
+import EditarParametro from "./EditarParametro.jsx";
 
 
 function transformarDatos(parametros) {
@@ -67,7 +69,6 @@ function ListaParametros({setSelectedComponent, auth,onResponse }) {
     estaActivoModalConfirmacionDeshabilitar,
     respuestaModalConfirmacionDeshabilitar,
     cerrarModalConfirmacionDeshabilitar,
-    handleEditarParametro,
     handleDeshabilitarParametro,
     handleHabilitarParametro,
   } = useParametroService(onResponse);  
@@ -124,7 +125,15 @@ function ListaParametros({setSelectedComponent, auth,onResponse }) {
     },
   ];
 
-
+  const handleEditarParametro = (idParametro) =>{
+    setSelectedComponent(
+      <EditarParametro
+      idParametro={idParametro}
+      setSelectedComponent={setSelectedComponent}
+      auth={auth}
+      ></EditarParametro>
+    )
+  }
 
   const handleClickOpen = () => {
     setSelectedComponent(<AgregarParametro></AgregarParametro>)

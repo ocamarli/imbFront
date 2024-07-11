@@ -90,7 +90,7 @@ const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
           <TextField
             {...register("idParametroInterno", { required: true })}
             fullWidth
-            label="ID parametro"
+            label="ID parámetro"
             variant="standard"
             error={errors.idParametroInterno ? true : false}
             helperText={errors.idParametroInterno ? "Este campo es requerido" : ""}
@@ -349,7 +349,7 @@ const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
     <Grid container padding={2} justifyContent={"center"}>
       {renderModal()}
       <Grid item xs={12}>
-        <HeaderContent titulo="Agregar parametro" />
+        <HeaderContent titulo="Agregar parámetro" />
         <Paper style={{ padding: 20 }}>
           {renderForm()}
         </Paper>

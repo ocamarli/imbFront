@@ -1,13 +1,18 @@
 import { useState, useCallback, useMemo } from "react";
-import { obtenerCodigos,
+import {
+  obtenerCodigos,
+  crearPlantilla,
+  obtenerPlantillas,
+  actualizarPlantilla,
+  obtenerPlantilla,
+  actualizarParametroPlantilla,
+  clonarPlantilla as clonarPlantillaAPI,
+  verificarParametros,
+} from "../api/plantillasApi";
 
-  crearPlantilla, 
-  obtenerPlantillas, 
-  actualizarPlantilla, 
-  obtenerPlantilla,actualizarParametroPlantilla, clonarPlantilla as clonarPlantillaAPI, verificarParametros } from "../api/plantillasApi";
 
 export const usePlantillaService = () => {
-  const [matches, setMatches] = useState([]);  
+  const [matches, setMatches] = useState([]);
   const [abrirImprimirPlantilla, setAbrirImprimirPlantilla] = useState(false);
   const [tipoCodigo, setTipoCodigo] = useState("codigoProgramaciones");
   const [plantillas, setPlantillas] = useState([]);
@@ -15,24 +20,41 @@ export const usePlantillaService = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [idPlantillaSeleccionado, setIdPlantillaSeleccionado] = useState("");
   const [estaActivoModalOk, setEstaActivoModalOk] = useState(false);
-  const [respuestaModalOk, setRespuestaModalOk] = useState({ msg: "¡plantilla deshabilitado!", status: true });
-  const [estaActivoModalConfirmacionHabilitar, setEstaActivoModalConfirmacionHabilitar] = useState(false);
-  const [respuestaModalConfirmacionHabilitar, setRespuestaModalConfirmacionHabilitar] = useState({
+  const [respuestaModalOk, setRespuestaModalOk] = useState({
+    msg: "¡plantilla deshabilitado!",
+    status: true,
+  });
+  const [
+    estaActivoModalConfirmacionHabilitar,
+    setEstaActivoModalConfirmacionHabilitar,
+  ] = useState(false);
+  const [
+    respuestaModalConfirmacionHabilitar,
+    setRespuestaModalConfirmacionHabilitar,
+  ] = useState({
     msg: "¡Confirma para habilitar plantilla!",
     status: false,
   });
-  const [estaActivoModalConfirmacionDeshabilitar, setEstaActivoModalConfirmacionDeshabilitar] = useState(false);
-  const [respuestaModalConfirmacionDeshabilitar, setRespuestaModalConfirmacionDeshabilitar] = useState({
+  const [
+    estaActivoModalConfirmacionDeshabilitar,
+    setEstaActivoModalConfirmacionDeshabilitar,
+  ] = useState(false);
+  const [
+    respuestaModalConfirmacionDeshabilitar,
+    setRespuestaModalConfirmacionDeshabilitar,
+  ] = useState({
     msg: "¡Confirma para deshabilitar plantilla!",
     status: false,
   });
   const [activeTab, setActiveTab] = useState(1);
   const [plantillaAClonar, setPlantillaAClonar] = useState(false);
-  const [estaActivoModalClonar, setEstaActivoModalClonar] = useState(false);  
+  const [estaActivoModalClonar, setEstaActivoModalClonar] = useState(false);
   const [checkboxSeleccionados, setCheckboxSeleccionados] = useState([]);
-  
+
   const totalDeProgramas = useMemo(() => ["1", "2", "3", "4", "5", "6"], []);
-  const [programaSeleccionado, setProgramaSeleccionado] = useState(totalDeProgramas[0]);
+  const [programaSeleccionado, setProgramaSeleccionado] = useState(
+    totalDeProgramas[0]
+  );
   const [estaCongelado, setEstaCongelado] = useState();
   const [codigo, setCodigo] = useState("");
   const [codigos, setCodigos] = useState("");
@@ -56,20 +78,20 @@ export const usePlantillaService = () => {
       console.error(error);
     }
   }, []);
-  const fetchCodigos =  useCallback(async (data) => {
+  const fetchCodigos = useCallback(async (data) => {
     try {
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-      if (tkn !== undefined)
-      {
+      if (tkn !== undefined) {
         const respuesta = await obtenerCodigos(tkn);
-        console.log(respuesta.codigos)
-        setCodigos(respuesta.codigos)
+        console.log(respuesta.codigos);
+        setCodigos(respuesta.codigos);
       }
-    } catch (error) { 
+    } catch (error) {
       console.log("error");
       setCodigo("");
     }
-  },[]);
+  }, []);
+
   const fetchPlantilla = useCallback(async (idPlantilla) => {
     try {
       setIsLoading(true);
@@ -77,11 +99,11 @@ export const usePlantillaService = () => {
       if (tkn) {
         const json = await obtenerPlantilla(tkn, idPlantilla);
         setPlantilla(json.plantilla || []);
-        setCheckboxSeleccionados(json.plantilla.programasHabilitados || [])
-        setProgramaSeleccionado(json.plantilla.programaSeleccionado || "")
-        setEstaCongelado(json.plantilla.estaCongelado)
-        console.log("progr",json.plantilla.programasHabilitados)
-        console.log("selec",json.plantilla.programaSeleccionado)
+        setCheckboxSeleccionados(json.plantilla.programasHabilitados || []);
+        setProgramaSeleccionado(json.plantilla.programaSeleccionado || "");
+        setEstaCongelado(json.plantilla.estaCongelado);
+        console.log("progr", json.plantilla.programasHabilitados);
+        console.log("selec", json.plantilla.programaSeleccionado);
       }
       setIsLoading(false);
     } catch (error) {
@@ -90,21 +112,20 @@ export const usePlantillaService = () => {
     }
   }, []);
 
-  const handleCrearPlantilla = async (data,parametros,auth) => {
+  const handleCrearPlantilla = async (data, parametros, auth) => {
     try {
       setIsLoading(true);
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
       if (tkn) {
-
         const listaParametrosGenerales = [];
         const listaParametrosProgramacion = [];
         // Filtrar parámetros y modificarlos según su tipo
         parametros.filter((param) => {
-          let valor = ""
-          let estatus = false
-          if(param.esValorFijo === true ){
-            valor=param.valorFijo
-            estatus = true
+          let valor = "";
+          let estatus = false;
+          if (param.esValorFijo === true) {
+            valor = param.valorFijo;
+            estatus = true;
           }
 
           if (param.tipoParametro === "general") {
@@ -121,14 +142,14 @@ export const usePlantillaService = () => {
 
             listaParametrosProgramacion.push({
               idParametroInterno: param.idParametroInterno,
-              valor:valor,
+              valor: valor,
               estatus: estatus,
             });
             return false; // No incluir este parámetro en la lista final
           }
           return true; // Mantener los parámetros que no son generales ni de programación
         });
-    
+
         console.log("P");
         console.log(parametros);
         console.log("PG");
@@ -148,19 +169,22 @@ export const usePlantillaService = () => {
             { noProgramacion: "5", parametros: listaParametrosProgramacion },
             { noProgramacion: "6", parametros: listaParametrosProgramacion },
           ],
-          estatus:true
+          estatus: true,
         };
         console.log(newData);
-    
+
         const response = await crearPlantilla(
           newData,
           JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token
         );
-
-          console.log(response.idPlantilla);
-          console.log("aqui selectedcomponetn EditarPlantilla")
+        console.log(response);
+        if (response.status) {
+          setIsLoading(false);
+          return true;
+        } else {
           setRespuestaModalOk({ msg: response.msg, status: response.status });
           setEstaActivoModalOk(true);
+        }
       }
       setIsLoading(false);
     } catch (error) {
@@ -169,9 +193,11 @@ export const usePlantillaService = () => {
     }
   };
   const fetchActualizarParametroPlantilla = useCallback(
-    async (idPlantilla, idParametro, valor, noProgramacion,estatus) => {
+    async (idPlantilla, idParametro, valor, noProgramacion, estatus) => {
       try {
-        const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+        const tkn = JSON.parse(
+          sessionStorage.getItem("ACCSSTKN")
+        )?.access_token;
         if (tkn !== undefined) {
           console.log("actualizarParametro");
           console.log(idPlantilla);
@@ -180,14 +206,13 @@ export const usePlantillaService = () => {
             idParametro: idParametro,
             valor: valor,
             noProgramacion: noProgramacion,
-            estatus:estatus
+            estatus: estatus,
           };
 
           const response = await actualizarParametroPlantilla(data, tkn);
-          if(!response)
-            {
-              setEstaActivoModalOk(true)
-            }
+          if (!response) {
+            setEstaActivoModalOk(true);
+          }
           console.log("actualizarParametro");
         } else {
           console.warn("No token found");
@@ -198,23 +223,60 @@ export const usePlantillaService = () => {
     },
     []
   );
-
-  const handleEditarPlantilla = async (data) => {
+  const fetchEditarPlantilla = async (data) => {
     try {
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
       const response = await actualizarPlantilla(data, tkn);
-      setRespuestaModalOk({ msg: response.msg, status: response.status });
-      setEstaActivoModalOk(true);
+      if (response.status) {
+        return response;
+      } else {
+        setRespuestaModalOk({ msg: response.msg, status: response.status });
+        setEstaActivoModalOk(true);
+        return false;
+      }
+    } catch (error) {}
+  };
+
+  const handleActualizarPlantilla = async (data) => {
+    try {
+      console.log("jandleActualizarPlantilla");
+      const response = await fetchEditarPlantilla(data);
+      console.log(response);
+      if (response.status) {
+        setRespuestaModalOk({ msg: response.msg, status: response.status });
+        setEstaActivoModalOk(true);
+      }
     } catch (error) {
-      console.error(error);
+      console.log("error");
     }
+  };
+  const handleActualizarInicioSeleccionado = async (data) => {
+    try {
+      console.log("inicio-seleccionado");
+      const response = await fetchEditarPlantilla(data);
+      console.log(response);
+      if (response.status) {
+        console.log("inicio-seleccionado");
+      } else {
+      }
+    } catch (error) {}
+  };
+  const handleEditarPlantilla = async (data) => {
+    try {
+      const response = fetchEditarPlantilla(data);
+      console.log(response);
+      if (response.status) {
+        setRespuestaModalOk({ msg: response.msg, status: response.status });
+        setEstaActivoModalOk(true);
+      } else {
+      }
+    } catch (error) {}
   };
   const handleImprimirPlantilla = async (idPlantilla) => {
     try {
-      
-      console.log("imprimirPlantilla")
-      setAbrirImprimirPlantilla(true)
-      setIdPlantillaSeleccionado(idPlantilla)
+      console.log("imprimirPlantilla");
+      setAbrirImprimirPlantilla(true);
+      setIdPlantillaSeleccionado(idPlantilla);
       //const response = await actualizarPlantilla(data, tkn);
       //setRespuestaModalOk({ msg: response.msg, status: response.status });
       //setEstaActivoModalOk(true);
@@ -224,9 +286,8 @@ export const usePlantillaService = () => {
   };
   const handleEditarCodigo = async (data) => {
     try {
-      
-      console.log("editarCodigo")
-      setAbrirEditarCodigo(true)
+      console.log("editarCodigo");
+      setAbrirEditarCodigo(true);
     } catch (error) {
       console.error(error);
     }
@@ -245,18 +306,18 @@ export const usePlantillaService = () => {
 
   const clonarPlantillaService = async (data) => {
     try {
-        console.log("siiiiiiiiii")
+      console.log("siiiiiiiiii");
       const response = await clonarPlantillaAPI(
         data,
         JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token
       );
-      console.log(response)
-    
-        setRespuestaModalOk({ msg: response.msg, status: response.status });
-        setEstaActivoModalOk(true);        
-        setEstaActivoModalClonar(false);
-        console.log("sipasa")
-        return (response)  
+      console.log(response);
+
+      setRespuestaModalOk({ msg: response.msg, status: response.status });
+      setEstaActivoModalOk(true);
+      setEstaActivoModalClonar(false);
+      console.log("sipasa");
+      return response;
     } catch (error) {
       console.error(error);
     }
@@ -265,14 +326,16 @@ export const usePlantillaService = () => {
   const deshabilitarPlantilla = async (idPlantilla) => {
     try {
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-      const data = { idPlantilla:idPlantilla, estatus: false };
+      const data = { idPlantilla: idPlantilla, estatus: false };
       const response = await actualizarPlantilla(data, tkn);
-      console.log("response",response)
+      console.log("response", response);
 
-        setRespuestaModalOk({ msg: "¡Plantilla deshabilitada exitosamente!", status: true });
-        setEstaActivoModalOk(true);
-        fetchPlantillas(true);
-      
+      setRespuestaModalOk({
+        msg: "¡Plantilla deshabilitada exitosamente!",
+        status: true,
+      });
+      setEstaActivoModalOk(true);
+      fetchPlantillas(true);
     } catch (error) {
       console.error(error);
     }
@@ -281,10 +344,13 @@ export const usePlantillaService = () => {
   const habilitarPlantilla = async (idPlantilla) => {
     try {
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-      const data = { idPlantilla:idPlantilla, estatus: true };
+      const data = { idPlantilla: idPlantilla, estatus: true };
       const response = await actualizarPlantilla(data, tkn);
       if (response.status) {
-        setRespuestaModalOk({ msg: "¡Plantilla habilitado exitosamente!", status: true });
+        setRespuestaModalOk({
+          msg: "¡Plantilla habilitado exitosamente!",
+          status: true,
+        });
         setEstaActivoModalOk(true);
         fetchPlantillas(false);
       }
@@ -320,45 +386,61 @@ export const usePlantillaService = () => {
     setIdPlantillaSeleccionado(idPlantilla);
     setEstaActivoModalConfirmacionHabilitar(true);
   };
-  const handleCongelarPlantilla = async (idPlantilla,estatus) => {
-    console.log("idPlantilla",idPlantilla);
-    console.log("estatus",estatus);
-    const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-    const response = await verificarParametros(tkn,idPlantilla)
-    if(response.status)
-      {
-        await handleEditarPlantilla({"idPlantilla":idPlantilla,"estaCongelado":estatus})
-        fetchPlantillas()
-      }
-      else{
-        setRespuestaModalOk({ msg: response.msg, status: response.status});
-        setEstaActivoModalOk(true)
-      }
-  };
-  const handleDescongelarPlantilla = async (idPlantilla,estatus) => {
-    console.log("idPlantilla",idPlantilla);
-    console.log("estatus",estatus);
-    const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-    const response = await actualizarPlantilla({"idPlantilla":idPlantilla,"estaCongelado":estatus},tkn)
-    if(response.status)
-      { 
-        fetchPlantilla(idPlantilla)     
 
+  const handleActualizarEstatusCongelado = async (idPlantilla, estatus) => {
+    console.log("idPlantilla", idPlantilla);
+    console.log("estatus", estatus);
+    const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+    const response = await verificarParametros(tkn, idPlantilla);
+    if (response.status) {
+      const responseEditar = fetchEditarPlantilla({
+        idPlantilla: idPlantilla,
+        estaCongelado: estatus,
+      });
+      if (responseEditar.status) {
+        return true;
       }
-        setRespuestaModalOk({ msg: response.msg, status: response.status});
-        setEstaActivoModalOk(true)
-  
+    } else {
+      setRespuestaModalOk({ msg: response.msg, status: response.status });
+      setEstaActivoModalOk(true);
+    }
+  };
+  const handleCongelarPlantillaDesdeLista = async (idPlantilla, estatus) => {
+    const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+    const response = await verificarParametros(tkn, idPlantilla);
+    if (response.status) {
+      await handleEditarPlantilla({
+        idPlantilla: idPlantilla,
+        estaCongelado: estatus,
+      });
+      fetchPlantillas();
+    } else {
+      setRespuestaModalOk({ msg: response.msg, status: response.status });
+      setEstaActivoModalOk(true);
+    }
+  };
+
+  const handleDescongelarPlantillaDesdeLista = async (idPlantilla, estatus) => {
+    const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
+    const response = fetchEditarPlantilla(
+      { idPlantilla: idPlantilla, estaCongelado: estatus },
+      tkn
+    );
+    if (!response) {
+      return response;
+    } else {
+      return false;
+    }
   };
   const actualizarProgramasHabilitados = async (idPlantilla) => {
-    console.log("idPlantilla",idPlantilla);
+    console.log("idPlantilla", idPlantilla);
     const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
-    const response = await verificarParametros(tkn,idPlantilla)
-    console.log("Congelar",response)
+    const response = await verificarParametros(tkn, idPlantilla);
+    console.log("Congelar", response);
   };
 
   const setFileTemplate = useCallback(async (data) => {
     try {
-      
       if (
         JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token !==
         undefined
@@ -370,11 +452,9 @@ export const usePlantillaService = () => {
         console.log(response);
       }
     } catch (error) {
-      
       console.log("error");
     }
-  },[]);
-
+  }, []);
 
   return {
     activeTab,
@@ -394,8 +474,9 @@ export const usePlantillaService = () => {
     handleDeshabilitarPlantilla,
     handleHabilitarPlantilla,
     handleClonarPlantilla,
-    handleCongelarPlantilla,
-    handleDescongelarPlantilla,    
+
+    handleCongelarPlantillaDesdeLista,
+    handleDescongelarPlantillaDesdeLista,
     cerrarModalOk,
     cerrarModalConfirmacionHabilitar,
     estaActivoModalConfirmacionHabilitar,
@@ -432,6 +513,9 @@ export const usePlantillaService = () => {
     codigos,
     setTipoCodigo,
     actualizarProgramasHabilitados,
-    handleEditarCodigo
+    handleEditarCodigo,
+    handleActualizarInicioSeleccionado,
+    handleActualizarPlantilla,
+    handleActualizarEstatusCongelado,
   };
 };

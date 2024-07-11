@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { Button, Grid, Paper, IconButton, Typography,Tab,Tabs, Dialog } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import {LockOpen as UnlockIcon, Check as CheckIcon,FileDownload as DownloadIcon, Add as AddIcon, ArrowBack as ArrowBackIcon, DeleteOutline as DeleteIcon, Edit as EditIcon, FileCopy as FileCopyIcon, Lock as LockIcon } from "@mui/icons-material";
+import {Visibility as VisibilityIcon, LockOpen as UnlockIcon, Check as CheckIcon,FileDownload as DownloadIcon, Add as AddIcon, ArrowBack as ArrowBackIcon, DeleteOutline as DeleteIcon, Edit as EditIcon, FileCopy as FileCopyIcon, Lock as LockIcon } from "@mui/icons-material";
 import HeaderContent from "../HeaderContent";
 import { usePlantillaService } from "../../hooks/usePlantillaService";
 import AgregarPlantilla from "./AgregarPlantilla";
@@ -39,8 +39,8 @@ const ListaPlantillas = ( { setSelectedComponent, auth, onResponse }) => {
     fetchPlantillas,
     handleDeshabilitarPlantilla,
     handleClonarPlantilla,
-    handleCongelarPlantilla,
-    handleDescongelarPlantilla,
+    handleCongelarPlantillaDesdeLista,
+
     cerrarModalOk,
     estaActivoModalOk,
     respuestaModalOk,
@@ -94,9 +94,36 @@ const ListaPlantillas = ( { setSelectedComponent, auth, onResponse }) => {
       <AgregarPlantilla
         setSelectedComponent={setSelectedComponent}
         auth={auth}
+        onResponse={onResponse}
       ></AgregarPlantilla>
     );
   };
+  const handleCongelar = (idPlantilla) =>{
+    const response=handleCongelarPlantillaDesdeLista(idPlantilla,true)
+    if(!response){
+      setSelectedComponent(<ListaPlantillas
+        setSelectedComponent={setSelectedComponent}
+        onResponse={onResponse}
+        auth={auth}
+      ></ListaPlantillas>
+    )
+
+    }
+  }
+  const handleDescongelar = (idPlantilla) =>{
+    const response=handleCongelarPlantillaDesdeLista(idPlantilla,false)
+    if(!response){
+        setSelectedComponent(
+        <ListaPlantillas
+          setSelectedComponent={setSelectedComponent}
+          onResponse={onResponse}
+          auth={auth}
+        ></ListaPlantillas>
+      )
+      
+
+    }
+  }
   const getHeaderName = () => {
     return plantillas.some((plantilla) => plantilla.estaCongelado) ? "Descongelar" : "Congelar";
   };  
@@ -113,8 +140,7 @@ const ListaPlantillas = ( { setSelectedComponent, auth, onResponse }) => {
 
       renderCell: (params) => (
         <IconButton
-        disabled={params.row.estaCongelado}
-        style={{ color: params.row.estaCongelado ? 'grey' : theme.palette.primary.light}}
+        style={{ color: theme.palette.primary.light}}
         onClick={() => handleClonarPlantilla(params.row.idPlantilla)}>
           <FileCopyIcon />
         </IconButton>
@@ -126,10 +152,10 @@ const ListaPlantillas = ( { setSelectedComponent, auth, onResponse }) => {
 
       renderCell: (params) => (
         <IconButton
-        disabled={params.row.estaCongelado}
-        style={{ color: params.row.estaCongelado ? 'grey' : theme.palette.primary.light}}
+
+        style={{ color:theme.palette.primary.light}}
         onClick={() => handleEditarPlantilla(params.row.idPlantilla)}>
-          <EditIcon />
+         {params.row.estaCongelado ? <VisibilityIcon /> : <EditIcon />} 
         </IconButton>
       ),
     },
@@ -140,8 +166,8 @@ const ListaPlantillas = ( { setSelectedComponent, auth, onResponse }) => {
         <IconButton
           style={{ color: theme.palette.primary.light}}
           onClick={() => params.row.estaCongelado
-            ? handleDescongelarPlantilla(params.row.idPlantilla,false)
-            : handleCongelarPlantilla(params.row.idPlantilla,true)
+            ? handleDescongelar(params.row.idPlantilla)
+            : handleCongelar(params.row.idPlantilla)
           }
         >
           {params.row.estaCongelado ? <UnlockIcon /> : <LockIcon />} 
@@ -256,7 +282,7 @@ const ListaPlantillas = ( { setSelectedComponent, auth, onResponse }) => {
       />      
     </>
   );
-  if (isLoading) {
+  if (isLoading ) {
     return <LoadingComponent />;
   }
   return (

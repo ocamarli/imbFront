@@ -1,7 +1,11 @@
 import { useState, useCallback } from "react";
 import { crearParametro, obtenerParametros, actualizarParametro, obtenerParametro } from "../api/parametrosApi";
-
+import { useForm } from 'react-hook-form';
 export const useParametroService = () => {
+  const [esValorFijo, setEsValorFijo] = useState("");
+  const [tipoCampo, setTipoCampo] = useState("");
+  const [openOptions, setOpenOptions] = useState(false);
+  const [options, setOptions] = useState([]);  
   const [parametros, setParametros] = useState([]);
   const [parametro, setParametro] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -25,7 +29,17 @@ export const useParametroService = () => {
     setActiveTab(newValue);
     fetchParametros(Boolean(newValue));
   };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    setValue,
+    reset
+  } = useForm({
+    defaultValues: {
 
+    }
+  });
   const fetchParametros = useCallback(async (estatus) => {
     try {
       setIsLoading(true);
@@ -43,12 +57,17 @@ export const useParametroService = () => {
 
   const fetchParametro = useCallback(async (idParametro) => {
     try {
+      console.log("idPArametro",idParametro)
       setIsLoading(true);
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
       if (tkn) {
         const json = await obtenerParametro(tkn, idParametro);
+
+
         setParametro(json.parametro || []);
+
       }
+
       setIsLoading(false);
     } catch (error) {
       setIsLoading(false);
@@ -166,6 +185,19 @@ export const useParametroService = () => {
     estaActivoModalConfirmacionDeshabilitar,
     respuestaModalConfirmacionDeshabilitar,
     setRespuestaModalConfirmacionHabilitar,
-    setRespuestaModalConfirmacionDeshabilitar    
+    setRespuestaModalConfirmacionDeshabilitar,
+    register,
+    handleSubmit,
+    errors,
+    setValue,
+    openOptions,
+    options,
+    setOpenOptions,
+    setOptions,
+    reset,
+    tipoCampo,
+    setTipoCampo,
+    esValorFijo,
+    setEsValorFijo
   };
 };
