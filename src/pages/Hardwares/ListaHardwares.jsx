@@ -86,7 +86,6 @@ const ListaHardwares = ({ setSelectedComponent, auth, onResponse }) => {
       field: "editar",
       headerName: "Editar",
       sortable: false,
-      width: 90,
       renderCell: (params) => (
         <IconButton onClick={() => handleEditarHardware(params.row.idHardware)}>
           <EditIcon />
@@ -97,7 +96,6 @@ const ListaHardwares = ({ setSelectedComponent, auth, onResponse }) => {
       field: "eliminar",
       headerName: "Deshabilitar",
       sortable: false,
-      width: 110,
       renderCell: (params) => (
         <IconButton onClick={() => handleDeshabilitarHardware(params.row.idHardware)}>
           <DeleteIcon />
@@ -114,7 +112,6 @@ const ListaHardwares = ({ setSelectedComponent, auth, onResponse }) => {
       field: "habilitar",
       headerName: "Habilitar",
       sortable: false,
-      width: 110,
       renderCell: (params) => (
         <IconButton onClick={() => handleHabilitarHardware(params.row.idHardware)}>
           <CheckIcon />

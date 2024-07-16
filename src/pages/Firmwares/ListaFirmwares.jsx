@@ -86,7 +86,6 @@ const ListaFirmwares = ({ setSelectedComponent, auth, onResponse }) => {
       field: "editar",
       headerName: "Editar",
       sortable: false,
-      width: 90,
       renderCell: (params) => (
         <IconButton onClick={() => handleEditarFirmware(params.row.idFirmware)}>
           <EditIcon />
@@ -97,7 +96,6 @@ const ListaFirmwares = ({ setSelectedComponent, auth, onResponse }) => {
       field: "eliminar",
       headerName: "Deshabilitar",
       sortable: false,
-      width: 110,
       renderCell: (params) => (
         <IconButton onClick={() => handleDeshabilitarFirmware(params.row.idFirmware)}>
           <DeleteIcon />
@@ -114,7 +112,6 @@ const ListaFirmwares = ({ setSelectedComponent, auth, onResponse }) => {
       field: "habilitar",
       headerName: "Habilitar",
       sortable: false,
-      width: 110,
       renderCell: (params) => (
         <IconButton onClick={() => handleHabilitarFirmware(params.row.idFirmware)}>
           <CheckIcon />

@@ -1,5 +1,5 @@
 import { postData,getData } from "./axios";
-import { ENV } from "../utils";
+import { ENV } from "../endpoints";
 export async function crearParametro(data, token) {
     try {
       const response = await postData(

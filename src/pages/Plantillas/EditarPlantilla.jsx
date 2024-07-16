@@ -3,11 +3,12 @@ import React, { useEffect } from "react";
 import { useTheme } from "@mui/material/styles";
 import {
   TextField, FormControlLabel, Radio, RadioGroup, FormLabel, FormControl,
-  Grid, Button, Paper, Select, MenuItem, Typography, InputLabel,
-  Divider,
+  Grid, Button, Paper, Select, MenuItem, Typography, InputLabel,Dialog,
+  Divider
 } from "@mui/material";
 import HeaderContent from "../HeaderContent";
 import LockIcon from "@mui/icons-material/Lock";
+import {Add as AddIcon} from "@mui/icons-material";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import TablaContenido from "./Componentes/TablaContenido";
 import Home from "../Home/Home.jsx";
@@ -16,10 +17,11 @@ import GrupoCheckbox from "./Componentes/GrupoCheckbox.jsx";
 import { usePlantillaService } from "../../hooks/usePlantillaService.jsx";
 import { useFirmwareService } from "../../hooks/useFirmwareService.jsx";
 import { useHardwareService } from "../../hooks/useHardwareService.jsx";
+import { useGaeService } from "../../hooks/useGaeServices.jsx";
 import LoadingComponent from "../LoadingComponent.jsx";
 import ModalGenerico from "../../components/ModalGenerico.jsx";
-import ListaPlantillas from "./ListaPlatillas.jsx";
-
+import { handleOnChangeInputIds } from "../../utils.js";
+import ModalAgregarNota from "./Componentes/ModalAgregarNota.jsx";
 const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth, onResponse }) => {
   const {
     handleActualizarInicioSeleccionado,
@@ -35,11 +37,20 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth, onResponse }
     plantilla,
     fetchPlantilla,
     handleActualizarPlantilla,
-    handleActualizarEstatusCongelado, estaCongelado
+    handleActualizarEstatusCongelado,
+     estaCongelado,
+     abrirAgregarNota,
+     setAbrirAgregarNota,
+     handleAbrirAgregarNota,
+     setEstaActivoModalOk,
+     setRespuestaModalOk,
+     ultimaNota,
+     setUltimaNota
   } = usePlantillaService(onResponse);
 
   const { hardwares, fetchHardwares } = useHardwareService(onResponse);
   const { firmwares, fetchFirmwares } = useFirmwareService(onResponse);
+  const { gaes, fetchGaes } = useGaeService(onResponse);
   const theme = useTheme();
 
   const handleChange = (event) => {
@@ -47,19 +58,14 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth, onResponse }
     handleActualizarInicioSeleccionado({ "idPlantilla": idPlantilla, "programaSeleccionado": event.target.value })
   };
   const handleActualizar = (idPlantilla) =>{
-    const response=handleActualizarEstatusCongelado(idPlantilla, !estaCongelado)
-    if(response){
-      setSelectedComponent(
-      <ListaPlantillas
-      setSelectedComponent={setSelectedComponent}
-      auth={auth}
-      onResponse={onResponse}></ListaPlantillas>)
-  }
+    handleActualizarEstatusCongelado(idPlantilla, !estaCongelado)
+
 }
 
   const onSubmit = (data) => {
     console.log("...onsub...", data);
     handleActualizarPlantilla({"idPlantilla":idPlantilla,...data})
+    
   };
   const handleOnCLickSalir = () => setSelectedComponent(<Home />);
   const {
@@ -72,9 +78,11 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth, onResponse }
     fetchPlantilla(idPlantilla);
     fetchHardwares(true);
     fetchFirmwares(true);
-  }, [fetchPlantilla,fetchHardwares,fetchFirmwares,idPlantilla]);
+    fetchGaes(true);
+  }, [fetchPlantilla,fetchHardwares,fetchFirmwares,fetchGaes,idPlantilla]);
 
   const renderModal = () => (
+    <>
     <ModalGenerico
       tipoModal={respuestaModalOk.status}
       open={estaActivoModalOk}
@@ -83,6 +91,21 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth, onResponse }
       message={respuestaModalOk.msg}
       autoCierre={true}
     />
+    <Dialog open={abrirAgregarNota} onClose={cerrarModalOk}>
+    <ModalAgregarNota
+    idPlantilla={idPlantilla}
+    setSelectedComponent={setSelectedComponent}
+    auth={auth}
+    activo={abrirAgregarNota}
+    autoCierre={false}
+    onClose={()=>setAbrirAgregarNota(false)}
+    onResponse={onResponse}
+    setEstaActivoModalOk={setEstaActivoModalOk}
+    setRespuestaModalOk={setRespuestaModalOk}
+    setUltimaNota={setUltimaNota}
+  />
+  </Dialog>
+  </>      
   );
 
   if (isLoading || plantilla == null) {
@@ -98,6 +121,21 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth, onResponse }
           <Paper style={{ padding: 10 }}>
             <form onSubmit={handleSubmit(onSubmit)}>
               <Grid container spacing={1}>
+              <Grid item xs={6}>
+                <Typography>Id de plantilla</Typography>
+                <TextField
+                disabled
+                onChange={handleOnChangeInputIds}
+                  size="small"
+                  fullWidth
+                  placeholder="Id plantilla"
+                  variant="outlined"
+                  defaultValue={plantilla?.idPlantillaInterno || ""}
+                  helperText={
+                    errors.idPlantillaInterno ? "Este campo es requerido" : ""
+                  }
+                />
+              </Grid>                
                 <Grid item xs={6}>
                   <Typography>Nombre de plantilla</Typography>
                   <TextField
@@ -184,20 +222,69 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth, onResponse }
                   </FormControl>
                 </Grid>
                 <Grid item xs={6}>
+                  <Typography>GAE</Typography>
+                  <FormControl variant="outlined" sx={{ width: "100%" }}>
+                    <Select
+                      {...register("gae", { required: true })}
+                      disabled={estaCongelado}
+                      size="small"
+                      error={errors.gae ? true : false}
+                      defaultValue={plantilla?.gae || ""}
+                      displayEmpty
+                      renderValue={(selected) => {
+                        if (!selected) {
+                          return (
+                            <em style={{ color: "rgba(0, 0, 0, 0.54)" }}>
+                              {plantilla?.gae}
+                            </em>
+                          );
+                        }
+                        return selected;
+                      }}
+                    >
+                      <MenuItem disabled value={plantilla?.gae}>
+                        <em>Selecciona una gae</em>
+                      </MenuItem>
+                      {gaes.map((gae, index) => (
+                        <MenuItem
+                          key={index}
+                          value={gae.idgaeInterno}
+                        >
+                          {gae.nombre}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={6}>
                   <Typography>Última nota</Typography>
                   <TextField
-                    {...register("ultima_nota", { required: true })}
-                    disabled={estaCongelado}
+                    disabled
+                    value={ultimaNota}
                     size="small"
                     fullWidth
-                    placeholder="Última nota"
                     variant="outlined"
-                    error={errors.ultima_nota ? true : false}
-                    helperText={
-                      errors.ultima_nota ? "Este campo es requerido" : ""
-                    }
                   />
                 </Grid>
+
+
+                <Grid item xs={12}>
+                  <Button
+                    size="small"
+                    disabled={estaCongelado}
+                    onClick={() => handleAbrirAgregarNota(idPlantilla)}
+                    variant="contained"
+                    style={{
+                      backgroundColor: estaCongelado
+                        ? theme.palette.grey[400]
+                        : theme.palette.primary.light,
+                    }}
+                    startIcon={<AddIcon />}
+                  >
+                    Agregar nota
+                  </Button>
+                </Grid>
+
                 <Grid item xs={12}>
                   <InputLabel>Creado por</InputLabel>
                   <InputLabel>{plantilla.creadoPor}</InputLabel>

@@ -6,7 +6,7 @@ import HeaderContent from "../HeaderContent";
 import { useFirmwareService } from "../../hooks/useFirmwareService";
 import Home from "../Home/Home";
 import ModalGenerico from "../../components/ModalGenerico";
-import { handleOnChangeInputTexto, handleOnChangeInputIds } from "../utils.js";
+import { handleOnChangeInputTexto, handleOnChangeInputIds } from "../../utils.js";
 
 const EditarFirmware = ({ idFirmware, setSelectedComponent, onResponse }) => {
   const { handleEditarFirmware, firmware, fetchFirmware, cerrarModalOk, estaActivoModalOk, respuestaModalOk } = useFirmwareService(onResponse);

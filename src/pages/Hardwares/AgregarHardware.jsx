@@ -6,7 +6,7 @@ import Home from '../Home/Home';
 import ModalGenerico from '../../components/ModalGenerico';
 import { useHardwareService } from '../../hooks/useHardwareService';
 import LoadingComponent from '../LoadingComponent';
-import { handleOnChangeInputTexto, handleOnChangeInputIds} from '../utils';
+import { handleOnChangeInputTexto, handleOnChangeInputIds} from '../../utils';
 
 const AgregarHardware = ({ setSelectedComponent, onResponse }) => {
   const { isLoading, estaActivoModalOk, respuestaModalOk, handleCrearHardware, cerrarModalOk } = useHardwareService(onResponse);

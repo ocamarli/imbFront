@@ -6,7 +6,7 @@ import Home from '../Home/Home';
 import ModalGenerico from '../../components/ModalGenerico';
 import { useFirmwareService } from '../../hooks/useFirmwareService';
 import LoadingComponent from '../LoadingComponent';
-import { handleOnChangeInputTexto, handleOnChangeInputIds } from '../utils';
+import { handleOnChangeInputTexto, handleOnChangeInputIds } from '../../utils';
 
 const AgregarFirmware = ({ setSelectedComponent, onResponse }) => {
   const { isLoading, estaActivoModalOk, respuestaModalOk, handleCrearFirmware, cerrarModalOk } = useFirmwareService(onResponse);

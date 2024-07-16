@@ -12,8 +12,12 @@ import {
 
 
 export const usePlantillaService = () => {
+  const [ultimaNota,setUltimaNota]=useState()
   const [matches, setMatches] = useState([]);
   const [abrirImprimirPlantilla, setAbrirImprimirPlantilla] = useState(false);
+  const [abrirListaNotas, setAbrirListaNotas] = useState(false);
+  const [abrirAgregarNota, setAbrirAgregarNota] = useState(false);
+  const [notas, setNotas] = useState([]);
   const [tipoCodigo, setTipoCodigo] = useState("codigoProgramaciones");
   const [plantillas, setPlantillas] = useState([]);
   const [plantilla, setPlantilla] = useState(null);
@@ -49,6 +53,7 @@ export const usePlantillaService = () => {
   const [activeTab, setActiveTab] = useState(1);
   const [plantillaAClonar, setPlantillaAClonar] = useState(false);
   const [estaActivoModalClonar, setEstaActivoModalClonar] = useState(false);
+  const [estaActivoModalAgregarNota, setEstaActivoModalAgregarNota] = useState(false);
   const [checkboxSeleccionados, setCheckboxSeleccionados] = useState([]);
 
   const totalDeProgramas = useMemo(() => ["1", "2", "3", "4", "5", "6"], []);
@@ -102,6 +107,7 @@ export const usePlantillaService = () => {
         setCheckboxSeleccionados(json.plantilla.programasHabilitados || []);
         setProgramaSeleccionado(json.plantilla.programaSeleccionado || "");
         setEstaCongelado(json.plantilla.estaCongelado);
+        setUltimaNota(json.plantilla.notas[json.plantilla.notas.length-1].nota)
         console.log("progr", json.plantilla.programasHabilitados);
         console.log("selec", json.plantilla.programaSeleccionado);
       }
@@ -156,9 +162,11 @@ export const usePlantillaService = () => {
         console.log(listaParametrosGenerales);
         console.log("PP");
         console.log(listaParametrosProgramacion);
+        console.log("data",data)
         const newData = {
           ...data,
           creadoPor: auth.correo,
+          notas:[{creadaPor:auth.correo,nota:data.notas}],
           programasHabilitados: ["1"],
           parametrosGenerales: listaParametrosGenerales,
           programaciones: [
@@ -277,13 +285,35 @@ export const usePlantillaService = () => {
       console.log("imprimirPlantilla");
       setAbrirImprimirPlantilla(true);
       setIdPlantillaSeleccionado(idPlantilla);
-      //const response = await actualizarPlantilla(data, tkn);
-      //setRespuestaModalOk({ msg: response.msg, status: response.status });
-      //setEstaActivoModalOk(true);
     } catch (error) {
       console.error(error);
     }
   };
+  const handleAbrirListaNotas = async (idPlantilla) => {
+    try {
+      console.log("ihandleAbrirListaNotas");
+      setAbrirListaNotas(true);
+      setIdPlantillaSeleccionado(idPlantilla);
+      console.log(idPlantilla,);
+      console.log(plantillas,);
+      const plantillaBuscada=plantillas.find(plantilla => plantilla.idPlantilla === idPlantilla);
+      console.log("plantillaBuscada",plantillaBuscada);
+      setNotas(plantillaBuscada.notas)
+      console.log(plantillaBuscada.notas)
+      console.log(     plantillas.find(plantilla => plantilla.idPlantilla === idPlantilla));
+    } catch (error) {
+      console.error(error);
+    }
+  }; 
+  const handleAbrirAgregarNota = async (idPlantilla) => {
+    try {
+      setAbrirAgregarNota(true)
+      console.log("abrir agregar nota")
+
+    } catch (error) {
+      console.error(error);
+    }
+  };   
   const handleEditarCodigo = async (data) => {
     try {
       console.log("editarCodigo");
@@ -303,6 +333,21 @@ export const usePlantillaService = () => {
       console.error(error);
     }
   };
+  const handleAgregarNota = async (data) => {
+    try {
+        console.log("handleAgregarNota",data);
+        console.log("handleAgregarNota",data.notas.nota);
+        const response = await fetchEditarPlantilla(data)          
+          setAbrirAgregarNota(false)
+          setRespuestaModalOk({ msg: response.msg, status: response.status });
+          setEstaActivoModalOk(true);
+          return response
+    }
+       catch (error) {
+      console.error(error);
+    }
+  };
+
 
   const clonarPlantillaService = async (data) => {
     try {
@@ -517,5 +562,17 @@ export const usePlantillaService = () => {
     handleActualizarInicioSeleccionado,
     handleActualizarPlantilla,
     handleActualizarEstatusCongelado,
+    abrirListaNotas,
+    setAbrirListaNotas,
+    handleAbrirListaNotas,
+    notas,
+    abrirAgregarNota,
+    setAbrirAgregarNota,
+    handleAbrirAgregarNota,
+    handleAgregarNota,
+    estaActivoModalAgregarNota,
+    setEstaActivoModalAgregarNota,
+  ultimaNota,
+  setUltimaNota,
   };
 };

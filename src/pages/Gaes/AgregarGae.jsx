@@ -6,7 +6,7 @@ import Home from '../Home/Home';
 import ModalGenerico from '../../components/ModalGenerico';
 import { useGaeService } from '../../hooks/useGaeServices';
 import LoadingComponent from '../LoadingComponent';
-import { handleOnChangeInputTexto, handleOnChangeInputIds, handleOnChangeInputTextoNumero } from '../utils';
+import { handleOnChangeInputTexto, handleOnChangeInputIds, handleOnChangeInputTextoNumero } from '../../utils';
 
 const AgregarGae = ({ setSelectedComponent, onResponse }) => {
   const { isLoading, estaActivoModalOk, respuestaModalOk, handleCrearGae, cerrarModalOk } = useGaeService(onResponse);

@@ -1,86 +1,61 @@
-const api = {
-  baseuri: "https://imbvikkonapi.azurewebsites.net/api/v1/",
-  endpoints: {
-    login: "login",
-    user: "user",
-    actualizarUsuario:"usuario/actualizarUsuario",
-    actualizarEstatusUsuario:"usuario/actualizarEstatusUsuario",
-    deshabilitarUsuario:"usuario/deshabilitarUsuario",
-    crearParametro:"parametro/crearParametro",
-    registerSet:"register/set",
-    obtenerParametros:"parametro/obtenerParametros",
-    obtenerParametro:"parametro/obtenerParametro",
-    actualizarParametro:"parametro/actualizarParametro",
-    obtenerUsuarios:"usuario/obtenerUsuarios",
-    obtenerUsuario:"usuario/obtenerUsuario",
-    actualizarParametroPlantilla:"plantilla/actualizarParametro",  
-    actualizarPlantilla:"plantilla/actualizarPlantilla",
-    obtenerPlantillas:"plantilla/obtenerPlantillas",
-    obtenerPlantilla:"plantilla/obtenerPlantilla",
-    crearPlantilla:"plantilla/crearPlantilla",    
-    clonarPlantilla:"plantilla/clonarPlantilla",    
-    verificarParametros:"plantilla/verificarParametros",
-    obtenerRecetas:"receta/obtenerRecetas",
-    obtenerFirmwares: "firmware/obtenerFirmwares",
-    obtenerFirmware: "firmware/obtenerFirmware",
-    crearFirmware:"firmware/crearFirmware",
-    actualizarFirmware:"firmware/actualizarFirmware",
-    obtenerHardwares:"hardware/obtenerHardwares",
-    obtenerHardware:"hardware/obtenerHardware",
-    crearHardware:"hardware/crearHardware",
-    actualizarHardware:"hardware/actualizarHardware",
-    obtenerGaes:"gae/obtenerGaes",
-    obtenerGae:"gae/obtenerGae",
-    crearGae:"gae/crearGae",
-    actualizarGae:"gae/actualizarGae",
-    obtenerCodigos:"codigo/obtenerCodigos",
-    crearUsuario:"usuario/crearUsuario",
-    obtenerArchivosBase:"plantilla/obtenerArchivosBase"
-    
-  },
-};
-/*
- baseuri: "https://imbvikkonapi.azurewebsites.net/api/v1/",
- "https://vikkonapi.azurewebsites.net/api/v1/"
-function Encode2Url(obj) {
-  var str = [];
-  for(var p in obj)
-     str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
-  return str.join("&");
-}
-*/
-export const ENV = {
-    obtenerArchivosBase:()=>api.baseuri+api.endpoints.obtenerArchivosBase,
-    obtenerGaes:()=> api.baseuri+api.endpoints.obtenerGaes,
-    obtenerGae:(idGae)=>api.baseuri+api.endpoints.obtenerGae+"/"+idGae,
-    crearGae:()=> api.baseuri+api.endpoints.crearGae,
-    actualizarGae:()=>api.baseuri+api.endpoints.actualizarGae,
-    crearFirmware:()=> api.baseuri+api.endpoints.crearFirmware,
-    actualizarUsuario:()=>api.baseuri+api.endpoints.actualizarUsuario,
-    actualizarEstatusUsuario :() =>api.baseuri+api.endpoints.actualizarEstatusUsuario,
-    obtenerUsuarios:()=>api.baseuri+api.endpoints.obtenerUsuarios,
-    obtenerUsuario:(idUsuario)=>api.baseuri+api.endpoints.obtenerUsuario+"/"+idUsuario,
-    actualizarParametroPlantilla:()=>api.baseuri+api.endpoints.actualizarParametroPlantilla,
-    obtenerFirmwares:()=>api.baseuri+api.endpoints.obtenerFirmwares,
-    obtenerFirmware:(idFirmware)=>api.baseuri+api.endpoints.obtenerFirmware+"/"+idFirmware,
-    actualizarFirmware:()=>api.baseuri+api.endpoints.actualizarFirmware,
-    obtenerHardwares:()=>api.baseuri+api.endpoints.obtenerHardwares,
-    obtenerHardware:(idHardware)=>api.baseuri+api.endpoints.obtenerHardware+"/"+idHardware,
-    crearHardware:()=> api.baseuri+api.endpoints.crearHardware,
-    actualizarHardware:()=> api.baseuri+api.endpoints.actualizarHardware,
-    actualizarPlantilla:()=>api.baseuri+api.endpoints.actualizarPlantilla,
-    obtenerPlantillas:()=>api.baseuri+api.endpoints.obtenerPlantillas,
-    obtenerPlantilla:(idPlantilla)=>api.baseuri+api.endpoints.obtenerPlantilla+"/"+idPlantilla,
-    crearPlantilla:()=>api.baseuri+api.endpoints.crearPlantilla,
-    clonarPlantilla:()=>api.baseuri+api.endpoints.clonarPlantilla,    
-    obtenerRecetas:()=>api.baseuri+api.endpoints.obtenerRecetas,
-    login:()=> api.baseuri+api.endpoints.login,
-    user:()=> api.baseuri+api.endpoints.user,
-    obtenerParametros: () => api.baseuri + api.endpoints.obtenerParametros,
-    obtenerParametro: (idParametro) => api.baseuri + api.endpoints.obtenerParametro+"/"+idParametro,
-    actualizarParametro: () => api.baseuri + api.endpoints.actualizarParametro,
-    crearParametro:() => api.baseuri + api.endpoints.crearParametro,
-    crearUsuario:()=>api.baseuri+api.endpoints.crearUsuario,
-    obtenerCodigos:()=>api.baseuri+api.endpoints.obtenerCodigos,
-    verificarParametros:()=>api.baseuri+api.endpoints.verificarParametros,
-};
+export const formatearFecha = (fecha) => {
+    const opciones = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    return new Date(fecha).toLocaleDateString('es-MX', opciones);
+  };
+  export const handleOnChangeInputTexto = (event) => {
+    // Expresión regular que permite letras (mayúsculas y minúsculas) y espacios en blanco
+    const regex = /^[A-Za-z\s]*$/;
+    const inputValue = event.target.value;
+  
+    // Validar si el texto ingresado cumple con la expresión regular
+    if (regex.test(inputValue)) {
+      // Si cumple, convertir a mayúsculas y establecer en el campo de texto
+      event.target.value = inputValue.toUpperCase();
+    } else {
+      // Si no cumple, eliminar el último caracter ingresado
+      event.target.value = inputValue.slice(0, -1);
+    }
+  };
+  export const handleOnChangeInputIds = (event) => {
+    // Expresión regular que permite cuatro dígitos donde el primer dígito no puede ser cero
+    const regex = /^[1-9]\d{0,3}$/;
+    const inputValue = event.target.value;
+  console.log("onChange")
+    // Validar si el texto ingresado cumple con la expresión regular
+    if (regex.test(inputValue)) {
+      // Si cumple, establecer el valor en el campo de texto
+      event.target.value = inputValue;
+    } else {
+      // Si no cumple, eliminar el último caracter ingresado
+      event.target.value = inputValue.slice(0, -1);
+    }
+  };
+  export const handleOnChangeInputTextoNumero = (event) => {
+    // Expresión regular que permite letras, números, espacios, guiones bajos y guiones medios
+    const regex = /^[A-Za-z0-9\s_-]*$/;
+    const inputValue = event.target.value;
+  
+    // Validar si el texto ingresado cumple con la expresión regular
+    if (regex.test(inputValue)) {
+      // Si cumple, eliminar los espacios en blanco al principio y convertir a mayúsculas
+      event.target.value = inputValue.replace(/^\s+/, '').toUpperCase();
+    } else {
+      // Si no cumple, eliminar el último carácter ingresado
+      event.target.value = inputValue.slice(0, -1);
+    }
+  };
+  export const handleOnChangeInputParametros = (event) => {
+    // Expresión regular que permite letras (mayúsculas y minúsculas) y espacios en blanco
+    const regex = /^\d{0,3}$/;
+    const inputValue = event.target.value;
+  
+    // Validar si el texto ingresado cumple con la expresión regular
+    if (regex.test(inputValue)) {
+      // Si cumple, convertir a mayúsculas y establecer en el campo de texto
+      event.target.value = inputValue.toUpperCase();
+    } else {
+      // Si no cumple, eliminar el último caracter ingresado
+      event.target.value = inputValue.slice(0, -1);
+    }
+  };
+  

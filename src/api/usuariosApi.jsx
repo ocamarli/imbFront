@@ -1,5 +1,5 @@
 import { postData, getData } from "./axios";
-import { ENV } from "../utils";
+import { ENV } from "../endpoints";
 
 // Función para actualizar un usuario
 export async function actualizarUsuario(data, token) {

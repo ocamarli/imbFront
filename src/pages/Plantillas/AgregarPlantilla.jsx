@@ -12,15 +12,18 @@ import {
 } from "@mui/material";
 
 import HeaderContent from "../HeaderContent";
-
+import { handleOnChangeInputIds, handleOnChangeInputTextoNumero } from "../../utils.js";
 import Home from "../Home/Home.jsx";
 import { usePlantillaService } from "../../hooks/usePlantillaService.jsx";
 import { useParametroService } from "../../hooks/useParametroService.jsx";
 import { useHardwareService } from "../../hooks/useHardwareService.jsx";
 import { useFirmwareService } from "../../hooks/useFirmwareService.jsx";
+import { useGaeService } from "../../hooks/useGaeServices.jsx";
 import ModalGenerico from "../../components/ModalGenerico.jsx";
 import LoadingComponent from "../LoadingComponent.jsx";
 import ListaPlantillas from "./ListaPlatillas.jsx";
+
+
 const AgregarPlantilla = ({ setSelectedComponent, onResponse, auth }) => {
   const {
     isLoading,
@@ -28,10 +31,12 @@ const AgregarPlantilla = ({ setSelectedComponent, onResponse, auth }) => {
     cerrarModalOk,
     estaActivoModalOk,
     respuestaModalOk,
+
   } = usePlantillaService();
   const { parametros, fetchParametros } = useParametroService(onResponse);
   const { hardwares, fetchHardwares } = useHardwareService(onResponse);
   const { firmwares, fetchFirmwares } = useFirmwareService(onResponse);
+  const { gaes, fetchGaes } = useGaeService(onResponse);
 
   const {
     register,
@@ -44,29 +49,31 @@ const AgregarPlantilla = ({ setSelectedComponent, onResponse, auth }) => {
     fetchParametros();
     fetchHardwares(true);
     fetchFirmwares(true);
-  }, [fetchParametros, fetchHardwares, fetchFirmwares]);
+    fetchGaes(true);
+  }, [fetchParametros, fetchHardwares, fetchFirmwares, fetchGaes]);
 
   const onSubmit = (data) => {
     console.log("onsub");
     console.log(data);
-    if(handleCrearPlantilla(data, parametros, auth)){
-      console.log(true)
-      setSelectedComponent(<ListaPlantillas 
-        setSelectedComponent={setSelectedComponent}
-        onResponse={onResponse}
-        auth={auth}></ListaPlantillas>)
-
+    if (handleCrearPlantilla(data, parametros, auth)) {
+      console.log(true);
+      setSelectedComponent(
+        <ListaPlantillas
+          setSelectedComponent={setSelectedComponent}
+          onResponse={onResponse}
+          auth={auth}
+        ></ListaPlantillas>
+      );
+    } else {
+      console.log(false);
     }
-    else{
-      console.log(false)
-    }
-    
   };
 
   useEffect(() => {
     console.log("Firmwares:", firmwares);
     console.log("Hardwares:", hardwares);
   }, [firmwares, hardwares]);
+
   const renderModals = () => (
     <>
       <ModalGenerico
@@ -77,11 +84,14 @@ const AgregarPlantilla = ({ setSelectedComponent, onResponse, auth }) => {
         message={respuestaModalOk.msg}
         autoCierre={true}
       />
+ 
     </>
   );
+
   if (isLoading) {
     return <LoadingComponent />;
   }
+
   return (
     <Grid container padding={2} justifyContent={"center"}>
       <Grid item xs={12}>
@@ -93,15 +103,15 @@ const AgregarPlantilla = ({ setSelectedComponent, onResponse, auth }) => {
               <Grid item xs={6}>
                 <Typography>Id de plantilla</Typography>
                 <TextField
+                  // Asegúrate de pasar la función aquí
                   {...register("idPlantillaInterno", { required: true })}
                   size="small"
                   fullWidth
                   placeholder="Id plantilla"
                   variant="outlined"
-                  error={errors.idPlantillaInterno ? true : false}
-                  helperText={
-                    errors.idPlantillaInterno ? "Este campo es requerido" : ""
-                  }
+                  error={errors.idPlantillaInterno}
+                  helperText={errors.idPlantillaInterno && "Este campo es requerido"}
+                  onChange={handleOnChangeInputIds} 
                 />
               </Grid>
               <Grid item xs={6}>
@@ -116,6 +126,7 @@ const AgregarPlantilla = ({ setSelectedComponent, onResponse, auth }) => {
                   helperText={
                     errors.nombrePlantilla ? "Este campo es requerido" : ""
                   }
+                  onChange={handleOnChangeInputTextoNumero} 
                 />
               </Grid>
               <Grid item xs={6}>
@@ -193,17 +204,52 @@ const AgregarPlantilla = ({ setSelectedComponent, onResponse, auth }) => {
                 </FormControl>
               </Grid>
               <Grid item xs={6}>
-                <Typography>Última nota</Typography>
+                <Typography>GAE</Typography>
+                <FormControl variant="outlined" sx={{ width: "100%" }}>
+                  <Controller
+                    name="gae"
+                    control={control}
+                    defaultValue=""
+                    rules={{ required: true }}
+                    render={({ field }) => (
+                      <Select
+                        {...field}
+                        size="small"
+                        error={errors.gae ? true : false}
+                        displayEmpty
+                        renderValue={(selected) => {
+                          if (!selected) {
+                            return <em>Selecciona una gae</em>;
+                          }
+                          return selected;
+                        }}
+                      >
+                        <MenuItem disabled value="">
+                          <em>Selecciona una gae</em>
+                        </MenuItem>
+                        {gaes.map((gae, index) => (
+                          <MenuItem key={index} value={gae.idGaeInterno}>
+                            {gae.nombre}
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    )}
+                  />
+                </FormControl>
+              </Grid>
+              <Grid item xs={6}>
+                <Typography>Nota</Typography>
                 <TextField
-                  {...register("ultima_nota", { required: true })}
+                  {...register("notas", { required: true })}
                   size="small"
                   fullWidth
-                  placeholder="Última nota"
+                  placeholder="Nota"
                   variant="outlined"
-                  error={errors.ultima_nota ? true : false}
+                  error={errors.notas ? true : false}
                   helperText={
-                    errors.ultima_nota ? "Este campo es requerido" : ""
+                    errors.notas ? "Este campo es requerido" : ""
                   }
+                  onChange={handleOnChangeInputTextoNumero}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -212,7 +258,6 @@ const AgregarPlantilla = ({ setSelectedComponent, onResponse, auth }) => {
                   sx={{ justifyContent: "space-around" }}
                   spacing={2}
                 >
-
                   <Grid item xs={6}>
                     <Button
                       variant="contained"
@@ -233,7 +278,7 @@ const AgregarPlantilla = ({ setSelectedComponent, onResponse, auth }) => {
                     >
                       Salir
                     </Button>
-                  </Grid>                  
+                  </Grid>
                 </Grid>
               </Grid>
             </Grid>

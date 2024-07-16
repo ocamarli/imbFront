@@ -6,7 +6,7 @@ import HeaderContent from "../HeaderContent";
 import { useHardwareService } from "../../hooks/useHardwareService";
 import Home from "../Home/Home";
 import ModalGenerico from "../../components/ModalGenerico";
-import { handleOnChangeInputTexto, handleOnChangeInputIds} from "../utils.js";
+import { handleOnChangeInputTexto, handleOnChangeInputIds} from "../../utils.js";
 
 const EditarHardware = ({ idHardware, setSelectedComponent, onResponse }) => {
   const { handleEditarHardware, hardware, fetchHardware, cerrarModalOk, estaActivoModalOk, respuestaModalOk } = useHardwareService(onResponse);

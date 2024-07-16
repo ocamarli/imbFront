@@ -88,7 +88,6 @@ const ListaGaes = ({ setSelectedComponent, auth, onResponse }) => {
       field: "editar",
       headerName: "Editar",
       sortable: false,
-      width: 90,
       renderCell: (params) => (
         <IconButton onClick={() => handleEditarGae(params.row.idGae)}>
           <EditIcon />
@@ -117,7 +116,6 @@ const ListaGaes = ({ setSelectedComponent, auth, onResponse }) => {
       field: "habilitar",
       headerName: "Habilitar",
       sortable: false,
-      width: 110,
       renderCell: (params) => (
         <IconButton onClick={() => handleHabilitarGae(params.row.idGae)}>
           <CheckIcon />

@@ -6,7 +6,7 @@ import HeaderContent from "../HeaderContent";
 import { useGaeService } from "../../hooks/useGaeServices";
 import Home from "../Home/Home";
 import ModalGenerico from "../../components/ModalGenerico";
-import { handleOnChangeInputTexto, handleOnChangeInputIds, handleOnChangeInputTextoNumero } from "../utils.js";
+import { handleOnChangeInputTexto, handleOnChangeInputIds, handleOnChangeInputTextoNumero } from "../../utils.js";
 
 const EditarGae = ({ idGae, setSelectedComponent, onResponse }) => {
   const { handleEditarGae, gae, fetchGae, cerrarModalOk, estaActivoModalOk, respuestaModalOk } = useGaeService(onResponse);

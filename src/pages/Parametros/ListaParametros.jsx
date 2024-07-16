@@ -84,7 +84,6 @@ function ListaParametros({setSelectedComponent, auth,onResponse }) {
       field: "editar",
       headerName: "Editar",
       sortable: false,
-      width: 90,
       renderCell: (params) => (
         <IconButton onClick={() => handleEditarParametro(params.row.idParametro)}>
           <EditIcon />
@@ -95,7 +94,6 @@ function ListaParametros({setSelectedComponent, auth,onResponse }) {
       field: "eliminar",
       headerName: "Deshabilitar",
       sortable: false,
-      width: 110,
       renderCell: (params) => (
         <IconButton onClick={() => handleDeshabilitarParametro(params.row.idParametro)}>
           <DeleteIcon />
@@ -116,7 +114,6 @@ function ListaParametros({setSelectedComponent, auth,onResponse }) {
       field: "habilitar",
       headerName: "Habilitar",
       sortable: false,
-      width: 110,
       renderCell: (params) => (
         <IconButton onClick={() => handleHabilitarParametro(params.row.idParametro)}>
           <CheckIcon />

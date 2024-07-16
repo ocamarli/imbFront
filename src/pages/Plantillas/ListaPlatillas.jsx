@@ -1,7 +1,8 @@
 import React, { useEffect } from "react";
 import { Button, Grid, Paper, IconButton, Typography,Tab,Tabs, Dialog } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import {Visibility as VisibilityIcon, LockOpen as UnlockIcon, Check as CheckIcon,FileDownload as DownloadIcon, Add as AddIcon, ArrowBack as ArrowBackIcon, DeleteOutline as DeleteIcon, Edit as EditIcon, FileCopy as FileCopyIcon, Lock as LockIcon } from "@mui/icons-material";
+
+import {Notes as NotesIcon, Visibility as VisibilityIcon, LockOpen as UnlockIcon, Check as CheckIcon,FileDownload as DownloadIcon, Add as AddIcon, ArrowBack as ArrowBackIcon, DeleteOutline as DeleteIcon, Edit as EditIcon, FileCopy as FileCopyIcon, Lock as LockIcon } from "@mui/icons-material";
 import HeaderContent from "../HeaderContent";
 import { usePlantillaService } from "../../hooks/usePlantillaService";
 import AgregarPlantilla from "./AgregarPlantilla";
@@ -11,9 +12,10 @@ import ModalGenerico from "../../components/ModalGenerico";
 import Home from "../Home/Home";
 import LoadingComponent from "../LoadingComponent";
 import UsuarioAutorizado from "../../components/UsuarioAutorizado";
-import EditarCodigo from "./EditarCodigo";
 import ImprimirPlantilla from "./ImprimirPlantilla";
+import ModalListaNotas from "./Componentes/ModalListaNotas";
 import { useTheme } from "@mui/material/styles";
+
 function transformarDatos(plantillas) {
   console.log(plantillas);
   return plantillas.map((plantilla, index) => {
@@ -21,7 +23,9 @@ function transformarDatos(plantillas) {
       id: index + 1 || "",
       nombrePlantilla: plantilla.nombrePlantilla || "",
       plantilla: plantilla.plantilla || "",
+      firmware: plantilla.firmware || "",
       hardware: plantilla.hardware || "",
+      gae: plantilla.gae || "",
       creadoPor: plantilla.creadoPor || "",
       idPlantilla: plantilla.idPlantilla || "",
       estaCongelado:plantilla.estaCongelado || "",
@@ -40,7 +44,6 @@ const ListaPlantillas = ( { setSelectedComponent, auth, onResponse }) => {
     handleDeshabilitarPlantilla,
     handleClonarPlantilla,
     handleCongelarPlantillaDesdeLista,
-
     cerrarModalOk,
     estaActivoModalOk,
     respuestaModalOk,
@@ -56,22 +59,26 @@ const ListaPlantillas = ( { setSelectedComponent, auth, onResponse }) => {
     setEstaActivoModalClonar,
     setEstaActivoModalOk,
     handleImprimirPlantilla,
-    abrirEditarCodigo,
-    setAbrirEditarCodigo,
     abrirImprimirPlantilla,
     setAbrirImprimirPlantilla,
     idPlantillaSeleccionado,
-    handleHabilitarPlantilla
+    handleHabilitarPlantilla,
+    abrirListaNotas,
+    setAbrirListaNotas,
+    handleAbrirListaNotas,
+    notas
     
   } = usePlantillaService(onResponse);  
 
 
+
+const handleCloseListaNotas = (props) => {
+  setAbrirListaNotas(false);
+};
   const manejarCerrarModal = () => {
     setEstaActivoModalClonar(false);
   };
-  const handleCloseEdit = (props) => {
-    setAbrirEditarCodigo(false);
-  };
+
   const handleCerrarImprimirPlantilla = (props) => {
     setAbrirImprimirPlantilla(false)
   };
@@ -130,8 +137,9 @@ const ListaPlantillas = ( { setSelectedComponent, auth, onResponse }) => {
   const columnsActivas = [
     { field: "id", headerName: "ID" },
     { field: "nombrePlantilla", headerName: "Nombre" },
-    { field: "plantilla", headerName: "Firmware" },
+    { field: "firmware", headerName: "Firmware" },
     { field: "hardware", headerName: "Hardware" },
+    { field: "gae", headerName: "gae" },
     { field: "creadoPor", headerName: "Creado por" },
 
     {
@@ -180,7 +188,7 @@ const ListaPlantillas = ( { setSelectedComponent, auth, onResponse }) => {
 
       renderCell: (params) => (
         <IconButton 
-        disabled={params.row.estaCongelado}
+        disabled={Boolean(params.row.estaCongelado)}
         style={{ color: params.row.estaCongelado ? 'grey' : theme.palette.primary.light}}
         onClick={() => handleDeshabilitarPlantilla(params.row.idPlantilla)}>
           <DeleteIcon />
@@ -200,13 +208,27 @@ const ListaPlantillas = ( { setSelectedComponent, auth, onResponse }) => {
           <DownloadIcon/>
         </IconButton>
       ),
-    },    
+    },  
+    {
+      field: "notas",
+      headerName: "Notas",
+
+      renderCell: (params) => (
+        <IconButton 
+        style={{ color:theme.palette.primary.light}}
+
+        onClick={() => handleAbrirListaNotas(params.row.idPlantilla)}>
+          <NotesIcon/>
+        </IconButton>
+      ),
+    },        
   ];
   const columnsDeshabilitadas = [
     { field: "id", headerName: "ID" },
     { field: "nombrePlantilla", headerName: "Nombre" },
-    { field: "plantilla", headerName: "Firmware" },
+    { field: "firmware", headerName: "Firmware" },
     { field: "hardware", headerName: "Hardware" },
+    { field: "gae", headerName: "gae" },
     { field: "creadoPor", headerName: "Creado por" },
 
 
@@ -232,12 +254,13 @@ const ListaPlantillas = ( { setSelectedComponent, auth, onResponse }) => {
             idPlantilla={idPlantillaSeleccionado}
           ></ImprimirPlantilla>
         </Dialog>
-        <Dialog open={abrirEditarCodigo} onClose={handleCloseEdit}>
-          <EditarCodigo
-            open={abrirEditarCodigo}
-            handleClose={handleCloseEdit}
+        <Dialog open={abrirListaNotas} onClose={handleCloseListaNotas}>
+          <ModalListaNotas
+          notas={notas}
+            open={abrirListaNotas}
+            handleClose={handleCloseListaNotas}
             onResponse={onResponse}
-          ></EditarCodigo>
+          ></ModalListaNotas>
         </Dialog>   
 
 
@@ -279,7 +302,8 @@ const ListaPlantillas = ( { setSelectedComponent, auth, onResponse }) => {
         onResponse={onResponse}
         setEstaActivoModalOk={setEstaActivoModalOk}
         setRespuestaModalOk={setRespuestaModalOk}
-      />      
+      />   
+         
     </>
   );
   if (isLoading ) {

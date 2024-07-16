@@ -6,7 +6,7 @@ import ModalGenerico from "../../components/ModalGenerico";
 import { useUsuarioService } from "../../hooks/useUsuarioService";
 import Home from "../Home/Home";
 import LoadingComponent from "../LoadingComponent";
-import { handleOnChangeInputTexto } from "../utils.js";
+import { handleOnChangeInputTexto } from "../../utils.js";
 
 const EditarUsuario = ({ idUsuario, setSelectedComponent, onResponse }) => {
   const { setAutorizaciones, autorizaciones, isLoading, handleEditarUsuario, usuario, fetchUsuario, cerrarModalOk, estaActivoModalOk, respuestaModalOk } = useUsuarioService(onResponse);
