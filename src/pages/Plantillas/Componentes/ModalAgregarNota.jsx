@@ -23,7 +23,7 @@ const ModalAgregarNota = ({ idPlantilla,activo, onClose, auth, onResponse,setUlt
     };
     
     //const response= await clonarPlantilla(newData)
-    const response=handleAgregarNota(newData)
+    const response=await handleAgregarNota(newData)
     if(response)
     {
       setUltimaNota(data.notas)

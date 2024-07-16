@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import React, { useEffect } from "react";
+import React, { useEffect,useState } from "react";
 import { useTheme } from "@mui/material/styles";
 import {
   TextField, FormControlLabel, Radio, RadioGroup, FormLabel, FormControl,
@@ -51,6 +51,11 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth, onResponse }
   const { hardwares, fetchHardwares } = useHardwareService(onResponse);
   const { firmwares, fetchFirmwares } = useFirmwareService(onResponse);
   const { gaes, fetchGaes } = useGaeService(onResponse);
+  const [hardware, setHardware] = useState(plantilla?.hardmware || "");
+  const [firmware, setFirmware] = useState(plantilla?.firmmware || "");
+  const [gae, setGae] = useState(plantilla?.gae || "");
+  
+  
   const theme = useTheme();
 
   const handleChange = (event) => {
@@ -73,7 +78,15 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth, onResponse }
     handleSubmit,
     formState: { errors },
   } = useForm();
-
+  const handleOnChangeGae= (valor) => {
+    setGae(valor)
+  };  
+  const handleOnChangeHardware = (valor) => {
+    setHardware(valor)
+  };  
+  const handleOnChangeFirmware = (valor) => {
+    setFirmware(valor)
+  };
   useEffect(() => {
     fetchPlantilla(idPlantilla);
     fetchHardwares(true);
@@ -155,12 +168,14 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth, onResponse }
                   <Typography>Firmware</Typography>
                   <FormControl variant="outlined" sx={{ width: "100%" }}>
                     <Select
+                   
                       {...register("firmware", { required: true })}
                       disabled={estaCongelado}
                       size="small"
                       error={errors.firmware ? true : false}
-                      defaultValue={plantilla?.firmware || ""}
+                      value={firmware}
                       displayEmpty
+                      onChange={(e)=>handleOnChangeFirmware(e.target.value)}
                       renderValue={(selected) => {
                         if (!selected) {
                           return (
@@ -194,7 +209,8 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth, onResponse }
                       disabled={estaCongelado}
                       size="small"
                       error={errors.hardware ? true : false}
-                      defaultValue={plantilla?.hardware || ""}
+                      value={hardware}
+                      onChange={(e)=>handleOnChangeHardware(e.target.value)}
                       displayEmpty
                       renderValue={(selected) => {
                         if (!selected) {
@@ -210,12 +226,12 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth, onResponse }
                       <MenuItem disabled value={plantilla?.hardware}>
                         <em>Selecciona una hardware</em>
                       </MenuItem>
-                      {hardwares.map((firmware, index) => (
+                      {hardwares.map((hardware, index) => (
                         <MenuItem
                           key={index}
-                          value={firmware.idFirmwareInterno}
+                          value={hardware.idHardwareInterno}
                         >
-                          {firmware.nombre}
+                          {hardware.nombre}
                         </MenuItem>
                       ))}
                     </Select>
@@ -229,7 +245,9 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth, onResponse }
                       disabled={estaCongelado}
                       size="small"
                       error={errors.gae ? true : false}
-                      defaultValue={plantilla?.gae || ""}
+                      value={gae}
+
+                      onChange={(e)=>handleOnChangeGae(e.target.value)}
                       displayEmpty
                       renderValue={(selected) => {
                         if (!selected) {
@@ -248,7 +266,7 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth, onResponse }
                       {gaes.map((gae, index) => (
                         <MenuItem
                           key={index}
-                          value={gae.idgaeInterno}
+                          value={gae.idGaeInterno}
                         >
                           {gae.nombre}
                         </MenuItem>

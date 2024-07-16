@@ -295,12 +295,9 @@ export const usePlantillaService = () => {
       setAbrirListaNotas(true);
       setIdPlantillaSeleccionado(idPlantilla);
       console.log(idPlantilla,);
-      console.log(plantillas,);
       const plantillaBuscada=plantillas.find(plantilla => plantilla.idPlantilla === idPlantilla);
-      console.log("plantillaBuscada",plantillaBuscada);
       setNotas(plantillaBuscada.notas)
-      console.log(plantillaBuscada.notas)
-      console.log(     plantillas.find(plantilla => plantilla.idPlantilla === idPlantilla));
+      
     } catch (error) {
       console.error(error);
     }
