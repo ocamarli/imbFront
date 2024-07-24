@@ -197,7 +197,7 @@ const handleCloseListaNotas = (props) => {
     },
     {
       field: "generarArchivos",
-      headerName: "Generar archivos",
+      headerName: "Descargar",
 
       renderCell: (params) => (
         <IconButton 

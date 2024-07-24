@@ -18,7 +18,7 @@ const AgregarUsuario = ({ setSelectedComponent, onResponse }) => {
     laboratorio: false,
   });
 
-  const onSubmit = (data) => handleCrearUsuario({ ...data, permisos: autorizaciones });
+  const onSubmit = (data) => handleCrearUsuario({ ...data, permisos: autorizaciones, estatus:true });
 
   const handleCheckboxChange = (event) => {
     const { name, checked } = event.target;

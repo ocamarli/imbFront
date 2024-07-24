@@ -81,7 +81,7 @@ const ListaFirmwares = ({ setSelectedComponent, auth, onResponse }) => {
   const columnsActivas = [
     { field: "id", headerName: "ID" },
     { field: "idFirmwareInterno", headerName: "ID firmware" },
-    { field: "nombre", headerName: "Nombre" },
+    { field: "nombre", headerName: "Nombre",width:250 },
     {
       field: "editar",
       headerName: "Editar",
@@ -107,7 +107,7 @@ const ListaFirmwares = ({ setSelectedComponent, auth, onResponse }) => {
   const columnsDeshabilitadas = [
     { field: "id", headerName: "ID" },
     { field: "idFirmwareInterno", headerName: "ID firmware" },
-    { field: "nombre", headerName: "Nombre" },
+    { field: "nombre", headerName: "Nombre",width:250 },
     {
       field: "habilitar",
       headerName: "Habilitar",

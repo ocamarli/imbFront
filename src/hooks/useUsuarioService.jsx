@@ -118,7 +118,7 @@ export const useUsuarioService = () => {
       const response = await actualizarUsuario(data, tkn);
 
      
-      setRespuestaModalOk({ msg: "¡Usuario deshabilitado exitosamente!", status: response.status });
+      setRespuestaModalOk({ msg: "¡Usuario habilitado exitosamente!", status: response.status });
       setEstaActivoModalOk(true);
       fetchUsuarios(false);
         

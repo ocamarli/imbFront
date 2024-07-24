@@ -81,7 +81,7 @@ const ListaHardwares = ({ setSelectedComponent, auth, onResponse }) => {
   const columnsActivas = [
     { field: "id", headerName: "ID" },
     { field: "idHardwareInterno", headerName: "ID hardware" },
-    { field: "nombre", headerName: "Nombre" },
+    { field: "nombre", headerName: "Nombre",width:250},
     {
       field: "editar",
       headerName: "Editar",
@@ -107,7 +107,7 @@ const ListaHardwares = ({ setSelectedComponent, auth, onResponse }) => {
   const columnsDeshabilitadas = [
     { field: "id", headerName: "ID" },
     { field: "idHardwareInterno", headerName: "ID hardware" },
-    { field: "nombre", headerName: "Nombre" },
+    { field: "nombre", headerName: "Nombre",width:250 },
     {
       field: "habilitar",
       headerName: "Habilitar",

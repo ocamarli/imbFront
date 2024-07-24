@@ -82,7 +82,7 @@ const ListaGaes = ({ setSelectedComponent, auth, onResponse }) => {
   const columnsActivas = [
     { field: "id", headerName: "ID" },
     { field: "idGaeInterno", headerName: "ID GAE" },
-    { field: "nombre", headerName: "Nombre" },
+    { field: "nombre", headerName: "Nombre",width:250 },
     { field: "codigo", headerName: "Código" },
     {
       field: "editar",
@@ -98,7 +98,6 @@ const ListaGaes = ({ setSelectedComponent, auth, onResponse }) => {
       field: "eliminar",
       headerName: "Deshabilitar",
       sortable: false,
-      width: 110,
       renderCell: (params) => (
         <IconButton onClick={() => handleDeshabilitarGae(params.row.idGae)}>
           <DeleteIcon />
@@ -110,7 +109,7 @@ const ListaGaes = ({ setSelectedComponent, auth, onResponse }) => {
   const columnsDeshabilitadas = [
     { field: "id", headerName: "ID" },
     { field: "idGaeInterno", headerName: "ID GAE" },
-    { field: "nombre", headerName: "Nombre" },
+    { field: "nombre", headerName: "Nombre", width:250 },
     { field: "codigo", headerName: "Código" },
     {
       field: "habilitar",
