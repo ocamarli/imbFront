@@ -33,8 +33,8 @@ const HeaderContent = (props) => {
               <Typography variant="h6">{titulo}</Typography>
             </Grid>
             <Grid item>
-              {/*<Typography variant="h6">{formatDate}</Typography>*/}
-              <Typography variant="h6">19-Jul-2024</Typography>
+              <Typography variant="h6">{formatDate}</Typography>
+
             </Grid>
           </Grid>
         </Paper>
