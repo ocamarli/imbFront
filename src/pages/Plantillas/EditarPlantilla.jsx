@@ -22,6 +22,7 @@ import LoadingComponent from "../LoadingComponent.jsx";
 import ModalGenerico from "../../components/ModalGenerico.jsx";
 import { handleOnChangeInputIds } from "../../utils.js";
 import ModalAgregarNota from "./Componentes/ModalAgregarNota.jsx";
+import ListaPlantillas from "./ListaPlatillas.jsx";
 const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth, onResponse }) => {
   const {
     handleActualizarInicioSeleccionado,
@@ -51,9 +52,9 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth, onResponse }
   const { hardwares, fetchHardwares } = useHardwareService(onResponse);
   const { firmwares, fetchFirmwares } = useFirmwareService(onResponse);
   const { gaes, fetchGaes } = useGaeService(onResponse);
-  const [hardware, setHardware] = useState(plantilla?.hardmware || "");
-  const [firmware, setFirmware] = useState(plantilla?.firmmware || "");
-  const [gae, setGae] = useState(plantilla?.gae || "");
+  const [hardware, setHardware] = useState("");
+  const [firmware, setFirmware] = useState("");
+  const [gae, setGae] = useState("");
   
   
   const theme = useTheme();
@@ -62,14 +63,34 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth, onResponse }
     setProgramaSeleccionado(event.target.value);
     handleActualizarInicioSeleccionado({ "idPlantilla": idPlantilla, "programaSeleccionado": event.target.value })
   };
-  const handleActualizar = (idPlantilla) =>{
-    handleActualizarEstatusCongelado(idPlantilla, !estaCongelado)
+
+  const handleActualizar = async(idPlantilla) =>{
+    const response=await handleActualizarEstatusCongelado(idPlantilla, !estaCongelado)
+    console.log("responseeeeeeee",response)
+    if(response){
+      console.log("selectComponent",response)
+      setSelectedComponent(<ListaPlantillas
+        onResponse={onResponse}
+        auth={auth}
+        setSelectedComponent={setSelectedComponent}
+
+      ></ListaPlantillas>)
+    }
 
 }
 
   const onSubmit = (data) => {
+    data.firmware=firmware
+    data.gae=gae
+    data.hardware=hardware
+    console.log("data.gae", hardware);
+    console.log("data.gae", data.hardware);
+    console.log("data.gae", gae);
+    console.log("data.gae", data.gae);
     console.log("...onsub...", data);
     handleActualizarPlantilla({"idPlantilla":idPlantilla,...data})
+    
+
     
   };
   const handleOnCLickSalir = () => setSelectedComponent(<Home />);
@@ -93,7 +114,13 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth, onResponse }
     fetchFirmwares(true);
     fetchGaes(true);
   }, [fetchPlantilla,fetchHardwares,fetchFirmwares,fetchGaes,idPlantilla]);
-
+  useEffect(() => {
+    if (plantilla) {
+      setHardware(plantilla.hardware);
+      setFirmware(plantilla.firmware);
+      setGae(plantilla.gae);
+    }
+  }, [plantilla]);
   const renderModal = () => (
     <>
     <ModalGenerico
@@ -129,7 +156,7 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth, onResponse }
         {renderModal()}
         <Grid>
           <HeaderContent
-            titulo={plantilla?.nombrePlantilla}
+            titulo={"Editar plantilla"}
           ></HeaderContent>
           <Paper style={{ padding: 10 }}>
             <form onSubmit={handleSubmit(onSubmit)}>
@@ -169,7 +196,7 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth, onResponse }
                   <FormControl variant="outlined" sx={{ width: "100%" }}>
                     <Select
                    
-                      {...register("firmware", { required: true })}
+                      {...register("firmware")}
                       disabled={estaCongelado}
                       size="small"
                       error={errors.firmware ? true : false}
@@ -205,7 +232,7 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth, onResponse }
                   <Typography>Hardware</Typography>
                   <FormControl variant="outlined" sx={{ width: "100%" }}>
                     <Select
-                      {...register("hardware", { required: true })}
+                      {...register("hardware")}
                       disabled={estaCongelado}
                       size="small"
                       error={errors.hardware ? true : false}
@@ -241,7 +268,7 @@ const EditarPlantilla = ({ idPlantilla, setSelectedComponent, auth, onResponse }
                   <Typography>GAE</Typography>
                   <FormControl variant="outlined" sx={{ width: "100%" }}>
                     <Select
-                      {...register("gae", { required: true })}
+                      {...register("gae")}
                       disabled={estaCongelado}
                       size="small"
                       error={errors.gae ? true : false}

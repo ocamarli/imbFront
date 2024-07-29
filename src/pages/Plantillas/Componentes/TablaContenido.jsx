@@ -40,7 +40,7 @@ const TablaContenido = ({ idPlantilla, checkboxSeleccionados, onResponse,estaCon
           console.log("ok");
           fetchActualizarParametroPlantilla(idPlantilla, idParametro, nuevoValor, noProgramacion,true);          
         } else {
-          setRespuestaModalOk({ msg: "valor invalido", status: false });
+          setRespuestaModalOk({ msg: "¡Valor no valido!", status: false });
           setEstaActivoModalOk(true);
           e.target.value = "";
 

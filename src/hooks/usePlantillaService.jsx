@@ -168,6 +168,7 @@ export const usePlantillaService = () => {
           creadoPor: auth.correo,
           notas:[{creadaPor:auth.correo,nota:data.notas}],
           programasHabilitados: ["1"],
+          programaSeleccionado:"1",
           parametrosGenerales: listaParametrosGenerales,
           programaciones: [
             { noProgramacion: "1", parametros: listaParametrosProgramacion },
@@ -185,14 +186,14 @@ export const usePlantillaService = () => {
           newData,
           JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token
         );
+        setRespuestaModalOk({ msg: response.msg, status: response.status });
+        setEstaActivoModalOk(true);
+      
         console.log(response);
-        if (response.status) {
-          setIsLoading(false);
-          return true;
-        } else {
-          setRespuestaModalOk({ msg: response.msg, status: response.status });
-          setEstaActivoModalOk(true);
-        }
+        setIsLoading(false);
+        return response.status;
+
+
       }
       setIsLoading(false);
     } catch (error) {
@@ -271,7 +272,7 @@ export const usePlantillaService = () => {
   };
   const handleEditarPlantilla = async (data) => {
     try {
-      const response = fetchEditarPlantilla(data);
+      const response =await fetchEditarPlantilla(data);
       console.log(response);
       if (response.status) {
         setRespuestaModalOk({ msg: response.msg, status: response.status });
@@ -349,6 +350,7 @@ export const usePlantillaService = () => {
   const clonarPlantillaService = async (data) => {
     try {
       console.log("siiiiiiiiii");
+      console.log(data);
       const response = await clonarPlantillaAPI(
         data,
         JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token
@@ -390,7 +392,7 @@ export const usePlantillaService = () => {
       const response = await actualizarPlantilla(data, tkn);
       if (response.status) {
         setRespuestaModalOk({
-          msg: "¡Plantilla habilitado exitosamente!",
+          msg: "¡Plantilla habilitada exitosamente!",
           status: true,
         });
         setEstaActivoModalOk(true);
@@ -435,13 +437,20 @@ export const usePlantillaService = () => {
     const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
     const response = await verificarParametros(tkn, idPlantilla);
     if (response.status) {
-      const responseEditar = fetchEditarPlantilla({
+      const responseEditar =await actualizarPlantilla({
         idPlantilla: idPlantilla,
         estaCongelado: estatus,
       });
-      if (responseEditar.status) {
-        return true;
+      if (responseEditar.status){
+
+        return true
       }
+      else{
+        setRespuestaModalOk({ msg: responseEditar.msg, status: responseEditar.status });
+        setEstaActivoModalOk(true);
+      }
+
+      return false
     } else {
       setRespuestaModalOk({ msg: response.msg, status: response.status });
       setEstaActivoModalOk(true);

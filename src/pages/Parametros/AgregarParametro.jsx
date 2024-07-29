@@ -9,6 +9,7 @@ import { useParametroService } from '../../hooks/useParametroService';
 import LoadingComponent from '../LoadingComponent';
 import AddOptions from './components/AddOptions';
 import ItemOptions from './components/ItemOptions';
+import { handleOnChangeInputIds, handleOnChangeInputTextoNumero } from '../../utils';
 
 const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
   const {
@@ -91,7 +92,8 @@ const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
             {...register("idParametroInterno", { required: true })}
             fullWidth
             label="ID parámetro"
-            variant="standard"
+            variant="outlined"
+            onChange={handleOnChangeInputIds}
             error={errors.idParametroInterno ? true : false}
             helperText={errors.idParametroInterno ? "Este campo es requerido" : ""}
           />
@@ -101,23 +103,25 @@ const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
             {...register("descripcion", { required: true })}
             fullWidth
             label="Descripción"
-            variant="standard"
+            variant="outlined"
+            onChange={handleOnChangeInputTextoNumero}
             error={errors.descripcion ? true : false}
             helperText={errors.descripcion ? "Este campo es requerido" : ""}
           />
         </Grid>
         <Grid item xs={6}>
-          <FormControl variant="standard" sx={{ width: "100%" }}>
-            <InputLabel>Tipo parametro</InputLabel>
+          <FormControl  sx={{ width: "100%" }}>
+            <InputLabel>Tipo parámetro</InputLabel>
             <Select
               {...register("tipo_parametro", { required: true })}
               onChange={(e) => {
                 setValue("tipo_parametro", e.target.value);
               }}
+              label="tipo parámetro"
               error={errors.tipo_parametro ? true : false}
             >
               <MenuItem value="">
-                <em>Tipo parametro</em>
+                <em>Tipo parámetro</em>
               </MenuItem>
               <MenuItem value={"General"}>General</MenuItem>
               <MenuItem value={"Programación"}>Programación</MenuItem>
@@ -130,13 +134,14 @@ const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
           </FormControl>
         </Grid>
         <Grid item xs={6}>
-          <FormControl variant="standard" sx={{ width: "100%" }}>
+          <FormControl  variant="outlined" sx={{ width: "100%" }}>
             <InputLabel>Grupo</InputLabel>
             <Select
               {...register("grupo", { required: true })}
               onChange={(e) => {
                 setValue("grupo", e.target.value);
               }}
+              label="grupo"
               error={errors.grupo ? true : false}
             >
               <MenuItem value="">
@@ -163,7 +168,7 @@ const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
           </FormControl>
         </Grid>
         <Grid item xs={6}>
-          <FormControl variant="standard" sx={{ width: "100%" }}>
+          <FormControl variant="outlined" sx={{ width: "100%" }}>
             <InputLabel>Tipo de campo</InputLabel>
             <Select
               {...register("tipoCampo", { required: true })}
@@ -190,7 +195,7 @@ const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
         <Grid item xs={6} ></Grid>
         {tipoCampo === "rango" ? (
           <Grid item xs={6} name="gridRango">
-            <Paper variant="outlined" style={{ padding: 15 }}>
+            <Paper variant="standard" style={{ padding: 15 }}>
               <Grid container direction="column">
                 <Grid item>
                   <FormLabel style={{ marginBottom: 5 }}>Rango</FormLabel>
@@ -311,7 +316,7 @@ const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
               })}
               fullWidth
               label="Valor Fijo"
-              variant="standard"
+            variant="standard"
               error={errors.valorFijo ? true : false}
               helperText={
                 errors.valorFijo ? "Este campo es requerido" : ""

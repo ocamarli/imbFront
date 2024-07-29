@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import { Typography, FormLabel} from '@mui/material';
@@ -13,25 +13,22 @@ function GrupoCheckbox({
     const totalDeProgramas = useMemo(() => ["1", "2", "3", "4", "5", "6"], []);
 
 
-    const handleChange = (value) => (event) => {
-        if(programaSeleccionado===value)
-            {
-                setProgramaSeleccionado(checkboxSeleccionados[0]);
-            }
-        if (event.target.checked) {
-            handleEditarPlantilla({ "idPlantilla": idPlantilla, "programasHabilitados": [...checkboxSeleccionados, value] });
-            setCheckboxSeleccionados([...checkboxSeleccionados, value]);
-            setCheckboxSeleccionado([...checkboxSeleccionados, value]);
-            
-        } else {
-            if (checkboxSeleccionados.length > 1) {
-                
-                setCheckboxSeleccionados(checkboxSeleccionados.filter(item => item !== value));
-                setCheckboxSeleccionado(checkboxSeleccionados.filter(item => item !== value));
-            }
+    const handleChange = useCallback((value) => (event) => {
+        const isSelected = event.target.checked;
+        let updatedCheckboxSeleccionados = isSelected
+            ? [...checkboxSeleccionados, value]
+            : checkboxSeleccionados.filter(item => item !== value);
 
+        if (!isSelected && checkboxSeleccionados.length === 1 && checkboxSeleccionados.includes(value)) {
+            return; // Evita desactivar el último checkbox
         }
-    };
+
+        setCheckboxSeleccionados(updatedCheckboxSeleccionados);
+        setProgramaSeleccionado(updatedCheckboxSeleccionados.length > 0 ? updatedCheckboxSeleccionados[0] : null);
+        handleEditarPlantilla({ idPlantilla, "programasHabilitados": updatedCheckboxSeleccionados });
+   
+    },[checkboxSeleccionados, handleEditarPlantilla, idPlantilla, setCheckboxSeleccionados, setProgramaSeleccionado]);
+    
 
     if (isLoading) {
         return <LoadingComponent />;

@@ -21,7 +21,6 @@ import { useFirmwareService } from "../../hooks/useFirmwareService.jsx";
 import { useGaeService } from "../../hooks/useGaeServices.jsx";
 import ModalGenerico from "../../components/ModalGenerico.jsx";
 import LoadingComponent from "../LoadingComponent.jsx";
-import ListaPlantillas from "./ListaPlatillas.jsx";
 
 
 const AgregarPlantilla = ({ setSelectedComponent, onResponse, auth }) => {
@@ -57,13 +56,6 @@ const AgregarPlantilla = ({ setSelectedComponent, onResponse, auth }) => {
     console.log(data);
     if (handleCrearPlantilla(data, parametros, auth)) {
       console.log(true);
-      setSelectedComponent(
-        <ListaPlantillas
-          setSelectedComponent={setSelectedComponent}
-          onResponse={onResponse}
-          auth={auth}
-        ></ListaPlantillas>
-      );
     } else {
       console.log(false);
     }

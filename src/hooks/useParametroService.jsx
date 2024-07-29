@@ -2,7 +2,6 @@ import { useState, useCallback } from "react";
 import { crearParametro, obtenerParametros, actualizarParametro, obtenerParametro } from "../api/parametrosApi";
 import { useForm } from 'react-hook-form';
 export const useParametroService = () => {
-  const [esValorFijo, setEsValorFijo] = useState("");
   const [tipoCampo, setTipoCampo] = useState("");
   const [openOptions, setOpenOptions] = useState(false);
   const [options, setOptions] = useState([]);  
@@ -11,15 +10,15 @@ export const useParametroService = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [idParametroSeleccionado, setIdParametroSeleccionado] = useState("");
   const [estaActivoModalOk, setEstaActivoModalOk] = useState(false);
-  const [respuestaModalOk, setRespuestaModalOk] = useState({ msg: "¡parametro deshabilitado!", status: true });
+  const [respuestaModalOk, setRespuestaModalOk] = useState({ msg: "¡parámetro deshabilitado!", status: true });
   const [estaActivoModalConfirmacionHabilitar, setEstaActivoModalConfirmacionHabilitar] = useState(false);
   const [respuestaModalConfirmacionHabilitar, setRespuestaModalConfirmacionHabilitar] = useState({
-    msg: "¡Confirma para habilitar parametro!",
+    msg: "¡Confirma para habilitar parámetro!",
     status: false,
   });
   const [estaActivoModalConfirmacionDeshabilitar, setEstaActivoModalConfirmacionDeshabilitar] = useState(false);
   const [respuestaModalConfirmacionDeshabilitar, setRespuestaModalConfirmacionDeshabilitar] = useState({
-    msg: "¡Confirma para deshabilitar parametro!",
+    msg: "¡Confirma para deshabilitar parámetro!",
     status: false,
   });
   const [activeTab, setActiveTab] = useState(1);
@@ -110,7 +109,7 @@ export const useParametroService = () => {
       const data = { idParametro, estatus: false };
       const response = await actualizarParametro(data, tkn);
       if (response.status) {
-        setRespuestaModalOk({ msg: "¡parametro deshabilitado exitosamente!", status: true });
+        setRespuestaModalOk({ msg: "¡parámetro deshabilitado exitosamente!", status: true });
         setEstaActivoModalOk(true);
         fetchParametros(true);
       }
@@ -125,7 +124,7 @@ export const useParametroService = () => {
       const data = { idParametro, estatus: true };
       const response = await actualizarParametro(data, tkn);
       if (response.status) {
-        setRespuestaModalOk({ msg: "¡parametro habilitado exitosamente!", status: true });
+        setRespuestaModalOk({ msg: "¡parámetro habilitado exitosamente!", status: true });
         setEstaActivoModalOk(true);
         fetchParametros(false);
       }
@@ -197,7 +196,6 @@ export const useParametroService = () => {
     reset,
     tipoCampo,
     setTipoCampo,
-    esValorFijo,
-    setEsValorFijo
+
   };
 };

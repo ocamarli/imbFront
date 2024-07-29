@@ -74,12 +74,12 @@ function ListaParametros({setSelectedComponent, auth,onResponse }) {
   } = useParametroService(onResponse);  
 
   const columnsActivas = [
-    { field: "id", headerName: "ID", flex: .4 },
-    { field: "rango", headerName: "Rango", flex: .7, editable: true },
-    { field: "unidad", headerName: "Unidad", flex: .5, editable: true },
-    { field: "descripcion", headerName: "Descripción", flex: 2, editable: true},
-    { field: "tipoParameto", headerName: "Tipo parámetro", flex: 1, editable: true},
-    { field: "grupo", headerName: "Grupo", flex: 1, editable: true},  
+    { field: "id", headerName: "ID"},
+    { field: "rango", headerName: "Rango", editable: true },
+    { field: "unidad", headerName: "Unidad", editable: true },
+    { field: "descripcion", headerName: "Descripción", width:320, editable: true},
+    { field: "tipoParameto", headerName: "Tipo parámetro",  editable: true},
+ 
     {
       field: "editar",
       headerName: "Editar",
@@ -103,12 +103,12 @@ function ListaParametros({setSelectedComponent, auth,onResponse }) {
   ];
   
   const columnsDeshabilitadas = [
-    { field: "id", headerName: "ID", flex: .4 },
-    { field: "rango", headerName: "Rango", flex: .7, editable: true },
-    { field: "unidad", headerName: "Unidad", flex: .5, editable: true },
-    { field: "descripcion", headerName: "Descripción", flex: 2, editable: true},
-    { field: "tipoParameto", headerName: "Tipo parámetro", flex: 1, editable: true},
-    { field: "grupo", headerName: "Grupo", flex: 1, editable: true},  
+    { field: "id", headerName: "ID" },
+    { field: "rango", headerName: "Rango", editable: true },
+    { field: "unidad", headerName: "Unidad", editable: true },
+    { field: "descripcion", headerName: "Descripción", resizable: true,reorderable: true ,width:320, editable: true},
+    { field: "tipoParameto", headerName: "Tipo parámetro",editable: true},
+
   
     {
       field: "habilitar",
@@ -242,7 +242,7 @@ function ListaParametros({setSelectedComponent, auth,onResponse }) {
                     </Grid>
                   )}
                   {parametros.length > 0 && (
-                    <Grid xs={12} spacing={1}>
+                    <Grid item xs={12} spacing={1}>
                       <DataGrid
                         sx={{ maxHeight: "calc(100vh - 330px)", width: "100%" }}
                         rows={transformarDatos(parametros)}

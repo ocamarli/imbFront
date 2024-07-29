@@ -1,5 +1,6 @@
-import React, { useEffect } from 'react';
-import { TextField, Button, Grid, Paper, FormLabel, FormControl, InputLabel, MenuItem, FormHelperText, Select, RadioGroup, FormControlLabel, Radio, Dialog, IconButton } from '@mui/material';
+import React, { useEffect,useState } from 'react';
+import { TextField, Button, Grid,
+  Paper, FormLabel, FormControl, InputLabel, MenuItem, FormHelperText, Select, RadioGroup, FormControlLabel, Radio, Dialog, IconButton } from '@mui/material';
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import HeaderContent from '../HeaderContent';
 import Home from '../Home/Home';
@@ -14,7 +15,7 @@ const EditarParametro = ({ setSelectedComponent, onResponse, idParametro }) => {
     isLoading,
     estaActivoModalOk,
     respuestaModalOk,
-    handleCrearParametro,
+    handleEditarParametro,
     cerrarModalOk,
     fetchParametro,
     parametro,
@@ -26,13 +27,45 @@ const EditarParametro = ({ setSelectedComponent, onResponse, idParametro }) => {
     options,
     setOpenOptions,
     setOptions,
-    tipoCampo,
-    setTipoCampo,
-    esValorFijo,
-    setEsValorFijo,
 
   } = useParametroService(onResponse);
 
+  const [grupo, setGrupo] = useState("");
+  const [tipoParametro, setTipoParametro] = useState("");
+  const [tipoCampo, setTipoCampo] = useState("");
+  const [esValorFijo, setEsValorFijo] = useState("");
+  const [descripcion, setDescripcion] = useState("");
+  const [valorMinimo, setValorMinimo] = useState("");
+  const [valorMaximo, setValorMaximo] = useState("");
+  const [valorFijo, setValorFijo] = useState("");
+  const handleOnChangeGrupo= (valor) => {
+    setGrupo(valor)
+  };  
+  const handleOnChangeTipoParametro= (valor) => {
+    setTipoParametro(valor)
+  };  
+
+  const handleOnChangeEsValorFijo = (event) => {
+    const valor = event.target.value === 'true';  // Convertir a booleano
+    setEsValorFijo(valor);
+  };  
+  const handleOnChangeDescripcion= (valor) => {
+    setDescripcion(valor)
+  };  
+
+  useEffect(() => {
+    if (parametro) {
+      console.log("parametro",parametro)
+      setGrupo(parametro.grupo)
+      setTipoParametro(parametro.tipoParametro)
+      setTipoCampo(parametro.tipoCampo)
+      setDescripcion(parametro.descripcion)
+      setEsValorFijo(parametro.esValorFijo)
+      setValorMinimo(parametro.valor_min)
+      setValorMaximo(parametro.valor_max)
+      setValorFijo(parametro.valorFijo)
+    }
+  }, [parametro]);
   useEffect(() => {
     
     fetchParametro(idParametro)
@@ -54,6 +87,7 @@ const EditarParametro = ({ setSelectedComponent, onResponse, idParametro }) => {
   };
 
   const onSubmit = (data) => {
+    
     let newData ="";
     data.idParametroInterno=parseInt(data.idParametroInterno)
     data.esValorFijo=Boolean(data.esValorFijo)
@@ -67,7 +101,9 @@ const EditarParametro = ({ setSelectedComponent, onResponse, idParametro }) => {
     {
       newData={...data}
     }
-    handleCrearParametro(newData);
+
+    
+    handleEditarParametro(newData);
   };
 
   const handleOnCLickSalir = () => setSelectedComponent(<Home />);
@@ -92,13 +128,14 @@ else{
       <Grid container spacing={3}>
         <Grid item xs={6}>
           <TextField
-            {...register("idParametroInterno", { required: true })}
+            disabled
             fullWidth
             label="ID parámetro"
-            variant="standard"
+            variant="outlined"
             error={errors.idParametroInterno ? true : false}
             helperText={errors.idParametroInterno ? "Este campo es requerido" : ""}
-            defaultValue={parametro.idParametroInterno}
+            value={parametro.idParametroInterno}
+            onChange={(e)=>handleOnChangeDescripcion(e)}
           />
         </Grid>
         <Grid item xs={6}>
@@ -106,22 +143,21 @@ else{
             {...register("descripcion", { required: true })}
             fullWidth
             label="Descripción"
-            variant="standard"
+            variant="outlined"
             error={errors.descripcion ? true : false}
             helperText={errors.descripcion ? "Este campo es requerido" : ""}
-            defaultValue={parametro.descripcion}
+            value={descripcion}
           />
         </Grid>
         <Grid item xs={6}>
-          <FormControl variant="standard" sx={{ width: "100%" }}>
+          <FormControl variant="outlined" sx={{ width: "100%" }}>
             <InputLabel>Tipo parámetro</InputLabel>
             <Select
               {...register("tipoParametro", { required: true })}
-              onChange={(e) => {
-                setValue("tipoParametro", e.target.value);
-              }}
+              onChange={(e) => handleOnChangeTipoParametro(e)}
+              label="Tipo de campo"
               error={errors.tipoParametro ? true : false}
-              defaultValue={parametro.tipoParametro || ""}
+              value={tipoParametro}
             >
               <MenuItem value="">
                 <em>Tipo parámetro</em>
@@ -137,14 +173,12 @@ else{
           </FormControl>
         </Grid>
         <Grid item xs={6}>
-          <FormControl variant="standard" sx={{ width: "100%" }}>
+          <FormControl variant="outlined" sx={{ width: "100%" }}>
             <InputLabel>Grupo</InputLabel>
             <Select
-              {...register("grupo", { required: true })}
-              defaultValue={parametro.grupo}
-              onChange={(e) => {
-                setValue("grupo", e.target.value);
-              }}
+              value={grupo}
+              onChange={(e) => handleOnChangeGrupo(e)}
+              label="grupo"
               error={errors.grupo ? true : false}
             >
               <MenuItem value="">
@@ -171,11 +205,11 @@ else{
           </FormControl>
         </Grid>
         <Grid item xs={6}>
-          <FormControl variant="standard" sx={{ width: "100%" }}>
+          <FormControl variant="outlined" sx={{ width: "100%" }}>
             <InputLabel>Tipo de campo</InputLabel>
             <Select
-              {...register("tipoCampo", { required: true })}
-              defaultValue={parametro.tipoCampo}
+              disabled
+              value={tipoCampo}
               onChange={(e) => {
                 setValue("tipoCampo", e.target.value);
                 setTipoCampo(e.target.value);
@@ -221,7 +255,7 @@ else{
                       </MenuItem>
                       <MenuItem value={"h"}>Horas</MenuItem>
                       <MenuItem value={"min"}>Minutos</MenuItem>
-                      <MenuItem value={"seg"}>Segundos</MenuItem>
+                      <MenuItem value={"s"}>Segundos</MenuItem>
                       <MenuItem value={"°C"}>Centigrados</MenuItem>
                     </Select>
                     {errors.unidad && (
@@ -233,7 +267,7 @@ else{
                 </Grid>
                 <Grid item>
                   <TextField
-                    defaultValue={parametro.valor_min}
+                    value={valorMinimo}
                     {...register("valor_min", { required: true })}
                     label="Valor mínimo"
                     variant="standard"
@@ -245,6 +279,7 @@ else{
                 </Grid>
                 <Grid item>
                   <TextField
+                    value={valorMaximo}
                     {...register("valor_max", { required: true })}
                     label="Valor máximo"
                     variant="standard"
@@ -295,30 +330,19 @@ else{
             <FormLabel component="legend">¿Es un valor fijo?</FormLabel>
             <RadioGroup
               {...register("esValorFijo")}
-              defaultValue={Boolean(esValorFijo)}
-              onChange={(e) => {
-                setEsValorFijo(e.target.value);
-                if (e.target.value === "true") {
-                  setValue("valorFijo", "", { shouldValidate: true });
-                } else {
-                  setValue("valorFijo", "");
-                }
-              }}
+              value={esValorFijo}
+              onChange={(e) => handleOnChangeEsValorFijo(e)}
             >
               <FormControlLabel value="true" control={<Radio />} label="Sí" />
               <FormControlLabel value="false" control={<Radio />} label="No" />
             </RadioGroup>
-            {errors.esValorFijo && (
-              <FormHelperText error={true}>
-                Este campo es requerido.
-              </FormHelperText>
-            )}
+
           </FormControl>
         </Grid>
         {esValorFijo === true && (
           <Grid item xs={6}>
             <TextField
-            defaultValue={parametro.valorFijo}
+             value={valorFijo}
               {...register("valorFijo", {
                 required: esValorFijo === true,
               })}
@@ -344,7 +368,7 @@ else{
           <Grid container sx={{ justifyContent: "flex-end" }} spacing={2}>
             <Grid item xs={6}>
               <Button variant="contained" type="submit" sx={{ height: "50px" }} fullWidth>
-                Agregar
+                Actualizar
               </Button>
             </Grid>
             <Grid item xs={6}>

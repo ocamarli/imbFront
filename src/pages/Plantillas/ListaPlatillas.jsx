@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Button, Grid, Paper, IconButton, Typography,Tab,Tabs, Dialog } from "@mui/material";
+import { Button, Grid, Paper, IconButton, Typography,Tab,Tabs, Dialog,Box } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 
 import {Notes as NotesIcon, Visibility as VisibilityIcon, LockOpen as UnlockIcon, Check as CheckIcon,FileDownload as DownloadIcon, Add as AddIcon, ArrowBack as ArrowBackIcon, DeleteOutline as DeleteIcon, Edit as EditIcon, FileCopy as FileCopyIcon, Lock as LockIcon } from "@mui/icons-material";
@@ -131,12 +131,13 @@ const handleCloseListaNotas = (props) => {
 
     }
   }
+
   const getHeaderName = () => {
     return plantillas.some((plantilla) => plantilla.estaCongelado) ? "Descongelar" : "Congelar";
   };  
   const columnsActivas = [
     { field: "id", headerName: "ID" },
-    { field: "nombrePlantilla", headerName: "Nombre" },
+    { field: "nombrePlantilla", headerName: "Nombre" , width:250},
     { field: "firmware", headerName: "Firmware" },
     { field: "hardware", headerName: "Hardware" },
     { field: "gae", headerName: "gae" },
@@ -147,11 +148,13 @@ const handleCloseListaNotas = (props) => {
       headerName: "Clonar",
 
       renderCell: (params) => (
+        <Box display="flex" justifyContent="center" alignItems="center" height="100%">
         <IconButton
         style={{ color: theme.palette.primary.light}}
         onClick={() => handleClonarPlantilla(params.row.idPlantilla)}>
           <FileCopyIcon />
         </IconButton>
+        </Box>
       ),
     },
     {
@@ -160,7 +163,6 @@ const handleCloseListaNotas = (props) => {
 
       renderCell: (params) => (
         <IconButton
-
         style={{ color:theme.palette.primary.light}}
         onClick={() => handleEditarPlantilla(params.row.idPlantilla)}>
          {params.row.estaCongelado ? <VisibilityIcon /> : <EditIcon />} 
@@ -171,6 +173,7 @@ const handleCloseListaNotas = (props) => {
       field: 'congelar',
       headerName: getHeaderName(),
       renderCell: (params) => (
+        <Box justifyContent="center" alignItems="center">
         <IconButton
           style={{ color: theme.palette.primary.light}}
           onClick={() => params.row.estaCongelado
@@ -180,6 +183,7 @@ const handleCloseListaNotas = (props) => {
         >
           {params.row.estaCongelado ? <UnlockIcon /> : <LockIcon />} 
         </IconButton>
+</Box>
       ),
     },
     {
@@ -225,7 +229,7 @@ const handleCloseListaNotas = (props) => {
   ];
   const columnsDeshabilitadas = [
     { field: "id", headerName: "ID" },
-    { field: "nombrePlantilla", headerName: "Nombre" },
+    { field: "nombrePlantilla", headerName: "Nombre",width:250 },
     { field: "firmware", headerName: "Firmware" },
     { field: "hardware", headerName: "Hardware" },
     { field: "gae", headerName: "gae" },
@@ -323,8 +327,8 @@ const handleCloseListaNotas = (props) => {
               >
               <UsuarioAutorizado usuario={auth} permisosRequeridos={["superusuario"]}>
                 <Tabs value={activeTab} onChange={handleTabChange}>
-                  <Tab label="Activos" value={1} />
-                  <Tab label="Deshabilitados" value={0} />
+                  <Tab label="Activas" value={1} />
+                  <Tab label="Deshabilitadas" value={0} />
                 </Tabs>
               </UsuarioAutorizado>                
               </Grid>
