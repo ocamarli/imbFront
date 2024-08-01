@@ -24,7 +24,7 @@ const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
   const [openOptions, setOpenOptions] = useState(false);
   const [options, setOptions] = useState([]);
   const [esValorFijo, setEsValorFijo] = useState("false");
-  const { register, handleSubmit, formState: { errors }, setValue } = useForm({ 
+  const { register, handleSubmit, formState: { errors }, setValue, setError, clearErrors } = useForm({ 
     defaultValues: {
       esValorFijo: "false",
       valorFijo: ""
@@ -39,31 +39,42 @@ const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
     setOpenOptions(true);
   };
 
-  const handleCloseOptions = async (data) => {
+  const handleCloseOptions = (data) => {
     setOpenOptions(false);
-    setOptions([...options, data]);
+    if (data) {
+      setOptions((prevOptions) => [...prevOptions, data]);
+      clearErrors("opciones");
+    }
   };
 
   const removeOption = (value) => {
     setOptions((prevOptions) =>
-      prevOptions.filter((option) => option.value !== value)
+      prevOptions.filter((option) => option.valor !== value)
     );
   };
 
   const onSubmit = (data) => {
-    let newData ="";
-    data.idParametroInterno=parseInt(data.idParametroInterno)
-    data.esValorFijo=Boolean(data.esValorFijo)
-    data.valor_max=parseFloat(data.valor_max)
-    data.valor_min=parseFloat(data.valor_min)
-    if(data.tipoCampo==="opciones")
-    {
-      newData={...data,opciones:options}
+    if (data.tipoCampo === "opciones" && options.length === 0) {
+      setError("opciones", { type: "manual", message: "Debe agregar al menos una opción." });
+      return;
     }
-    if(data.tipoCampo==="rango")
-    {
-      newData={...data}
+    
+    let newData = "";
+
+    data.esValorFijo = Boolean(data.esValorFijo);
+
+
+    if (data.tipoCampo === "opciones") {
+      const valores = options.map(item => item.valor);
+      const formatoDeseado = `[${valores.join(',')}]`;
+      newData = { ...data, opciones: options, rango: formatoDeseado, unidad: "N.A" };
     }
+
+    if (data.tipoCampo === "rango") {
+      const formatoDeseado = `[${data.valor_min},${data.valor_max}]`;
+      newData = { ...data, rango: formatoDeseado };
+    }
+
     handleCrearParametro(newData);
   };
 
@@ -95,7 +106,9 @@ const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
             variant="outlined"
             onChange={handleOnChangeInputIds}
             error={errors.idParametroInterno ? true : false}
-            helperText={errors.idParametroInterno ? "Este campo es requerido" : ""}
+            helperText={
+              errors.idParametroInterno ? "Este campo es requerido" : ""
+            }
           />
         </Grid>
         <Grid item xs={6}>
@@ -110,23 +123,23 @@ const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
           />
         </Grid>
         <Grid item xs={6}>
-          <FormControl  sx={{ width: "100%" }}>
+          <FormControl sx={{ width: "100%" }}>
             <InputLabel>Tipo parámetro</InputLabel>
             <Select
-              {...register("tipo_parametro", { required: true })}
+              {...register("tipoParametro", { required: true })}
               onChange={(e) => {
-                setValue("tipo_parametro", e.target.value);
+                setValue("tipoParametro", e.target.value);
               }}
               label="tipo parámetro"
-              error={errors.tipo_parametro ? true : false}
+              error={errors.tipoParametro ? true : false}
             >
               <MenuItem value="">
                 <em>Tipo parámetro</em>
               </MenuItem>
-              <MenuItem value={"General"}>General</MenuItem>
-              <MenuItem value={"Programación"}>Programación</MenuItem>
+              <MenuItem value={"general"}>General</MenuItem>
+              <MenuItem value={"programacion"}>Programación</MenuItem>
             </Select>
-            {errors.tipo_parametro && (
+            {errors.tipoParametro && (
               <FormHelperText error={true}>
                 Este campo es requerido.
               </FormHelperText>
@@ -134,7 +147,7 @@ const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
           </FormControl>
         </Grid>
         <Grid item xs={6}>
-          <FormControl  variant="outlined" sx={{ width: "100%" }}>
+          <FormControl variant="outlined" sx={{ width: "100%" }}>
             <InputLabel>Grupo</InputLabel>
             <Select
               {...register("grupo", { required: true })}
@@ -156,7 +169,9 @@ const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
               <MenuItem value={"Consumo"}>Consumo</MenuItem>
               <MenuItem value={"Alarmas"}>Alarmas</MenuItem>
               <MenuItem value={"Otros Tiempo"}>Otros tiempos</MenuItem>
-              <MenuItem value={"Temperatura programa"}>Temperatura programa</MenuItem>
+              <MenuItem value={"Temperatura programa"}>
+                Temperatura programa
+              </MenuItem>
               <MenuItem value={"Deshielo programa"}>Deshielo programa</MenuItem>
               <MenuItem value={"Alarma programa"}>Alarma programa</MenuItem>
             </Select>
@@ -192,7 +207,7 @@ const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
             )}
           </FormControl>
         </Grid>
-        <Grid item xs={6} ></Grid>
+        <Grid item xs={6}></Grid>
         {tipoCampo === "rango" ? (
           <Grid item xs={6} name="gridRango">
             <Paper variant="standard" style={{ padding: 15 }}>
@@ -316,22 +331,27 @@ const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
               })}
               fullWidth
               label="Valor Fijo"
-            variant="standard"
+              variant="standard"
               error={errors.valorFijo ? true : false}
-              helperText={
-                errors.valorFijo ? "Este campo es requerido" : ""
-              }
+              helperText={errors.valorFijo ? "Este campo es requerido" : ""}
             />
           </Grid>
         )}
-        <Grid item xs={12}>
-          <Dialog open={openOptions} onClose={handleCloseOptions}>
+       <Grid item xs={12}>
+          <Dialog open={openOptions} onClose={() => handleCloseOptions(null)}>
             <AddOptions
               open={openOptions}
               handleClose={handleCloseOptions}
             />
           </Dialog>
         </Grid>
+        {errors.opciones && (
+          <Grid item xs={12}>
+            <FormHelperText error={true}>
+              {errors.opciones.message}
+            </FormHelperText>
+          </Grid>
+        )}
         <Grid item xs={12}>
           <Grid container sx={{ justifyContent: "flex-end" }} spacing={2}>
             <Grid item xs={6}>

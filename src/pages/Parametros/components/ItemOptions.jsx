@@ -5,9 +5,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 
-function ItemOptions(props) {
-  const value =props.value;
-  const name = props.name;
+function ItemOptions({removeOption,value,name,editable}) {
 
   return (
     <Grid container alignItems="center">
@@ -18,13 +16,17 @@ function ItemOptions(props) {
         <Typography variant="subtitle1" sx={{ fontSize: 14, textAlign:"left", margin:0 }}>{name}</Typography>
       </Grid>
       <Grid item xs={2}>
+      {!editable && (
         <IconButton
           edge="end"
           aria-label="delete"
-          onClick={()=>props.removeOption(value)}
+          onClick={()=>removeOption(value)}
         >
-          <DeleteIcon fontSize="small" />
+       
+          <DeleteIcon  fontSize="small" />
+   
         </IconButton>
+                )}
       </Grid>
       <Divider/>
     </Grid>

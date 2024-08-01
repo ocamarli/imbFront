@@ -24,7 +24,7 @@ import ModalGenerico from "../../components/ModalGenerico";
 import { useGaeService } from "../../hooks/useGaeServices";
 import Home from "../Home/Home";
 import LoadingComponent from "../LoadingComponent";
-
+import { filtrarColumnasPorPermisos } from "../../utils";
 function transformarDatos(gaes) {
   return gaes.map((gae, index) => ({
     id: index + 1 || "",
@@ -87,6 +87,7 @@ const ListaGaes = ({ setSelectedComponent, auth, onResponse }) => {
     {
       field: "editar",
       headerName: "Editar",
+      permisosRequeridos:["system","superusuario"],
       sortable: false,
       renderCell: (params) => (
         <IconButton onClick={() => handleEditarGae(params.row.idGae)}>
@@ -97,6 +98,7 @@ const ListaGaes = ({ setSelectedComponent, auth, onResponse }) => {
     {
       field: "eliminar",
       headerName: "Deshabilitar",
+      permisosRequeridos:["system","superusuario"],
       sortable: false,
       renderCell: (params) => (
         <IconButton onClick={() => handleDeshabilitarGae(params.row.idGae)}>
@@ -114,6 +116,7 @@ const ListaGaes = ({ setSelectedComponent, auth, onResponse }) => {
     {
       field: "habilitar",
       headerName: "Habilitar",
+      permisosRequeridos:["system","superusuario"],
       sortable: false,
       renderCell: (params) => (
         <IconButton onClick={() => handleHabilitarGae(params.row.idGae)}>
@@ -168,13 +171,14 @@ const ListaGaes = ({ setSelectedComponent, auth, onResponse }) => {
         <Paper style={{ padding: 20 }}>
           <Grid container spacing={3}>
             <Grid item xs={8} sx={{ display: "flex", justifyContent: "left" }}>
-              <UsuarioAutorizado usuario={auth} permisosRequeridos={["superusuario"]}>
+              
                 <Tabs value={activeTab} onChange={handleTabChange}>
                   <Tab label="Activos" value={1} />
                   <Tab label="Deshabilitados" value={0} />
                 </Tabs>
-              </UsuarioAutorizado>
+              
             </Grid>
+            <UsuarioAutorizado usuario={auth} permisosRequeridos={["system","superusuario"]}>
             <Grid
               item
               xs={4}
@@ -198,11 +202,12 @@ const ListaGaes = ({ setSelectedComponent, auth, onResponse }) => {
                 <AddIcon />
               </IconButton>
             </Grid>
+            </UsuarioAutorizado>
             <Grid item xs={12}>
               <DataGrid
                 sx={{ maxHeight: "calc(100vh - 330px)", width: "100%" }}
                 rows={transformarDatos(gaes)}
-                columns={activeTab === 1 ? columnsActivas : columnsDeshabilitadas}
+                columns={activeTab === 1 ? filtrarColumnasPorPermisos(columnsActivas,auth) : filtrarColumnasPorPermisos(columnsDeshabilitadas,auth)}
                 pageSize={5}
                 rowsPerPageOptions={[5, 10, 20]}
               />

@@ -116,23 +116,29 @@ const ListaUsuarios = ({ setSelectedComponent, auth, onResponse }) => {
               </Grid>
               <Grid item xs={2} sx={{ display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
                 {activeTab === 0 ? (
+                  <UsuarioAutorizado usuario={auth} permisosRequeridos={["system","superusuario"]}>
                   <Tooltip title="Habilitar usuario">
                     <IconButton onClick={() => handleHabilitarUsuario(usuario.idUsuario)} aria-label="habilitar">
                       <PersonIcon />
                     </IconButton>
                   </Tooltip>
+                  </UsuarioAutorizado>
                 ) : (
                   <>
+                  <UsuarioAutorizado usuario={auth} permisosRequeridos={["system","superusuario"]}>
                     <Tooltip title="Deshabilitar usuario">
                       <IconButton onClick={() => handleDeshabilitarUsuario(usuario.idUsuario)} aria-label="deshabilitar">
                         <PersonOffIcon />
                       </IconButton>
                     </Tooltip>
+                    </UsuarioAutorizado>
+                    <UsuarioAutorizado usuario={auth} permisosRequeridos={["system","superusuario"]}>
                     <Tooltip title="Editar usuario">
                       <IconButton onClick={() => handleEditarUsuario(usuario.idUsuario)} aria-label="editar">
                         <EditIcon />
                       </IconButton>
                     </Tooltip>
+                    </UsuarioAutorizado>
                   </>
                 )}
               </Grid>
@@ -151,13 +157,14 @@ const ListaUsuarios = ({ setSelectedComponent, auth, onResponse }) => {
         <HeaderContent titulo="Lista de usuarios" />
         <Paper style={{ padding: 20 }}>
           <Grid container spacing={3}>
-            <UsuarioAutorizado usuario={auth} permisosRequeridos={["superusuario"]}>
+            
               <Grid item xs={8} sx={{ display: "flex", justifyContent: "left" }}>
                 <Tabs value={activeTab} onChange={handleTabChange}>
                   <Tab label="Activos" value={1} />
                   <Tab label="Deshabilitados" value={0} />
                 </Tabs>
               </Grid>
+              <UsuarioAutorizado usuario={auth} permisosRequeridos={["system,superusuario"]}>  
               <Grid item xs={4} sx={{ display: "flex", justifyContent: "right", alignItems: "center" }}>
                 <Typography variant="h6">Agregar usuario nuevo</Typography>
                 <IconButton

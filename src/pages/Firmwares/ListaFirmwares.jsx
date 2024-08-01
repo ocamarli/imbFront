@@ -24,7 +24,7 @@ import ModalGenerico from "../../components/ModalGenerico";
 import { useFirmwareService } from "../../hooks/useFirmwareService";
 import Home from "../Home/Home";
 import LoadingComponent from "../LoadingComponent";
-
+import { filtrarColumnasPorPermisos } from "../../utils";
 function transformarDatos(firmwares) {
   return firmwares.map((firmware, index) => ({
     id: index + 1 || "",
@@ -85,6 +85,7 @@ const ListaFirmwares = ({ setSelectedComponent, auth, onResponse }) => {
     {
       field: "editar",
       headerName: "Editar",
+      permisosRequeridos:["system"],      
       sortable: false,
       renderCell: (params) => (
         <IconButton onClick={() => handleEditarFirmware(params.row.idFirmware)}>
@@ -95,6 +96,7 @@ const ListaFirmwares = ({ setSelectedComponent, auth, onResponse }) => {
     {
       field: "eliminar",
       headerName: "Deshabilitar",
+      permisosRequeridos:["system"],      
       sortable: false,
       renderCell: (params) => (
         <IconButton onClick={() => handleDeshabilitarFirmware(params.row.idFirmware)}>
@@ -111,6 +113,7 @@ const ListaFirmwares = ({ setSelectedComponent, auth, onResponse }) => {
     {
       field: "habilitar",
       headerName: "Habilitar",
+      permisosRequeridos:["system"],
       sortable: false,
       renderCell: (params) => (
         <IconButton onClick={() => handleHabilitarFirmware(params.row.idFirmware)}>
@@ -165,13 +168,14 @@ const ListaFirmwares = ({ setSelectedComponent, auth, onResponse }) => {
         <Paper style={{ padding: 20 }}>
           <Grid container spacing={3}>
             <Grid item xs={8} sx={{ display: "flex", justifyContent: "left" }}>
-              <UsuarioAutorizado usuario={auth} permisosRequeridos={["superusuario"]}>
+              
                 <Tabs value={activeTab} onChange={handleTabChange}>
                   <Tab label="Activos" value={1} />
                   <Tab label="Deshabilitados" value={0} />
                 </Tabs>
-              </UsuarioAutorizado>
+              
             </Grid>
+            <UsuarioAutorizado usuario={auth} permisosRequeridos={["system"]}>
             <Grid
               item
               xs={4}
@@ -195,11 +199,12 @@ const ListaFirmwares = ({ setSelectedComponent, auth, onResponse }) => {
                 <AddIcon />
               </IconButton>
             </Grid>
+            </UsuarioAutorizado>            
             <Grid item xs={12}>
               <DataGrid
                 sx={{ maxHeight: "calc(100vh - 330px)", width: "100%" }}
                 rows={transformarDatos(firmwares)}
-                columns={activeTab === 1 ? columnsActivas : columnsDeshabilitadas}
+                columns={activeTab === 1 ? filtrarColumnasPorPermisos(columnsActivas,auth) : filtrarColumnasPorPermisos(columnsDeshabilitadas,auth)}
                 pageSize={5}
                 rowsPerPageOptions={[5, 10, 20]}
               />

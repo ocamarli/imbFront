@@ -1,6 +1,16 @@
 export const formatearFecha = (fecha) => {
     const opciones = { year: 'numeric', month: '2-digit', day: '2-digit' };
     return new Date(fecha).toLocaleDateString('es-MX', opciones);
+
+  };
+  export const filtrarColumnasPorPermisos = (columns, usuario) => {
+    // Obtén las llaves de los permisos que están en true
+    const permissionsArray = Object.keys(usuario.permisos).filter(key => usuario.permisos[key] === true);
+  console.log("per",permissionsArray)
+    return columns.filter(column =>
+      !column.permisosRequeridos ||
+      column.permisosRequeridos.some(permiso => permissionsArray.includes(permiso))
+    );
   };
   export const handleOnChangeInputTexto = (event) => {
     // Expresión regular que permite letras (mayúsculas y minúsculas) y espacios en blanco

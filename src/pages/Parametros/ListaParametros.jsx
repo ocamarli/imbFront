@@ -11,7 +11,7 @@ import ModalGenerico from "../../components/ModalGenerico.jsx";
 import LoadingComponent from "../LoadingComponent.jsx";
 import AgregarParametro from "./AgregarParametro.jsx";
 import UsuarioAutorizado from "../../components/UsuarioAutorizado.jsx";
-
+import { filtrarColumnasPorPermisos } from "../../utils.js";
 import {
   Check as CheckIcon,
   Add as AddIcon,
@@ -77,12 +77,13 @@ function ListaParametros({setSelectedComponent, auth,onResponse }) {
     { field: "id", headerName: "ID"},
     { field: "rango", headerName: "Rango", editable: true },
     { field: "unidad", headerName: "Unidad", editable: true },
-    { field: "descripcion", headerName: "Descripción", width:320, editable: true},
-    { field: "tipoParameto", headerName: "Tipo parámetro",  editable: true},
+    { field: "descripcion", headerName: "Descripción", width:450, editable: true},
+    { field: "tipoParameto", headerName: "Tipo parámetro", width:120, editable: true},
  
     {
       field: "editar",
       headerName: "Editar",
+      permisosRequeridos:["system","superusuario"],      
       sortable: false,
       renderCell: (params) => (
         <IconButton onClick={() => handleEditarParametro(params.row.idParametro)}>
@@ -93,6 +94,7 @@ function ListaParametros({setSelectedComponent, auth,onResponse }) {
     {
       field: "eliminar",
       headerName: "Deshabilitar",
+      permisosRequeridos:["system","superusuario"],
       sortable: false,
       renderCell: (params) => (
         <IconButton onClick={() => handleDeshabilitarParametro(params.row.idParametro)}>
@@ -113,6 +115,7 @@ function ListaParametros({setSelectedComponent, auth,onResponse }) {
     {
       field: "habilitar",
       headerName: "Habilitar",
+      permisosRequeridos:["system","superusuario"],
       sortable: false,
       renderCell: (params) => (
         <IconButton onClick={() => handleHabilitarParametro(params.row.idParametro)}>
@@ -197,15 +200,19 @@ function ListaParametros({setSelectedComponent, auth,onResponse }) {
                   
                 }}
               >
-              <UsuarioAutorizado usuario={auth} permisosRequeridos={["superusuario"]}>
+              
                 <Tabs value={activeTab} onChange={handleTabChange}>
                   <Tab label="Activos" value={1} />
                   <Tab label="Deshabilitados" value={0} />
                 </Tabs>
-              </UsuarioAutorizado>
+              
 
 
             </Grid>           
+            <UsuarioAutorizado
+                  usuario={auth}
+                  permisosRequeridos={["system","superusuario"]}
+                >
             <Grid
               item
               xs={4}
@@ -229,6 +236,7 @@ function ListaParametros({setSelectedComponent, auth,onResponse }) {
                   <AddIcon />
                 </IconButton>
               </Grid>
+              </UsuarioAutorizado>
               <Grid item xs={12}>
                 <Grid
                   container
@@ -242,11 +250,11 @@ function ListaParametros({setSelectedComponent, auth,onResponse }) {
                     </Grid>
                   )}
                   {parametros.length > 0 && (
-                    <Grid item xs={12} spacing={1}>
+                    <Grid item xs={12} >
                       <DataGrid
                         sx={{ maxHeight: "calc(100vh - 330px)", width: "100%" }}
                         rows={transformarDatos(parametros)}
-                        columns={activeTab === 1 ? columnsActivas : columnsDeshabilitadas}
+                        columns={activeTab === 1 ? filtrarColumnasPorPermisos(columnsActivas,auth) : filtrarColumnasPorPermisos(columnsDeshabilitadas,auth)}
                         initialState={{
                           pagination: {
                             paginationModel: {

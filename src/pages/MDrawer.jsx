@@ -2,8 +2,18 @@ import { styled, useTheme } from "@mui/material/styles";
 import { CSSTransition, SwitchTransition } from "react-transition-group";
 import MuiAppBar from "@mui/material/AppBar";
 import {
-  Typography, Divider, Toolbar, List, Box, Drawer, CssBaseline,
-  ListItemButton, ListItemIcon, ListItemText, IconButton, FormControl,
+  Typography,
+  Divider,
+  Toolbar,
+  List,
+  Box,
+  Drawer,
+  CssBaseline,
+  ListItemButton,
+  ListItemIcon,
+  ListItemText,
+  IconButton,
+  FormControl,
 } from "@mui/material/";
 import MenuIcon from "@mui/icons-material/Menu";
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft";
@@ -31,9 +41,9 @@ import UsuarioAutorizado from "../components/UsuarioAutorizado";
 import ListaGaes from "./Gaes/ListaGaes";
 import ListaFirmwares from "./Firmwares/ListaFirmwares";
 import ListaHardwares from "./Hardwares/ListaHardwares";
-import ApiIcon from '@mui/icons-material/Api';
-import HardwareIcon from '@mui/icons-material/Hardware';
-import CodeIcon from '@mui/icons-material/Code';
+import ApiIcon from "@mui/icons-material/Api";
+import HardwareIcon from "@mui/icons-material/Hardware";
+import CodeIcon from "@mui/icons-material/Code";
 import Codigos from "./Codigos/Codigos";
 
 const drawerWidth = 250;
@@ -174,7 +184,7 @@ export default function PersistentDrawerLeft(props) {
         setSelectedComponent={setSelectedComponent}
       />
     );
-  };  
+  };
   const selectHome = () => {
     setSelectedComponent(<Home />);
   };
@@ -307,60 +317,70 @@ export default function PersistentDrawerLeft(props) {
               </ListItemIcon>
               <ListItemText primary="Página principal" />
             </ListItemButton>
-
-            <ListItemButton onClick={seleccionarListaPlantillas}>
-              <ListItemIcon>
-                <FormatListNumberedIcon sx={iconsStyle} />
-              </ListItemIcon>
-              <ListItemText primary="Plantillas" />
-            </ListItemButton>
             <UsuarioAutorizado
-                usuario={auth}
-                permisosRequeridos={["system"]}
-              >
-            <ListItemButton onClick={selectParameters}>
-              <ListItemIcon>
-                <DescriptionIcon sx={iconsStyle} />
-              </ListItemIcon>
-              <ListItemText primary="Parámetros" />
-            </ListItemButton>
-</UsuarioAutorizado>
+              usuario={auth}
+              permisosRequeridos={[
+                "system",
+                "superusuario",
+                "electrico",
+                "refrigeracion",
+                "laboratorio",
+              ]}
+            >
+              <ListItemButton onClick={seleccionarListaPlantillas}>
+                <ListItemIcon>
+                  <FormatListNumberedIcon sx={iconsStyle} />
+                </ListItemIcon>
+                <ListItemText primary="Plantillas" />
+              </ListItemButton>
+            </UsuarioAutorizado>
+
+            <UsuarioAutorizado usuario={auth} permisosRequeridos={["system","superusuario","electrico","laboratorio"]}>
+              <ListItemButton onClick={selectParameters}>
+                <ListItemIcon>
+                  <DescriptionIcon sx={iconsStyle} />
+                </ListItemIcon>
+                <ListItemText primary="Parámetros" />
+              </ListItemButton>
+            </UsuarioAutorizado>
+            <UsuarioAutorizado usuario={auth} permisosRequeridos={["system","superusuario","electrico","laboratorio","refrigeracion"]}>
             <ListItemButton onClick={seleccionarListaGaes}>
               <ListItemIcon>
                 <DescriptionIcon sx={iconsStyle} />
               </ListItemIcon>
               <ListItemText primary="GAEs" />
             </ListItemButton>
-
+            </UsuarioAutorizado>
+            <UsuarioAutorizado usuario={auth} permisosRequeridos={["system","superusuario","electrico","laboratorio","refrigeracion"]}>
             <ListItemButton onClick={seleccionarListaFirmwares}>
               <ListItemIcon>
                 <ApiIcon sx={iconsStyle} />
               </ListItemIcon>
               <ListItemText primary="Firmwares" />
             </ListItemButton>
-
+            </UsuarioAutorizado>
+            <UsuarioAutorizado usuario={auth} permisosRequeridos={["system","superusuario","electrico","laboratorio","refrigeracion"]}> 
             <ListItemButton onClick={seleccionarListaHardwares}>
               <ListItemIcon>
                 <HardwareIcon sx={iconsStyle} />
               </ListItemIcon>
               <ListItemText primary="Hardwares" />
             </ListItemButton>
-            <UsuarioAutorizado
-                usuario={auth}
-                permisosRequeridos={["system"]}
-              >
-            <ListItemButton onClick={seleccionarCodigos}>
-              <ListItemIcon>
-                <CodeIcon sx={iconsStyle} />
-              </ListItemIcon>
-              <ListItemText primary="Códigos" />
-            </ListItemButton>
-</UsuarioAutorizado>
+            </UsuarioAutorizado>
+            <UsuarioAutorizado usuario={auth} permisosRequeridos={["system"]}>
+            
+              <ListItemButton onClick={seleccionarCodigos}>
+                <ListItemIcon>
+                  <CodeIcon sx={iconsStyle} />
+                </ListItemIcon>
+                <ListItemText primary="Códigos" />
+              </ListItemButton>
+            </UsuarioAutorizado>
 
             <Divider />
             <UsuarioAutorizado
               usuario={auth}
-              permisosRequeridos={["superusuario"]}
+              permisosRequeridos={["system","superusuario","electrico","laboratorio"]}
             >
               <ListItemButton onClick={seleccionarListaUsuarios}>
                 <ListItemIcon>

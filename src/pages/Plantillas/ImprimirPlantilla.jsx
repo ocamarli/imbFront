@@ -119,12 +119,12 @@ function ImprimirPlantilla(props) {
   }, [plantilla, codigos]);
 
   useEffect(() => {
-    if (plantilla && codigos) {
+    if (plantilla && codigos && open) {
       convertTextProgramacion();
       convertTextGeneral();
       handleClose();
     }
-  }, [plantilla, codigos, convertTextGeneral, convertTextProgramacion, handleClose]);
+  }, [plantilla, codigos, open, convertTextGeneral, convertTextProgramacion, handleClose]);
 
   if (isLoading || !codigos) {
     return (

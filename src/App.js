@@ -5,10 +5,10 @@ import CssBaseline from "@mui/material/CssBaseline";
 import { useState, useEffect } from "react";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { isExpired, decodeToken } from "react-jwt";
-
 import { Box } from "@mui/material";
 import AgregarUsuario from "./pages/Register/AgregarUsuario.jsx";
 import AgregarPlantilla from "./pages/Plantillas/AgregarPlantilla.jsx";
+
 function App() {
   const [darkMode, setDarkMode] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -18,25 +18,60 @@ function App() {
     AgregarPlantilla: 2,
     AgregarUsuario: 3,
   };
+
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
     }, 1200);
+
+    // Deshabilitar clic derecho
+    const handleContextMenu = (event) => {
+      event.preventDefault();
+    };
+    document.addEventListener('contextmenu', handleContextMenu);
+
+    // Detectar teclas de desarrollo
+    const handleKeyDown = (event) => {
+      if (event.keyCode === 123 || (event.ctrlKey && event.shiftKey && event.keyCode === 73)) {
+        event.preventDefault();
+      }
+    };
+    document.addEventListener('keydown', handleKeyDown);
+
+    // Forzar pantalla completa
+    const handleFullScreen = () => {
+      if (document.documentElement.requestFullscreen) {
+        document.documentElement.requestFullscreen();
+      } else if (document.documentElement.mozRequestFullScreen) { // Firefox
+        document.documentElement.mozRequestFullScreen();
+      } else if (document.documentElement.webkitRequestFullscreen) { // Chrome, Safari and Opera
+        document.documentElement.webkitRequestFullscreen();
+      } else if (document.documentElement.msRequestFullscreen) { // IE/Edge
+        document.documentElement.msRequestFullscreen();
+      }
+    };
+    handleFullScreen();
+
+    return () => {
+      document.removeEventListener('contextmenu', handleContextMenu);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
+
   const theme = createTheme({
     palette: {
       mode: darkMode ? "dark" : "light",
       primary: {
         main: "#143C64",
         light: "#436383",
-        dark:"#0E2A46",
-        contrastText:"#ffffff"
+        dark: "#0E2A46",
+        contrastText: "#ffffff",
       },
       secondary: {
         main: "#28a745",
-        light:"#53B86A",
-        dark:"#1C7430",
-        contrastText:"#ffffff"
+        light: "#53B86A",
+        dark: "#1C7430",
+        contrastText: "#ffffff",
       },
       gray: {
         50: "#f5f5f5",
@@ -49,7 +84,7 @@ function App() {
         700: "#424242",
         800: "#212121",
         900: "#121212",
-      },            
+      },
     },
   });
 
@@ -88,9 +123,9 @@ function App() {
       case 1:
         return <div></div>;
       case 2:
-        return <AgregarPlantilla onDarkModeChange={handleDarkModeChange} auth={auth}/>;
+        return <AgregarPlantilla onDarkModeChange={handleDarkModeChange} auth={auth} />;
       case 3:
-        return <AgregarUsuario onDarkModeChange={handleDarkModeChange} auth={auth}/>;
+        return <AgregarUsuario onDarkModeChange={handleDarkModeChange} auth={auth} />;
       default:
         return <>HHH</>;
     }
@@ -115,7 +150,6 @@ function App() {
             alignItems: "center",
           }}
         >
-
         </Box>
       ) : (
         <BrowserRouter>
@@ -132,12 +166,9 @@ function App() {
                   path="/Test"
                   element={<ProtectedRoute type={PageTypes.Test} />}
                 />
-
                 <Route
                   path="/AgregarPlantilla"
-                  element={
-                    <ProtectedRoute type={PageTypes.AgregarPlantilla}  />
-                  }
+                  element={<ProtectedRoute type={PageTypes.AgregarPlantilla} />}
                 />
                 <Route
                   path="/AgregarUsuario"

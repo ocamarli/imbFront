@@ -14,6 +14,7 @@ import LoadingComponent from "../LoadingComponent";
 import UsuarioAutorizado from "../../components/UsuarioAutorizado";
 import ImprimirPlantilla from "./ImprimirPlantilla";
 import ModalListaNotas from "./Componentes/ModalListaNotas";
+import { filtrarColumnasPorPermisos } from "../../utils";
 import { useTheme } from "@mui/material/styles";
 
 function transformarDatos(plantillas) {
@@ -34,6 +35,7 @@ function transformarDatos(plantillas) {
   });
 }
 const ListaPlantillas = ( { setSelectedComponent, auth, onResponse }) => {
+  console.log("auth",auth)
   const theme=useTheme()
   const {
     activeTab,
@@ -146,7 +148,7 @@ const handleCloseListaNotas = (props) => {
     {
       field: "clonar",
       headerName: "Clonar",
-
+      permisosRequeridos:["system","superusuario","electrico","laboratorio"],
       renderCell: (params) => (
         <Box display="flex" justifyContent="center" alignItems="center" height="100%">
         <IconButton
@@ -160,7 +162,7 @@ const handleCloseListaNotas = (props) => {
     {
       field: "editar",
       headerName: "Editar",
-
+      permisosRequeridos:["system","superusuario","electrico","laboratorio"],
       renderCell: (params) => (
         <IconButton
         style={{ color:theme.palette.primary.light}}
@@ -172,6 +174,7 @@ const handleCloseListaNotas = (props) => {
     {
       field: 'congelar',
       headerName: getHeaderName(),
+      permisosRequeridos:["system","superusuario","electrico","laboratorio"],
       renderCell: (params) => (
         <Box justifyContent="center" alignItems="center">
         <IconButton
@@ -181,7 +184,7 @@ const handleCloseListaNotas = (props) => {
             : handleCongelar(params.row.idPlantilla)
           }
         >
-          {params.row.estaCongelado ? <UnlockIcon /> : <LockIcon />} 
+          {params.row.estaCongelado ? <UsuarioAutorizado usuario={auth} permisosRequeridos={["system","superusuario"]}><LockIcon /></UsuarioAutorizado> : <UnlockIcon />} 
         </IconButton>
 </Box>
       ),
@@ -189,7 +192,7 @@ const handleCloseListaNotas = (props) => {
     {
       field: "eliminar",
       headerName: "Deshabilitar",
-
+      permisosRequeridos:["system","superusuario"],
       renderCell: (params) => (
         <IconButton 
         disabled={Boolean(params.row.estaCongelado)}
@@ -239,7 +242,7 @@ const handleCloseListaNotas = (props) => {
     {
       field: "habilitar",
       headerName: "Habilitar",
-
+      permisosRequeridos:["system","superusuario"],
       renderCell: (params) => (
         <IconButton onClick={() => handleHabilitarPlantilla(params.row.idPlantilla)}>
           <CheckIcon />
@@ -325,13 +328,14 @@ const handleCloseListaNotas = (props) => {
                 xs={8}
                 sx={{ display: "flex", justifyContent: "left" }}
               >
-              <UsuarioAutorizado usuario={auth} permisosRequeridos={["superusuario"]}>
+              
                 <Tabs value={activeTab} onChange={handleTabChange}>
                   <Tab label="Activas" value={1} />
                   <Tab label="Deshabilitadas" value={0} />
                 </Tabs>
-              </UsuarioAutorizado>                
+              
               </Grid>
+              <UsuarioAutorizado usuario={auth} permisosRequeridos={["system,superusuario","electrico,laboratorio"]}>
 
               <Grid
                 item
@@ -342,6 +346,7 @@ const handleCloseListaNotas = (props) => {
                   alignItems: "center",
                 }}
               >
+
                 <Typography variant="h6">Agregar una plantilla</Typography>
                 <IconButton
                   variant={"contained"}
@@ -356,13 +361,13 @@ const handleCloseListaNotas = (props) => {
                   <AddIcon />
                 </IconButton>
               </Grid>
-
+              </UsuarioAutorizado>   
               <Grid item xs={12}>
                 <DataGrid
                   /*rows={activeTab === "activas" ? dataActivas : dataObsoletas}*/
                   sx={{ maxHeight: "calc(100vh - 330px)", width: "100%" }}
                   rows={transformarDatos(plantillas)}
-                  columns={activeTab === 1 ? columnsActivas : columnsDeshabilitadas}
+                  columns={activeTab === 1 ? filtrarColumnasPorPermisos(columnsActivas,auth) : filtrarColumnasPorPermisos(columnsDeshabilitadas,auth)}
                   pageSize={50}
                   rowsPerPageOptions={[5, 10, 20]}
                 />

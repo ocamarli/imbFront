@@ -76,7 +76,7 @@ export const useParametroService = () => {
 
   const handleCrearParametro = async (data) => {
     try {
-      const newData={...data,status:true}
+      const newData={...data,estatus:true}
       console.log("newData",newData)
       setIsLoading(true);
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;

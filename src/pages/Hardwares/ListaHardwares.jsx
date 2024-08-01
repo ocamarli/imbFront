@@ -24,7 +24,7 @@ import ModalGenerico from "../../components/ModalGenerico";
 import { useHardwareService } from "../../hooks/useHardwareService";
 import Home from "../Home/Home";
 import LoadingComponent from "../LoadingComponent";
-
+import { filtrarColumnasPorPermisos } from "../../utils";
 function transformarDatos(hardwares) {
   return hardwares.map((hardware, index) => ({
     id: index + 1 || "",
@@ -85,6 +85,7 @@ const ListaHardwares = ({ setSelectedComponent, auth, onResponse }) => {
     {
       field: "editar",
       headerName: "Editar",
+      permisosRequeridos:["system"],
       sortable: false,
       renderCell: (params) => (
         <IconButton onClick={() => handleEditarHardware(params.row.idHardware)}>
@@ -95,6 +96,7 @@ const ListaHardwares = ({ setSelectedComponent, auth, onResponse }) => {
     {
       field: "eliminar",
       headerName: "Deshabilitar",
+      permisosRequeridos:["system"],
       sortable: false,
       renderCell: (params) => (
         <IconButton onClick={() => handleDeshabilitarHardware(params.row.idHardware)}>
@@ -111,6 +113,7 @@ const ListaHardwares = ({ setSelectedComponent, auth, onResponse }) => {
     {
       field: "habilitar",
       headerName: "Habilitar",
+      permisosRequeridos:["system"],
       sortable: false,
       renderCell: (params) => (
         <IconButton onClick={() => handleHabilitarHardware(params.row.idHardware)}>
@@ -199,7 +202,7 @@ const ListaHardwares = ({ setSelectedComponent, auth, onResponse }) => {
               <DataGrid
                 sx={{ maxHeight: "calc(100vh - 330px)", width: "100%" }}
                 rows={transformarDatos(hardwares)}
-                columns={activeTab === 1 ? columnsActivas : columnsDeshabilitadas}
+                columns={activeTab === 1 ? filtrarColumnasPorPermisos(columnsActivas,auth) : filtrarColumnasPorPermisos(columnsDeshabilitadas,auth)}
                 pageSize={5}
                 rowsPerPageOptions={[5, 10, 20]}
               />
