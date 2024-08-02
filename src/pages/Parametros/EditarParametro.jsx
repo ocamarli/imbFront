@@ -89,7 +89,7 @@ const EditarParametro = ({ setSelectedComponent, onResponse, idParametro }) => {
     }    
     const newData = {
       ...data,
-    
+      idParametro:idParametro,
       tipoParametro:tipoParametro,
       grupo:grupo,
       tipoCampo:tipoCampo,

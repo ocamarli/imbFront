@@ -335,7 +335,7 @@ const handleCloseListaNotas = (props) => {
                 </Tabs>
               
               </Grid>
-              <UsuarioAutorizado usuario={auth} permisosRequeridos={["system,superusuario","electrico,laboratorio"]}>
+              <UsuarioAutorizado usuario={auth} permisosRequeridos={["system","superusuario","electrico","laboratorio"]}>
 
               <Grid
                 item

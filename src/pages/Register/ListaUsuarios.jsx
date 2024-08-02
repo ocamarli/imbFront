@@ -84,7 +84,7 @@ const ListaUsuarios = ({ setSelectedComponent, auth, onResponse }) => {
   );
 
   const renderUserList = () => (
-    <List sx={{ height: "100vh", width: "100%", bgcolor: "background.paper" }}>
+    <List sx={{ width: "100%" }}>
       {usuarios.map((usuario, index) => (
         <React.Fragment key={index}>
           <ListItem alignItems="flex-start">
@@ -164,7 +164,7 @@ const ListaUsuarios = ({ setSelectedComponent, auth, onResponse }) => {
                   <Tab label="Deshabilitados" value={0} />
                 </Tabs>
               </Grid>
-              <UsuarioAutorizado usuario={auth} permisosRequeridos={["system,superusuario"]}>  
+              <UsuarioAutorizado usuario={auth} permisosRequeridos={["system","superusuario"]}>  
               <Grid item xs={4} sx={{ display: "flex", justifyContent: "right", alignItems: "center" }}>
                 <Typography variant="h6">Agregar usuario nuevo</Typography>
                 <IconButton
