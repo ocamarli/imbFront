@@ -215,8 +215,8 @@ const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
                 <Grid item>
                   <FormLabel style={{ marginBottom: 5 }}>Rango</FormLabel>
                 </Grid>
-                <Grid item xs={12}>
-                  <FormControl variant="standard" sx={{ width: "100%" }}>
+                <Grid item xs={6}>
+                  <FormControl variant="standard" sx={{ width: "200px" }}>
                     <InputLabel>Unidad</InputLabel>
                     <Select
                       {...register("unidad", { required: true })}
@@ -240,7 +240,7 @@ const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
                     )}
                   </FormControl>
                 </Grid>
-                <Grid item>
+                <Grid item >
                   <TextField
                     {...register("valor_min", { required: true })}
                     label="Valor mínimo"
@@ -249,6 +249,7 @@ const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
                     helperText={
                       errors.valor_min ? "Este campo es requerido" : ""
                     }
+                    sx={{ width: "200px" }}
                   />
                 </Grid>
                 <Grid item>
@@ -260,6 +261,7 @@ const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
                     helperText={
                       errors.valor_max ? "Este campo es requerido" : ""
                     }
+                    sx={{ width: "200px" }}
                   />
                 </Grid>
               </Grid>

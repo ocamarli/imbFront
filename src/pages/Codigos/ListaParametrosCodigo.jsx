@@ -34,7 +34,7 @@ const ListaParametrosCodigo = (props) => {
         <Paper  variant="outlined" sx={{ padding: "15px" }}>
           <Grid container justifyContent="flex-start">
             <Typography fontSize={"1.2em"} sx={{}}>
-              Parametros
+              Parámetros
             </Typography>
 
             <Grid
@@ -46,11 +46,11 @@ const ListaParametrosCodigo = (props) => {
             >
               {parametros.map((item) => (
 
-                <Box key={item.idParametro} >
+                <Box key={item.idParametroInterno} >
                   <ItemParametroCodigo
-                    word={item.idParametro}
+                    word={item.idParametroInterno}
                     nombre={item.nombre}
-                    isEnable={matches.includes(item.idParametro)}
+                    isEnable={matches.includes(item.idParametroInterno)}
                   />
 
                 </Box>

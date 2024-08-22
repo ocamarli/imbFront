@@ -222,6 +222,7 @@ const EditarParametro = ({ setSelectedComponent, onResponse, idParametro }) => {
             </Select>
           </FormControl>
         </Grid>
+        <Grid item xs={6}></Grid>
         {tipoCampo === "rango" && (
           <Grid item xs={6}>
             <Paper variant="outlined" style={{ padding: 15 }}>
@@ -230,7 +231,7 @@ const EditarParametro = ({ setSelectedComponent, onResponse, idParametro }) => {
                   <FormLabel>Rango</FormLabel>
                 </Grid>
                 <Grid item xs={12}>
-                  <FormControl variant="standard" sx={{ width: "100%" }}>
+                  <FormControl variant="standard" >
                     <InputLabel>Unidad</InputLabel>
                     <Select
                       {...register("unidad")}

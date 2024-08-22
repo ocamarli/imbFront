@@ -5,7 +5,8 @@ import ListaParametrosCodigo from "./ListaParametrosCodigo";
 import HeaderContent from "../HeaderContent";
 
 function Codigos({ open, handleClose }) {
-  const [matches, setMatches] = useState([]);
+  const [matchesGeneral, setMatchesGeneral] = useState([]);
+  const [matchesProgramacion, setMatchesProgramacion] = useState([]);
   const [activeTab, setActiveTab] = useState("general"); // Estado para la pestaña activa
 
   const manejarTabChange = (tab) => {
@@ -53,8 +54,8 @@ function Codigos({ open, handleClose }) {
           >
             {/* Componentes para la pestaña "Plantillas general" */}
             <Typography sx={{ fontSize: "1.4em" }}>Config file.h</Typography>
-            <ListaParametrosCodigo matches={matches} style={{ maxHeight: "500px" }} />
-            <InputCodigo tipoCodigo={"codigoGeneral"} setMatches={setMatches} onClose={handleClose} />
+            <ListaParametrosCodigo matches={matchesGeneral} style={{ maxHeight: "500px" }} />
+            <InputCodigo tipoCodigo={"codigoGeneral"} setMatches={setMatchesGeneral} onClose={handleClose} />
           </Paper>
         )}
         {activeTab === "programaciones" && (
@@ -68,8 +69,8 @@ function Codigos({ open, handleClose }) {
           >
             {/* Componentes para la pestaña "Plantillas programaciones" */}
             <Typography sx={{ fontSize: "1.4em" }}>Config file.h</Typography>
-            <ListaParametrosCodigo matches={matches} style={{ maxHeight: "500px" }} />
-            <InputCodigo tipoCodigo={"codigoProgramaciones"} setMatches={setMatches} onClose={handleClose} />
+            <ListaParametrosCodigo matches={matchesProgramacion} style={{ maxHeight: "500px" }} />
+            <InputCodigo tipoCodigo={"codigoProgramaciones"} setMatches={setMatchesProgramacion} onClose={handleClose} />
           </Paper>
         )}
       </Grid>

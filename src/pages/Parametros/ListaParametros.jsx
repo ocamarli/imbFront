@@ -222,7 +222,7 @@ function ListaParametros({setSelectedComponent, auth,onResponse }) {
                 alignItems: "center",
               }}
             >     
-                <Typography variant="h6">Agregar parametro nuevo</Typography>
+                <Typography variant="h6">Agregar parámetro nuevo</Typography>
                 <IconButton
                   variant={"contained"}
                   sx={{

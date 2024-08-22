@@ -1,68 +1,86 @@
-import React, { useRef, useEffect} from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Button, Box, Grid, Divider } from "@mui/material";
 import CodeEditor from "@uiw/react-textarea-code-editor";
 import { useTheme } from "@mui/material";
 import { usePlantillaService } from "../../../src/hooks/usePlantillaService";
 import LoadingComponent from "../LoadingComponent";
+
 function InputCodigo(props) {
-  const { setMatches, onResponse } = props;
+  const { setMatches, onResponse, tipoCodigo } = props;
 
   const {
     isLoading,
     fetchCodigos,
-    codigo,
-    setCodigo
-
+    setCodigo: setCodigoService,
+    codigos,
   } = usePlantillaService(onResponse);
-  console.log("codigo")
-  console.log(codigo)
+
+  const [codigo, setCodigo] = useState("");
   const theme = useTheme();
   const fileInputRef = useRef(null);
+
+  useEffect(() => {
+    fetchCodigos();
+  }, [fetchCodigos]);
+
+  useEffect(() => {
+    if (codigos && Array.isArray(codigos)) {
+      const codigoObj = codigos.find((item) => item.nombre === tipoCodigo);
+      if (codigoObj) {
+        setCodigo(codigoObj.valor);
+      } else {
+        setCodigo("");
+      }
+    }
+  }, [codigos, tipoCodigo]);
 
   const handleButtonClick = () => {
     fileInputRef.current.click();
   };
 
   const handleUpdate = () => {
-    //setFetchFileTemplate({ text: codigo, id_template: "id_template" });
-    //onClose();
+    // Implementa la lógica para manejar la actualización de código
   };
-
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     const reader = new FileReader();
     reader.onload = (event) => {
       const content = event.target.result;
+      setCodigoService([{ nombre: tipoCodigo, valor: content }]);
       setCodigo(content);
     };
     reader.readAsText(file);
   };
 
   useEffect(() => {
-    const regex = /\{(.+?)\}/g; // Agregamos la flag "g" para encontrar todas las coincidencias
-    const matches = codigo.match(regex);
-    if (matches) {
-      const foundValues = matches.map((match) =>
-        match.substring(1, match.length - 1)
-      ); // Removemos los caracteres "{ }"
+    const handleKeyUp = (event) => {
+      if (event.key === "{" || event.key === "}") {
+        if (typeof codigo === "string") {
+          const regex = /\{(.+?)\}/g;
+          const matches = codigo.match(regex);
+          if (matches) {
+            const foundValues = matches.map((match) =>
+              match.substring(1, match.length - 1)
+            );
+            setMatches(foundValues);
+            console.log(foundValues);
+          } else {
+            setMatches([]);
+          }
+        }
+      }
+    };
 
-      setMatches(foundValues);
-      console.log(foundValues);
-    } else {
-
-      setMatches([]);
-    }
+    window.addEventListener("keyup", handleKeyUp);
+    return () => {
+      window.removeEventListener("keyup", handleKeyUp);
+    };
   }, [codigo, setMatches]);
-  useEffect(() => {
-    console.log("fetchCodigos")
-    fetchCodigos();
-  }, [fetchCodigos]);
 
-
-    if (isLoading  ) {
-      return <LoadingComponent />;
-    }
+  if (isLoading) {
+    return <LoadingComponent />;
+  }
 
   return (
     <Grid container spacing={1}>
@@ -84,15 +102,12 @@ function InputCodigo(props) {
               display: "flex",
               justifyContent: "space-between",
               height: "justifyContent",
-              
             }}
-          mt={1}
+            mt={1}
           >
-           
-            <Button  variant="contained" onClick={handleButtonClick}>
+            <Button variant="contained" onClick={handleButtonClick}>
               Subir Código base
             </Button>
-
           </Box>
         </>
       </Grid>
@@ -121,12 +136,13 @@ function InputCodigo(props) {
           }}
         />
       </Grid>
-      <Grid
-        item
-        xs={12}
-        sx={{display:"flex",justifyContent:"end"}}
-      >
-        <Button sx={{marginTop:"3em"}} variant="contained" type="submit" onClick={handleUpdate}>
+      <Grid item xs={12} sx={{ display: "flex", justifyContent: "end" }}>
+        <Button
+          sx={{ marginTop: "3em" }}
+          variant="contained"
+          type="submit"
+          onClick={handleUpdate}
+        >
           SALVAR
         </Button>
       </Grid>

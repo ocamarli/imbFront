@@ -88,6 +88,7 @@ export const usePlantillaService = () => {
       const tkn = JSON.parse(sessionStorage.getItem("ACCSSTKN"))?.access_token;
       if (tkn !== undefined) {
         const respuesta = await obtenerCodigos(tkn);
+        console.log("codigos");
         console.log(respuesta.codigos);
         setCodigos(respuesta.codigos);
       }

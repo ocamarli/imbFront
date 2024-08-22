@@ -9,7 +9,7 @@ const HeaderContent = (props) => {
   const date = new Date();
   const theme = useTheme();
   // Formatear la fecha en el formato deseado
-  const formatDate = format(date, "d-MMM-yyyy");
+  const formatDate = format(date, "d-MMMM-yyyy");
 
 
   return (
