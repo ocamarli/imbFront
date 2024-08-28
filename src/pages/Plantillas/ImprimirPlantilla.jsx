@@ -101,7 +101,7 @@ function ImprimirPlantilla(props) {
 
             console.log("idPlantilla",idPlantilla)
             if (match === "{idPlantilla}") {
-              return plantilla.idPlantillaInterno.toString(16);
+              return (plantilla.idPlantillaInterno).toString(16);
             }   
             if (match === "{inicioSeleccionado}") {
               return plantilla.programaSeleccionado;

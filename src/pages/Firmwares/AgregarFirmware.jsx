@@ -2,18 +2,22 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { TextField, Button, Grid, Paper, Typography } from '@mui/material';
 import HeaderContent from '../HeaderContent';
-import Home from '../Home/Home';
+
+import ListaFirmwares from '../Firmwares/ListaFirmwares';
 import ModalGenerico from '../../components/ModalGenerico';
 import { useFirmwareService } from '../../hooks/useFirmwareService';
 import LoadingComponent from '../LoadingComponent';
 import { handleOnChangeInputTexto, handleOnChangeInputIds } from '../../utils';
 
-const AgregarFirmware = ({ setSelectedComponent, onResponse }) => {
+const AgregarFirmware = ({ setSelectedComponent, onResponse, auth }) => {
   const { isLoading, estaActivoModalOk, respuestaModalOk, handleCrearFirmware, cerrarModalOk } = useFirmwareService(onResponse);
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = (data) => handleCrearFirmware({...data, estatus:true});
-  const handleOnCLickSalir = () => setSelectedComponent(<Home />);
+  const handleOnCLickSalir = () => setSelectedComponent(<ListaFirmwares
+    onResponse={onResponse}
+    auth={auth}
+    setSelectedComponent={setSelectedComponent} />);
 
   if (isLoading) {
     return <LoadingComponent />;

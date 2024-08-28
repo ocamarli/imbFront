@@ -4,11 +4,11 @@ import { TextField, Button, Grid, Paper, Typography } from "@mui/material";
 import LoadingComponent from "../LoadingComponent";
 import HeaderContent from "../HeaderContent";
 import { useHardwareService } from "../../hooks/useHardwareService";
-import Home from "../Home/Home";
+import ListaHardwares from '../Hardwares/ListaHardwares'
 import ModalGenerico from "../../components/ModalGenerico";
 import { handleOnChangeInputTexto, handleOnChangeInputIds} from "../../utils.js";
 
-const EditarHardware = ({ idHardware, setSelectedComponent, onResponse }) => {
+const EditarHardware = ({ idHardware, setSelectedComponent, onResponse , auth}) => {
   const { handleEditarHardware, hardware, fetchHardware, cerrarModalOk, estaActivoModalOk, respuestaModalOk } = useHardwareService(onResponse);
   const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -18,7 +18,10 @@ const EditarHardware = ({ idHardware, setSelectedComponent, onResponse }) => {
 
   const onSubmit = (data) => handleEditarHardware({ ...data, idHardware });
 
-  const handleOnCLickSalir = () => setSelectedComponent(<Home />);
+  const handleOnCLickSalir = () => setSelectedComponent(<ListaHardwares
+    onResponse={onResponse}
+    auth={auth}
+    setSelectedComponent={setSelectedComponent} />);
 
   if (!hardware) {
     return <LoadingComponent />;

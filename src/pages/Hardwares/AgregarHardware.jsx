@@ -2,18 +2,21 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { TextField, Button, Grid, Paper, Typography } from '@mui/material';
 import HeaderContent from '../HeaderContent';
-import Home from '../Home/Home';
+import ListaHardwares from '../Hardwares/ListaHardwares'
 import ModalGenerico from '../../components/ModalGenerico';
 import { useHardwareService } from '../../hooks/useHardwareService';
 import LoadingComponent from '../LoadingComponent';
 import { handleOnChangeInputTexto, handleOnChangeInputIds} from '../../utils';
 
-const AgregarHardware = ({ setSelectedComponent, onResponse }) => {
+const AgregarHardware = ({ setSelectedComponent, onResponse, auth }) => {
   const { isLoading, estaActivoModalOk, respuestaModalOk, handleCrearHardware, cerrarModalOk } = useHardwareService(onResponse);
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = (data) => handleCrearHardware({...data, estatus:true});
-  const handleOnCLickSalir = () => setSelectedComponent(<Home />);
+  const handleOnCLickSalir = () => setSelectedComponent(<ListaHardwares
+    onResponse={onResponse}
+    auth={auth}
+    setSelectedComponent={setSelectedComponent} />);
 
   if (isLoading) {
     return <LoadingComponent />;

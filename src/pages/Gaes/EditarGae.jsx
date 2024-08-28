@@ -4,11 +4,11 @@ import { TextField, Button, Grid, Paper, Typography, InputLabel } from "@mui/mat
 import LoadingComponent from "../LoadingComponent";
 import HeaderContent from "../HeaderContent";
 import { useGaeService } from "../../hooks/useGaeServices";
-import Home from "../Home/Home";
+import ListaGaes from './ListaGaes';
 import ModalGenerico from "../../components/ModalGenerico";
 import { handleOnChangeInputTexto, handleOnChangeInputIds, handleOnChangeInputTextoNumero } from "../../utils.js";
 
-const EditarGae = ({ idGae, setSelectedComponent, onResponse }) => {
+const EditarGae = ({ idGae, setSelectedComponent, onResponse , auth}) => {
   const { handleEditarGae, gae, fetchGae, cerrarModalOk, estaActivoModalOk, respuestaModalOk } = useGaeService(onResponse);
   const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -18,7 +18,10 @@ const EditarGae = ({ idGae, setSelectedComponent, onResponse }) => {
 
   const onSubmit = (data) => handleEditarGae({ ...data, idGae });
 
-  const handleOnCLickSalir = () => setSelectedComponent(<Home />);
+  const handleOnCLickSalir = () => setSelectedComponent(<ListaGaes
+    onResponse={onResponse}
+   auth={auth}
+   setSelectedComponent={setSelectedComponent} />);
 
   if (!gae) {
     return <LoadingComponent />;

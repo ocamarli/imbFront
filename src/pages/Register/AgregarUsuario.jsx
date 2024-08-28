@@ -3,11 +3,11 @@ import { useForm } from "react-hook-form";
 import { TextField, FormGroup, FormControlLabel, Checkbox, Button, FormControl, Grid, Paper, Typography, InputLabel } from "@mui/material";
 import HeaderContent from "../HeaderContent";
 import ModalGenerico from "../../components/ModalGenerico";
-import Home from "../Home/Home";
+import ListaUsuarios from "../Register/ListaUsuarios.jsx"
 import { useUsuarioService } from "../../hooks/useUsuarioService.jsx";
 import { handleOnChangeInputTexto } from "../../utils.js";
 
-const AgregarUsuario = ({ setSelectedComponent, onResponse }) => {
+const AgregarUsuario = ({ setSelectedComponent, onResponse ,auth}) => {
   const { cerrarModalOk, handleCrearUsuario, estaActivoModalOk, respuestaModalOk } = useUsuarioService(onResponse);
   const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -30,7 +30,9 @@ const AgregarUsuario = ({ setSelectedComponent, onResponse }) => {
   };
 
   const handleOnCLickSalir = () => {
-    setSelectedComponent(<Home />);
+    setSelectedComponent(<ListaUsuarios setSelectedComponent={setSelectedComponent}
+       onResponse={onResponse} 
+       auth={auth} />);
   };
 
   const renderModal = () => (

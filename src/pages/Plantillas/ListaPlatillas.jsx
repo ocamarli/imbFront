@@ -147,7 +147,7 @@ const handleCloseListaNotas = (props) => {
     { field: "nombrePlantilla", headerName: "Nombre" , width:250},
     { field: "firmware", headerName: "Firmware" },
     { field: "hardware", headerName: "Hardware" },
-    { field: "gae", headerName: "gae" },
+    { field: "gae", headerName: "GAE" },
     { field: "creadoPor", headerName: "Creado por" },
 
     {

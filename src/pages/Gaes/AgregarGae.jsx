@@ -2,19 +2,22 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import { TextField, Button, Grid, Paper, Typography } from '@mui/material';
 import HeaderContent from '../HeaderContent';
-import Home from '../Home/Home';
+import ListaGaes from './ListaGaes';
 import ModalGenerico from '../../components/ModalGenerico';
 import { useGaeService } from '../../hooks/useGaeServices';
 import LoadingComponent from '../LoadingComponent';
 import { handleOnChangeInputTexto, handleOnChangeInputIds, handleOnChangeInputTextoNumero } from '../../utils';
 
-const AgregarGae = ({ setSelectedComponent, onResponse }) => {
+const AgregarGae = ({ setSelectedComponent, onResponse,auth }) => {
   const { isLoading, estaActivoModalOk, respuestaModalOk, handleCrearGae, cerrarModalOk } = useGaeService(onResponse);
   const { register, handleSubmit, formState: { errors } } = useForm();
 
   const onSubmit = (data) => handleCrearGae({...data, estatus:true});
 
-  const handleOnCLickSalir = () => setSelectedComponent(<Home />);
+  const handleOnCLickSalir = () => setSelectedComponent(<ListaGaes
+     onResponse={onResponse}
+    auth={auth}
+    setSelectedComponent={setSelectedComponent} />);
 
   if (isLoading) {
     return <LoadingComponent />;

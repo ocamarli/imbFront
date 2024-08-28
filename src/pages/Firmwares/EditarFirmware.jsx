@@ -4,11 +4,11 @@ import { TextField, Button, Grid, Paper, Typography} from "@mui/material";
 import LoadingComponent from "../LoadingComponent";
 import HeaderContent from "../HeaderContent";
 import { useFirmwareService } from "../../hooks/useFirmwareService";
-import Home from "../Home/Home";
+import ListaFirmwares from '../Firmwares/ListaFirmwares';
 import ModalGenerico from "../../components/ModalGenerico";
 import { handleOnChangeInputTexto, handleOnChangeInputIds } from "../../utils.js";
 
-const EditarFirmware = ({ idFirmware, setSelectedComponent, onResponse }) => {
+const EditarFirmware = ({ idFirmware, setSelectedComponent, onResponse ,auth}) => {
   const { handleEditarFirmware, firmware, fetchFirmware, cerrarModalOk, estaActivoModalOk, respuestaModalOk } = useFirmwareService(onResponse);
   const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -18,7 +18,10 @@ const EditarFirmware = ({ idFirmware, setSelectedComponent, onResponse }) => {
 
   const onSubmit = (data) => handleEditarFirmware({ ...data, idFirmware });
 
-  const handleOnCLickSalir = () => setSelectedComponent(<Home />);
+  const handleOnCLickSalir = () => setSelectedComponent(<ListaFirmwares
+    onResponse={onResponse}
+    auth={auth}
+    setSelectedComponent={setSelectedComponent} />);
 
   if (!firmware) {
     return <LoadingComponent />;

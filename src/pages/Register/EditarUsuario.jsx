@@ -4,11 +4,11 @@ import { TextField, FormGroup, FormControlLabel, Checkbox, Button, FormControl, 
 import HeaderContent from "../HeaderContent";
 import ModalGenerico from "../../components/ModalGenerico";
 import { useUsuarioService } from "../../hooks/useUsuarioService";
-import Home from "../Home/Home";
+import ListaUsuarios from "../Register/ListaUsuarios.jsx"
 import LoadingComponent from "../LoadingComponent";
 import { handleOnChangeInputTexto } from "../../utils.js";
 
-const EditarUsuario = ({ idUsuario, setSelectedComponent, onResponse }) => {
+const EditarUsuario = ({ idUsuario, setSelectedComponent, onResponse , auth}) => {
   const { setAutorizaciones, autorizaciones, isLoading, handleEditarUsuario, usuario, fetchUsuario, cerrarModalOk, estaActivoModalOk, respuestaModalOk } = useUsuarioService(onResponse);
   const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -26,7 +26,9 @@ const EditarUsuario = ({ idUsuario, setSelectedComponent, onResponse }) => {
     setAutorizaciones((prevState) => ({ ...prevState, [name]: checked }));
   };
 
-  const handleOnCLickSalir = () => setSelectedComponent(<Home />);
+  const handleOnCLickSalir = () => setSelectedComponent(<ListaUsuarios setSelectedComponent={setSelectedComponent}
+    onResponse={onResponse} 
+    auth={auth} />);
 
   if (isLoading || !usuario) {
     return <LoadingComponent />;
