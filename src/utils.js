@@ -28,7 +28,7 @@ export const formatearFecha = (fecha) => {
   };
   export const handleOnChangeInputIds = (event) => {
     // Expresión regular que permite cuatro dígitos donde el primer dígito no puede ser cero
-    const regex = /^[1-9]\d{0,3}$/;
+    const regex = /^[1-9]\d{0,6}$/;
     const inputValue = event.target.value;
   console.log("onChange")
     // Validar si el texto ingresado cumple con la expresión regular
