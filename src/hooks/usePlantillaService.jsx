@@ -348,25 +348,23 @@ export const usePlantillaService = () => {
   };
 
 
-  const clonarPlantillaService = async (data) => {
+  const clonarPlantillaService =  useCallback( async (data) => {
     try {
       console.log("siiiiiiiiii");
-      console.log(data);
       const response = await clonarPlantillaAPI(
         data,
         JSON.parse(sessionStorage.getItem("ACCSSTKN")).access_token
       );
+      if (response.status){
+        fetchPlantillas(true)
+      }
       console.log(response);
-
-      setRespuestaModalOk({ msg: response.msg, status: response.status });
-      setEstaActivoModalOk(true);
-      setEstaActivoModalClonar(false);
       console.log("sipasa");
       return response;
     } catch (error) {
       console.error(error);
     }
-  };
+  },[fetchPlantillas]);
 
   const deshabilitarPlantilla = async (idPlantilla) => {
     try {

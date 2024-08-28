@@ -1,15 +1,7 @@
-import React, { useState, useEffect } from "react";
-import Typography from "@mui/material/Typography";
-import Button from "@mui/material/Button";
-import { Grid, TextField, Box, Modal } from "@mui/material";
+import { Typography, Button, Grid, TextField, Box, Modal } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { usePlantillaService } from "../../../hooks/usePlantillaService";
 import LoadingComponent from "../../LoadingComponent";
-import {
-  handleOnChangeInputIds,
-  handleOnChangeInputTextoNumero,
-} from "../../../utils";
-import ListaPlantillas from "../ListaPlatillas";
 
 const ModalClonarPlantilla = ({
   activo,
@@ -19,11 +11,10 @@ const ModalClonarPlantilla = ({
   plantillaAClonar,
   setEstaActivoModalOk,
   setRespuestaModalOk,
-  setSelectedComponent,
+  setClonacionExitosa
 }) => {
   const { isLoading, clonarPlantilla } = usePlantillaService(onResponse);
 
-  const [abierto, setAbierto] = useState(activo);
   const {
     register,
     handleSubmit,
@@ -31,9 +22,6 @@ const ModalClonarPlantilla = ({
     reset,
   } = useForm();
 
-  useEffect(() => {
-    setAbierto(activo);
-  }, [activo]);
 
   const onSubmit = async (data) => {
     const newData = {
@@ -42,37 +30,29 @@ const ModalClonarPlantilla = ({
       creadoPor: auth.correo,
     };
     const response = await clonarPlantilla(newData);
-    console.log("33", response);
+    console.log("response23",response)
 
-    setEstaActivoModalOk(true);
-    setRespuestaModalOk(response);
+
     if (response.status) {
-      setSelectedComponent(
-        <ListaPlantillas
-          setSelectedComponent={setSelectedComponent}
-          onResponse={onResponse}
-          auth={auth}
-        ></ListaPlantillas>
-      );
+        setEstaActivoModalOk(true);
+        setRespuestaModalOk(response);
+        setClonacionExitosa(true)
+    
     }
-    onClose();
+    handleCerrarModal();
   };
 
   const handleCerrarModal = () => {
-    setAbierto(false);
-    if (onClose) {
-      onClose();
-    }
+
+    if (onClose) onClose();
     reset();
   };
 
-  if (isLoading) {
-    return <LoadingComponent />;
-  }
+  if (isLoading) return <LoadingComponent />;
 
   return (
     <Modal
-      open={abierto}
+      open={activo}
       onClose={handleCerrarModal}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
@@ -96,20 +76,15 @@ const ModalClonarPlantilla = ({
         <form onSubmit={handleSubmit(onSubmit)}>
           <Grid container spacing={2} p={1} justifyContent="center">
             <Grid item xs={12}>
-              <Typography
-                variant="body1"
-                component="div"
-                sx={{ marginBottom: 2 }}
-              >
+              <Typography variant="body1" sx={{ marginBottom: 2 }}>
                 Colocar nombre a plantilla a generar
               </Typography>
               <Typography
                 variant="body1"
-                component="div"
                 fontWeight={600}
                 sx={{ marginBottom: 2 }}
               >
-                {"Platilla a clonar (" + plantillaAClonar.nombrePlantilla + ")"}
+                {`Platilla a clonar (${plantillaAClonar.nombrePlantilla})`}
               </Typography>
             </Grid>
             <Grid item xs={12}>
@@ -118,11 +93,10 @@ const ModalClonarPlantilla = ({
                 label="ID de la nueva plantilla"
                 variant="outlined"
                 fullWidth
-                error={errors.idPlantillaInterno ? true : false}
+                error={!!errors.idPlantillaInterno}
                 helperText={
                   errors.idPlantillaInterno ? "Este campo es requerido" : ""
                 }
-                onChange={handleOnChangeInputIds}
               />
             </Grid>
             <Grid item xs={12}>
@@ -131,20 +105,14 @@ const ModalClonarPlantilla = ({
                 label="Nombre de la nueva plantilla"
                 variant="outlined"
                 fullWidth
-                error={errors.nombrePlantilla ? true : false}
+                error={!!errors.nombrePlantilla}
                 helperText={
                   errors.nombrePlantilla ? "Este campo es requerido" : ""
                 }
-                onChange={handleOnChangeInputTextoNumero}
               />
             </Grid>
             <Grid item xs={12}>
-              <Button
-                type="submit"
-                variant="contained"
-                fullWidth
-                sx={{ height: "50px" }}
-              >
+              <Button type="submit" variant="contained" fullWidth sx={{ height: "50px" }}>
                 Clonar
               </Button>
             </Grid>

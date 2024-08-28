@@ -25,6 +25,7 @@ function ImprimirPlantilla(props) {
   useEffect(() => {
     fetchCodigos();
     fetchPlantilla(idPlantilla);
+
   }, [fetchCodigos, fetchPlantilla, idPlantilla]);
 
   const convertTextProgramacion = useCallback(() => {
@@ -49,8 +50,8 @@ function ImprimirPlantilla(props) {
           (match, idParametroInterno) => {
             console.log("match", match);
             if (match === "{noProgramacion}") {
-              return "_" + noProgramacion;
-            }
+              return "" + noProgramacion + "";
+            }        
             const objetoEncontrado = parametrosCombinados.find(
               (obj) => obj.idParametroInterno === idParametroInterno
             );
@@ -75,6 +76,7 @@ function ImprimirPlantilla(props) {
   }, [plantilla, codigos]);
 
   const convertTextGeneral = useCallback(() => {
+    console.log("plantilla",plantilla)
     if (!plantilla) {
       console.log("No hay plantilla disponible");
       return;
@@ -92,10 +94,18 @@ function ImprimirPlantilla(props) {
         ];
 
         const resultado = codigos[0]?.valor.replace(
-          /\{(\d+)\}/g,
+          
+          /\{(inicioSeleccionado|idPlantilla|\d+)\}/g,
           (match, idParametroInterno) => {
             console.log("match", match);
 
+            console.log("idPlantilla",idPlantilla)
+            if (match === "{idPlantilla}") {
+              return plantilla.idPlantillaInterno.toString(16);
+            }   
+            if (match === "{inicioSeleccionado}") {
+              return plantilla.programaSeleccionado;
+            }                
             const objetoEncontrado = parametrosCombinados.find(
               (obj) => obj.idParametroInterno === idParametroInterno
             );
@@ -116,7 +126,7 @@ function ImprimirPlantilla(props) {
       const blob = new Blob([resultado], { type: "text/plain;charset=utf-8" });
       saveAs(blob, `configuracionGeneralDelEquipo.txt`);
     });
-  }, [plantilla, codigos]);
+  }, [plantilla, codigos, idPlantilla]);
 
   useEffect(() => {
     if (plantilla && codigos && open) {

@@ -113,7 +113,10 @@ const EditarPlantilla = ({
     console.log("...onsub...", data);
     handleActualizarPlantilla({ idPlantilla: idPlantilla, ...data });
   };
-  const handleOnCLickSalir = () => setSelectedComponent(<Home />);
+  const handleOnCLickSalir = () => setSelectedComponent(<ListaPlantillas  
+    onResponse={onResponse}
+    auth={auth}
+    setSelectedComponent={setSelectedComponent}/>);
   const {
     register,
     handleSubmit,

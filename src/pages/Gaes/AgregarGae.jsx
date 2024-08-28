@@ -12,7 +12,8 @@ const AgregarGae = ({ setSelectedComponent, onResponse }) => {
   const { isLoading, estaActivoModalOk, respuestaModalOk, handleCrearGae, cerrarModalOk } = useGaeService(onResponse);
   const { register, handleSubmit, formState: { errors } } = useForm();
 
-  const onSubmit = (data) => handleCrearGae(data);
+  const onSubmit = (data) => handleCrearGae({...data, estatus:true});
+
   const handleOnCLickSalir = () => setSelectedComponent(<Home />);
 
   if (isLoading) {

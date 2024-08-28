@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Grid, Paper, IconButton, Typography,Tab,Tabs, Dialog,Box } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 
@@ -72,8 +72,7 @@ const ListaPlantillas = ( { setSelectedComponent, auth, onResponse }) => {
     
   } = usePlantillaService(onResponse);  
 
-
-
+const [clonacionExitosa,setClonacionExitosa]= useState(false)
 const handleCloseListaNotas = (props) => {
   setAbrirListaNotas(false);
 };
@@ -84,9 +83,15 @@ const handleCloseListaNotas = (props) => {
   const handleCerrarImprimirPlantilla = (props) => {
     setAbrirImprimirPlantilla(false)
   };
+
   useEffect(() => {
     fetchPlantillas(true);
   }, [fetchPlantillas]);
+  useEffect(() => {
+    if(clonacionExitosa){
+      console.log("clonacionExitosa")
+    fetchPlantillas(true)}
+  }, [clonacionExitosa, fetchPlantillas]);
   const handleEditarPlantilla = (idPlantilla) => {
     setSelectedComponent(
       <EditarPlantilla
@@ -309,6 +314,7 @@ const handleCloseListaNotas = (props) => {
         onResponse={onResponse}
         setEstaActivoModalOk={setEstaActivoModalOk}
         setRespuestaModalOk={setRespuestaModalOk}
+        setClonacionExitosa={setClonacionExitosa}
       />   
          
     </>
