@@ -99,9 +99,11 @@ function ImprimirPlantilla(props) {
           (match, idParametroInterno) => {
             console.log("match", match);
 
-            console.log("idPlantilla",idPlantilla)
+            console.log("idPlantilla",plantilla.idPlantillaInterno)
             if (match === "{idPlantilla}") {
-              return (plantilla.idPlantillaInterno).toString(16);
+              console.log("Id Interno",plantilla.idPlantillaInterno)
+              console.log("HEX",parseInt(plantilla.idPlantillaInterno).toString(16))
+              return parseInt(plantilla.idPlantillaInterno).toString(16).toUpperCase();
             }   
             if (match === "{inicioSeleccionado}") {
               return plantilla.programaSeleccionado;
