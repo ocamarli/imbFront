@@ -128,7 +128,7 @@ function ImprimirPlantilla(props) {
       const blob = new Blob([resultado], { type: "text/plain;charset=utf-8" });
       saveAs(blob, `configuracionGeneralDelEquipo.txt`);
     });
-  }, [plantilla, codigos, idPlantilla]);
+  }, [plantilla, codigos]);
 
   useEffect(() => {
     if (plantilla && codigos && open) {
