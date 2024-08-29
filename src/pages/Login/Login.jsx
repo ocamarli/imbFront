@@ -22,8 +22,8 @@ function Copyright(props) {
       {...props}
     >
       {"Copyright © "}
-      <Link color="inherit" href="https://mx.imberacooling.com/">
-        Imbera
+      <Link color="inherit" href="https://vikkon.com.mx/">
+      Powered by vikkon
       </Link>{" "}
       {new Date().getFullYear()}
       {"."}
