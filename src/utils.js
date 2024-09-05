@@ -26,7 +26,7 @@ export const formatearFecha = (fecha) => {
       event.target.value = inputValue.slice(0, -1);
     }
   };
-  export const handleOnChangeInputIds = (event) => {
+  export const handleOnChangeInputIdPlantilla = (event) => {
     // Expresión regular que permite cuatro dígitos donde el primer dígito no puede ser cero
     const regex = /^[1-9]\d{0,6}$/;
     const inputValue = event.target.value;
@@ -40,6 +40,20 @@ export const formatearFecha = (fecha) => {
       event.target.value = inputValue.slice(0, -1);
     }
   };
+  export const handleOnChangeInputIds = (event) => {
+    // Expresión regular que permite cuatro dígitos donde el primer dígito no puede ser cero
+    const regex = /^[1-9]\d{0,6}$/;
+    const inputValue = event.target.value;
+  console.log("onChange")
+    // Validar si el texto ingresado cumple con la expresión regular
+    if (regex.test(inputValue)) {
+      // Si cumple, establecer el valor en el campo de texto
+      event.target.value = inputValue;
+    } else {
+      // Si no cumple, eliminar el último caracter ingresado
+      event.target.value = inputValue.slice(0, -1);
+    }
+  };  
   export const handleOnChangeInputTextoNumero = (event) => {
     // Expresión regular que permite letras, números, espacios, guiones bajos y guiones medios
     const regex = /^[A-Za-z0-9\s_-]*$/;
