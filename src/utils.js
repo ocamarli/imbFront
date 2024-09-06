@@ -56,7 +56,7 @@ export const formatearFecha = (fecha) => {
   };  
   export const handleOnChangeInputTextoNumero = (event) => {
     // Expresión regular que permite letras, números, espacios, guiones bajos y guiones medios
-    const regex = /^[A-Za-z0-9\s_-]*$/;
+    const regex = /^[A-Za-zñÑáéíóúÁÉÍÓÚ0-9\s_-]*$/;
     const inputValue = event.target.value;
   
     // Validar si el texto ingresado cumple con la expresión regular

@@ -6,7 +6,7 @@ import ListaGaes from './ListaGaes';
 import ModalGenerico from '../../components/ModalGenerico';
 import { useGaeService } from '../../hooks/useGaeServices';
 import LoadingComponent from '../LoadingComponent';
-import { handleOnChangeInputTexto, handleOnChangeInputTextoNumero } from '../../utils';
+import { handleOnChangeInputTextoNumero } from '../../utils';
 
 const AgregarGae = ({ setSelectedComponent, onResponse,auth }) => {
   const { isLoading, estaActivoModalOk, respuestaModalOk, handleCrearGae, cerrarModalOk } = useGaeService(onResponse);
@@ -58,7 +58,7 @@ const AgregarGae = ({ setSelectedComponent, onResponse,auth }) => {
             variant="outlined"
             error={errors.nombre}
             helperText={errors.nombre && "Este campo es requerido"}
-            onChange={handleOnChangeInputTexto}
+            onChange={handleOnChangeInputTextoNumero}
           />
         </Grid>
         <Grid item xs={12}>
