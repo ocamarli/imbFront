@@ -2,7 +2,7 @@ import { Typography, Button, Grid, TextField, Box, Modal } from "@mui/material";
 import { useForm } from "react-hook-form";
 import { usePlantillaService } from "../../../hooks/usePlantillaService";
 import LoadingComponent from "../../LoadingComponent";
-
+import { handleOnChangeInputTextoNumero } from "../../../utils";
 const ModalClonarPlantilla = ({
   activo,
   onClose,
@@ -97,6 +97,7 @@ const ModalClonarPlantilla = ({
                 helperText={
                   errors.idPlantillaInterno ? "Este campo es requerido" : ""
                 }
+                onChange={handleOnChangeInputTextoNumero}
               />
             </Grid>
             <Grid item xs={12}>
