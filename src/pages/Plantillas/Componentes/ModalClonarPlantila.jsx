@@ -110,6 +110,7 @@ const ModalClonarPlantilla = ({
                 helperText={
                   errors.nombrePlantilla ? "Este campo es requerido" : ""
                 }
+                onChange={handleOnChangeInputTextoNumero}
               />
             </Grid>
             <Grid item xs={12}>
