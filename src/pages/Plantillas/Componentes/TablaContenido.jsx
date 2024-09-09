@@ -37,7 +37,7 @@ const TablaContenido = ({ idPlantilla, checkboxSeleccionados, onResponse,estaCon
         // Si cumple con el patrón o está vacío, actualizar el valor en el estado
         if (nuevoValor >= valorMin && nuevoValor <= valorMax) {
           console.log("ok");
-          fetchActualizarParametroPlantilla(idPlantilla, idParametro, nuevoValor, noProgramacion,true);          
+          fetchActualizarParametroPlantilla(idPlantilla, idParametro, nuevoValor.toString(), noProgramacion,true);          
         } else {
           setRespuestaModalOk({ msg: "¡Valor no valido!", status: false });
           setEstaActivoModalOk(true);
