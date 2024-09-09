@@ -22,6 +22,7 @@ function transformarDatos(plantillas) {
   return plantillas.map((plantilla, index) => {
     return {
       id: index + 1 || "",
+      idPlantillaInterno: plantilla.idPlantillaInterno || "",
       nombrePlantilla: plantilla.nombrePlantilla || "",
       plantilla: plantilla.plantilla || "",
       firmware: plantilla.firmware || "",
@@ -144,6 +145,7 @@ const handleCloseListaNotas = (props) => {
   };  
   const columnsActivas = [
     { field: "id", headerName: "ID" },
+    { field: "idPlantillaInterno", headerName: "ID plantilla" },    
     { field: "nombrePlantilla", headerName: "Nombre" , width:250},
     { field: "firmware", headerName: "Firmware" },
     { field: "hardware", headerName: "Hardware" },
