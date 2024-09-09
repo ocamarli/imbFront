@@ -168,7 +168,7 @@ const ListaHardwares = ({ setSelectedComponent, auth, onResponse }) => {
         <Paper style={{ padding: 20 }}>
           <Grid container spacing={3}>
             <Grid item xs={8} sx={{ display: "flex", justifyContent: "left" }}>
-              <UsuarioAutorizado usuario={auth} permisosRequeridos={["superusuario"]}>
+              <UsuarioAutorizado usuario={auth} permisosRequeridos={["system"]}>
                 <Tabs value={activeTab} onChange={handleTabChange}>
                   <Tab label="Activos" value={1} />
                   <Tab label="Deshabilitados" value={0} />

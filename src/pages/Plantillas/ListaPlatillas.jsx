@@ -189,7 +189,7 @@ const handleCloseListaNotas = (props) => {
             : handleCongelar(params.row.idPlantilla)
           }
         >
-          {params.row.estaCongelado ? <UsuarioAutorizado usuario={auth} permisosRequeridos={["system","superusuario","laboratorio"]}><LockIcon /></UsuarioAutorizado> :  <UsuarioAutorizado usuario={auth} permisosRequeridos={["system","superusuario"]}><UnlockIcon /></UsuarioAutorizado> } 
+          {params.row.estaCongelado ? <UsuarioAutorizado usuario={auth} permisosRequeridos={["electrico","system","superusuario","laboratorio"]}><LockIcon /></UsuarioAutorizado> :  <UsuarioAutorizado usuario={auth} permisosRequeridos={["system","superusuario"]}><UnlockIcon /></UsuarioAutorizado> } 
         </IconButton>
 </Box>
       ),
