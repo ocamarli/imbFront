@@ -46,14 +46,14 @@ function ImprimirPlantilla(props) {
         ];
 
         const resultado = codigos[1]?.valor.replace(
-          /\{(noProgramacion|idGae\d+)\}/g,
+          /\{(noProgramacion|idGae|\d+)\}/g,
           (match, idParametroInterno) => {
             console.log("match", match);
             if (match === "{noProgramacion}") {
               return "" + noProgramacion + "";
-            }   
+            }        
             if (match === "{idGae}") {
-              return parseInt(plantilla.gae);
+              return "" + plantilla.gae + "";
             }                    
             const objetoEncontrado = parametrosCombinados.find(
               (obj) => obj.idParametroInterno === idParametroInterno
@@ -98,7 +98,7 @@ function ImprimirPlantilla(props) {
 
         const resultado = codigos[0]?.valor.replace(
           
-          /\{(inicioSeleccionado|idPlantilla|idGae\d+)\}/g,
+          /\{(inicioSeleccionado|idPlantilla|\d+)\}/g,
           (match, idParametroInterno) => {
             console.log("match", match);
 
@@ -108,11 +108,6 @@ function ImprimirPlantilla(props) {
               console.log("HEX",parseInt(plantilla.idPlantillaInterno).toString(16))
               return parseInt(plantilla.idPlantillaInterno).toString(16).toUpperCase();
             }   
-            if (match === "{idGae}") {
-              console.log("Id Interno",plantilla.gae)
-              console.log("HEX",parseInt(plantilla.gae).toString(16))
-              return parseInt(plantilla.gae).toString(16).toUpperCase();
-            }               
             if (match === "{inicioSeleccionado}") {
               return plantilla.programaSeleccionado;
             }                
