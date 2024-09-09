@@ -339,6 +339,7 @@ const EditarPlantilla = ({
                   ]}
                 >
                   <Grid item xs={12}>
+
                     <Button
                       size="small"
                       disabled={estaCongelado}
@@ -384,7 +385,7 @@ const EditarPlantilla = ({
                   </Button>
                 </Grid>
                 <Divider orientation="vertical" flexItem />
-
+                <UsuarioAutorizado usuario={auth} permisosRequeridos={["system","superusuario"]}>
                 <Grid item xs={12}>
                   <Button
                     size="small"
@@ -405,6 +406,7 @@ const EditarPlantilla = ({
                     {estaCongelado ? "Congelado" : "Congelar"}
                   </Button>
                 </Grid>
+                </UsuarioAutorizado>
                 <Grid item xs={6}>
                   <GrupoCheckbox
                     setCheckboxSeleccionado={setCheckboxSeleccionados}
