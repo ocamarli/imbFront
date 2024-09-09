@@ -33,7 +33,8 @@ const TablaContenido = ({ idPlantilla, checkboxSeleccionados, onResponse,estaCon
     console.log("NV",nuevoValor)
     console.log("parametro",parametro)
     if (tipoCampo === "rango") {
-      if (/^-?(0|[1-9][0-9]*)(\.[0-9]+)?$/.test(nuevoValor) ) {
+      
+      if (/^-?[0-9]*(\.[0-9]+)?$/.test(nuevoValor) ) {
         // Si cumple con el patrón o está vacío, actualizar el valor en el estado
         if (nuevoValor >= valorMin && nuevoValor <= valorMax) {
           console.log("ok");
