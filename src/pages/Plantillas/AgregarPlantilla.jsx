@@ -12,7 +12,7 @@ import {
 } from "@mui/material";
 
 import HeaderContent from "../HeaderContent";
-import { handleOnChangeInputIds, handleOnChangeInputTextoNumero } from "../../utils.js";
+import { handleOnChangeInputTextoNumero } from "../../utils.js";
 import ListaPlantillas from "./ListaPlatillas.jsx";
 import { usePlantillaService } from "../../hooks/usePlantillaService.jsx";
 import { useParametroService } from "../../hooks/useParametroService.jsx";
