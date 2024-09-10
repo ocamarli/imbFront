@@ -78,16 +78,37 @@ const EditarUsuario = ({ idUsuario, setSelectedComponent, onResponse , auth}) =>
         <Grid item xs={12}>
           <Typography variant="h6" gutterBottom>Autorizaciones</Typography>
           <FormControl component="fieldset">
-            <FormGroup row>
-              {Object.keys(autorizaciones).map((key) => (
-                <FormControlLabel
-                  key={key}
-                  control={<Checkbox checked={autorizaciones[key]} onChange={handleCheckboxChange} name={key} />}
-                  label={key.charAt(0).toUpperCase() + key.slice(1)}
-                />
-              ))}
-            </FormGroup>
-          </FormControl>
+  <FormGroup row>
+    {Object.keys(auth.permisos).map((key) => {
+      console.log("key", key);
+      
+      // Mostrar el checkbox de 'system' solo si auth.permisos.system es true
+      if (key === 'system' && !auth.permisos.system) {
+        return null; // No mostrar el checkbox de 'system' si no tiene permisos
+      }
+
+      // No mostrar el checkbox 'superusuario' si auth.permisos.superusuario es true
+      if (key === 'superusuario' && auth.permisos.superusuario) {
+        return null; // No mostrar el checkbox de 'superusuario' si tiene permisos
+      }
+
+      // Renderizar todos los checkboxes restantes
+      return (
+        <FormControlLabel
+          key={key}
+          control={
+            <Checkbox
+              checked={autorizaciones[key]}
+              onChange={handleCheckboxChange}
+              name={key}
+            />
+          }
+          label={key.charAt(0).toUpperCase() + key.slice(1)}
+        />
+      );
+    })}
+  </FormGroup>
+</FormControl>
         </Grid>
         <Grid item xs={12}>
           <Grid container sx={{ justifyContent: "space-around" }} spacing={2}>

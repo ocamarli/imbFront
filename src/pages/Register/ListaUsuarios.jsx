@@ -86,7 +86,8 @@ const ListaUsuarios = ({ setSelectedComponent, auth, onResponse }) => {
 
   const renderUserList = () => (
     <List sx={{ width: "100%" }}>
-      {usuarios.map((usuario, index) => (
+      {usuarios.filter(usuario => !(usuario.correo === "system" && !auth.permisos.system))
+      .map((usuario, index) => (
         <React.Fragment key={index}>
           <ListItem alignItems="flex-start">
             <Grid container>
