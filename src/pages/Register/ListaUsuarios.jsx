@@ -14,6 +14,7 @@ import { useUsuarioService } from "../../hooks/useUsuarioService.jsx";
 import LoadingComponent from "../LoadingComponent.jsx";
 
 const ListaUsuarios = ({ setSelectedComponent, auth, onResponse }) => {
+
   const theme = useTheme();
   const {
     activeTab,
@@ -39,7 +40,7 @@ const ListaUsuarios = ({ setSelectedComponent, auth, onResponse }) => {
   }, [fetchUsuarios]);
 
   const handleClickAgregarUsuario = () => {
-    setSelectedComponent(<AgregarUsuario setSelectedComponent={setSelectedComponent} />);
+    setSelectedComponent(<AgregarUsuario setSelectedComponent={setSelectedComponent} auth={auth} />);
   };
 
   const handleEditarUsuario = (idUsuario) => {

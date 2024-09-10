@@ -93,16 +93,28 @@ const AgregarUsuario = ({ setSelectedComponent, onResponse ,auth}) => {
             Autorizaciones
           </Typography>
           <FormControl component="fieldset">
-            <FormGroup row>
-              {Object.keys(autorizaciones).map((key) => (
-                <FormControlLabel
-                  key={key}
-                  control={<Checkbox checked={autorizaciones[key]} onChange={handleCheckboxChange} name={key} />}
-                  label={key.charAt(0).toUpperCase() + key.slice(1)}
-                />
-              ))}
-            </FormGroup>
-          </FormControl>
+      <FormGroup row>
+        {Object.keys(auth.permisos).map((key) => {
+          
+          if (key !== 'superusuario') {
+            return (
+              <FormControlLabel
+                key={key}
+                control={
+                  <Checkbox
+                    checked={autorizaciones[key]}
+                    onChange={handleCheckboxChange}
+                    name={key}
+                  />
+                }
+                label={key.charAt(0).toUpperCase() + key.slice(1)}
+              />
+            );
+          }
+          return null; // No renderizar el checkbox 'superusuario' si el usuario no es 'system'
+        })}
+      </FormGroup>
+    </FormControl>
         </Grid>
         <Grid item xs={12}>
           <Grid container sx={{ justifyContent: "space-around" }} spacing={2}>

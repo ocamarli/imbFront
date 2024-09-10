@@ -207,7 +207,7 @@ export const usePlantillaService = () => {
       try {
         const tkn = JSON.parse(
           sessionStorage.getItem("ACCSSTKN")
-        )?.access_token;
+        )?.access_token; 
         if (tkn !== undefined) {
           console.log("actualizarParametro");
           console.log(idPlantilla);
