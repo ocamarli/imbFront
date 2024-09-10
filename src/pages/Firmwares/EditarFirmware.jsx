@@ -6,7 +6,7 @@ import HeaderContent from "../HeaderContent";
 import { useFirmwareService } from "../../hooks/useFirmwareService";
 import ListaFirmwares from '../Firmwares/ListaFirmwares';
 import ModalGenerico from "../../components/ModalGenerico";
-import { handleOnChangeInputTexto, handleOnChangeInputIds } from "../../utils.js";
+import { handleOnChangeInputTextoNumero, handleOnChangeInputIds } from "../../utils.js";
 
 const EditarFirmware = ({ idFirmware, setSelectedComponent, onResponse ,auth}) => {
   const { handleEditarFirmware, firmware, fetchFirmware, cerrarModalOk, estaActivoModalOk, respuestaModalOk } = useFirmwareService(onResponse);
@@ -65,7 +65,7 @@ const EditarFirmware = ({ idFirmware, setSelectedComponent, onResponse ,auth}) =
             variant="outlined"
             error={!!errors.nombre}
             helperText={errors.nombre && "Este campo es requerido"}
-            onChange={handleOnChangeInputTexto}
+            onChange={handleOnChangeInputTextoNumero}
             defaultValue={firmware.nombre}
             name="nombre"
           />

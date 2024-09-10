@@ -103,7 +103,7 @@ const AgregarPlantilla = ({ setSelectedComponent, onResponse, auth }) => {
                   variant="outlined"
                   error={errors.idPlantillaInterno}
                   helperText={errors.idPlantillaInterno && "Este campo es requerido"}
-                  onChange={handleOnChangeInputIds} 
+                  onChange={handleOnChangeInputTextoNumero} 
                 />
               </Grid>
               <Grid item xs={6}>

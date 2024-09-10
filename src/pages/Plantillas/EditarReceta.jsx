@@ -6,9 +6,6 @@ import {
   FormControl,
   Grid,
   Paper,
-  FormGroup,
-  FormControlLabel,
-  Checkbox,
   Select,
   MenuItem,
   Typography,
@@ -21,6 +18,7 @@ import { obtenerParametros } from "../../api/parametrosApi";
 import HeaderContent from "../HeaderContent";
 import LockIcon from "@mui/icons-material/Lock";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
+import { handleOnChangeInputTextoNumero } from "../../utils";
 const EditarPlantilla = (props) => {
   const { onResponse, auth } = props;
   const [isLoading, setIsLoading] = useState(false);
@@ -236,6 +234,7 @@ const EditarPlantilla = (props) => {
                 <Typography>Última nota</Typography>
                 <TextField
                   {...register("ultima_nota", { required: true })}
+                  onChange={handleOnChangeInputTextoNumero}
                   size="small"
                   fullWidth
                   placeholder="Última nota"
@@ -244,6 +243,7 @@ const EditarPlantilla = (props) => {
                   helperText={
                     errors.ultima_nota ? "Este campo es requerido" : ""
                   }
+  
                 />
               </Grid>
               <Grid item xs={6}>
@@ -278,6 +278,7 @@ const EditarPlantilla = (props) => {
                 <InputLabel>Usuario del propietario</InputLabel>
                 <TextField
                   {...register("propietario", { required: true })}
+                  onChange={handleOnChangeInputTextoNumero}
                   size="small"
                   fullWidth
                   placeholder="Usuario del propietario"
@@ -293,6 +294,7 @@ const EditarPlantilla = (props) => {
                 <InputLabel>Autoriza</InputLabel>
                 <TextField
                   {...register("autoriza", { required: true })}
+                  onChange={handleOnChangeInputTextoNumero}
                   size="small"
                   fullWidth
                   placeholder="Autoriza"

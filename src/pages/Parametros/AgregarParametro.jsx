@@ -9,7 +9,7 @@ import { useParametroService } from '../../hooks/useParametroService';
 import LoadingComponent from '../LoadingComponent';
 import AddOptions from './components/AddOptions';
 import ItemOptions from './components/ItemOptions';
-import { handleOnChangeInputIds, handleOnChangeInputTextoNumero } from '../../utils';
+import { handleOnChangeInputTextoNumero } from '../../utils';
 
 const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
   const {
@@ -104,7 +104,7 @@ const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
             fullWidth
             label="ID parámetro"
             variant="outlined"
-            onChange={handleOnChangeInputIds}
+            onChange={handleOnChangeInputTextoNumero}
             error={errors.idParametroInterno ? true : false}
             helperText={
               errors.idParametroInterno ? "Este campo es requerido" : ""

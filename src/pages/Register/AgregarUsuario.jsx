@@ -8,6 +8,7 @@ import { useUsuarioService } from "../../hooks/useUsuarioService.jsx";
 import { handleOnChangeInputTexto } from "../../utils.js";
 
 const AgregarUsuario = ({ setSelectedComponent, onResponse ,auth}) => {
+  console.log("auth",auth)
   const { cerrarModalOk, handleCrearUsuario, estaActivoModalOk, respuestaModalOk } = useUsuarioService(onResponse);
   const { register, handleSubmit, formState: { errors } } = useForm();
 
@@ -26,7 +27,7 @@ const AgregarUsuario = ({ setSelectedComponent, onResponse ,auth}) => {
   };
 
   const handleOnChangeCorreo = (e) => {
-    e.target.value = e.target.value.trim().toUpperCase();
+    e.target.value = e.target.value.trim();
   };
 
   const handleOnCLickSalir = () => {
@@ -93,28 +94,37 @@ const AgregarUsuario = ({ setSelectedComponent, onResponse ,auth}) => {
             Autorizaciones
           </Typography>
           <FormControl component="fieldset">
-      <FormGroup row>
-        {Object.keys(auth.permisos).map((key) => {
-          
-          if (key !== 'superusuario') {
-            return (
-              <FormControlLabel
-                key={key}
-                control={
-                  <Checkbox
-                    checked={autorizaciones[key]}
-                    onChange={handleCheckboxChange}
-                    name={key}
-                  />
-                }
-                label={key.charAt(0).toUpperCase() + key.slice(1)}
-              />
-            );
+  <FormGroup row>
+    {Object.keys(auth.permisos).map((key) => {
+      console.log("key", key);
+      
+      // Mostrar el checkbox de 'system' solo si auth.permisos.system es true
+      if (key === 'system' && !auth.permisos.system) {
+        return null; // No mostrar el checkbox de 'system' si no tiene permisos
+      }
+
+      // No mostrar el checkbox 'superusuario' si auth.permisos.superusuario es true
+      if (key === 'superusuario' && auth.permisos.superusuario) {
+        return null; // No mostrar el checkbox de 'superusuario' si tiene permisos
+      }
+
+      // Renderizar todos los checkboxes restantes
+      return (
+        <FormControlLabel
+          key={key}
+          control={
+            <Checkbox
+              checked={autorizaciones[key]}
+              onChange={handleCheckboxChange}
+              name={key}
+            />
           }
-          return null; // No renderizar el checkbox 'superusuario' si el usuario no es 'system'
-        })}
-      </FormGroup>
-    </FormControl>
+          label={key.charAt(0).toUpperCase() + key.slice(1)}
+        />
+      );
+    })}
+  </FormGroup>
+</FormControl>
         </Grid>
         <Grid item xs={12}>
           <Grid container sx={{ justifyContent: "space-around" }} spacing={2}>

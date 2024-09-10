@@ -6,7 +6,7 @@ import HeaderContent from "../HeaderContent";
 import { useGaeService } from "../../hooks/useGaeServices";
 import ListaGaes from './ListaGaes';
 import ModalGenerico from "../../components/ModalGenerico";
-import { handleOnChangeInputTexto, handleOnChangeInputIds, handleOnChangeInputTextoNumero } from "../../utils.js";
+import { handleOnChangeInputTexto, handleOnChangeInputTextoNumero } from "../../utils.js";
 
 const EditarGae = ({ idGae, setSelectedComponent, onResponse , auth}) => {
   const { handleEditarGae, gae, fetchGae, cerrarModalOk, estaActivoModalOk, respuestaModalOk } = useGaeService(onResponse);
@@ -50,7 +50,7 @@ const EditarGae = ({ idGae, setSelectedComponent, onResponse , auth}) => {
             variant="outlined"
             error={!!errors.idGaeInterno}
             helperText={errors.idGaeInterno && "Este campo es requerido"}
-            onChange={handleOnChangeInputIds}
+            onChange={handleOnChangeInputTextoNumero}
             defaultValue={gae.idGaeInterno}
             name="idGaeInterno"
             disabled
@@ -65,7 +65,7 @@ const EditarGae = ({ idGae, setSelectedComponent, onResponse , auth}) => {
             variant="outlined"
             error={!!errors.nombre}
             helperText={errors.nombre && "Este campo es requerido"}
-            onChange={handleOnChangeInputTexto}
+            onChange={handleOnChangeInputTextoNumero}
             defaultValue={gae.nombre}
             name="nombre"
           />

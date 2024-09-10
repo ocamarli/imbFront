@@ -7,7 +7,7 @@ import ListaFirmwares from '../Firmwares/ListaFirmwares';
 import ModalGenerico from '../../components/ModalGenerico';
 import { useFirmwareService } from '../../hooks/useFirmwareService';
 import LoadingComponent from '../LoadingComponent';
-import { handleOnChangeInputTexto, handleOnChangeInputIds } from '../../utils';
+import { handleOnChangeInputTextoNumero } from '../../utils';
 
 const AgregarFirmware = ({ setSelectedComponent, onResponse, auth }) => {
   const { isLoading, estaActivoModalOk, respuestaModalOk, handleCrearFirmware, cerrarModalOk } = useFirmwareService(onResponse);
@@ -46,7 +46,7 @@ const AgregarFirmware = ({ setSelectedComponent, onResponse, auth }) => {
             variant="outlined"
             error={errors.idFirmwareInterno}
             helperText={errors.idFirmwareInterno && "Este campo es requerido"}
-            onChange={handleOnChangeInputIds}
+            onChange={handleOnChangeInputTextoNumero}
           />
         </Grid>
         <Grid item xs={12}>
@@ -58,7 +58,7 @@ const AgregarFirmware = ({ setSelectedComponent, onResponse, auth }) => {
             variant="outlined"
             error={errors.nombre}
             helperText={errors.nombre && "Este campo es requerido"}
-            onChange={handleOnChangeInputTexto}
+            onChange={handleOnChangeInputTextoNumero}
           />
         </Grid>
         <Grid item xs={12}>

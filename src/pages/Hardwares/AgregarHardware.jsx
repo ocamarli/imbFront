@@ -6,7 +6,7 @@ import ListaHardwares from '../Hardwares/ListaHardwares'
 import ModalGenerico from '../../components/ModalGenerico';
 import { useHardwareService } from '../../hooks/useHardwareService';
 import LoadingComponent from '../LoadingComponent';
-import { handleOnChangeInputTexto, handleOnChangeInputIds} from '../../utils';
+import { handleOnChangeInputTextoNumero} from '../../utils';
 
 const AgregarHardware = ({ setSelectedComponent, onResponse, auth }) => {
   const { isLoading, estaActivoModalOk, respuestaModalOk, handleCrearHardware, cerrarModalOk } = useHardwareService(onResponse);
@@ -45,7 +45,7 @@ const AgregarHardware = ({ setSelectedComponent, onResponse, auth }) => {
             variant="outlined"
             error={errors.idHardwareInterno}
             helperText={errors.idHardwareInterno && "Este campo es requerido"}
-            onChange={handleOnChangeInputIds}
+            onChange={handleOnChangeInputTextoNumero}
           />
         </Grid>
         <Grid item xs={12}>
@@ -57,7 +57,7 @@ const AgregarHardware = ({ setSelectedComponent, onResponse, auth }) => {
             variant="outlined"
             error={errors.nombre}
             helperText={errors.nombre && "Este campo es requerido"}
-            onChange={handleOnChangeInputTexto}
+            onChange={handleOnChangeInputTextoNumero}
           />
         </Grid>
         <Grid item xs={12}>

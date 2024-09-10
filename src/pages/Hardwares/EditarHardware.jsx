@@ -6,7 +6,7 @@ import HeaderContent from "../HeaderContent";
 import { useHardwareService } from "../../hooks/useHardwareService";
 import ListaHardwares from '../Hardwares/ListaHardwares'
 import ModalGenerico from "../../components/ModalGenerico";
-import { handleOnChangeInputTexto, handleOnChangeInputIds} from "../../utils.js";
+import {handleOnChangeInputTextoNumero} from "../../utils.js";
 
 const EditarHardware = ({ idHardware, setSelectedComponent, onResponse , auth}) => {
   const { handleEditarHardware, hardware, fetchHardware, cerrarModalOk, estaActivoModalOk, respuestaModalOk } = useHardwareService(onResponse);
@@ -50,7 +50,7 @@ const EditarHardware = ({ idHardware, setSelectedComponent, onResponse , auth}) 
             variant="outlined"
             error={!!errors.idHardwareInterno}
             helperText={errors.idHardwareInterno && "Este campo es requerido"}
-            onChange={handleOnChangeInputIds}
+            onChange={handleOnChangeInputTextoNumero}
             defaultValue={hardware.idHardwareInterno}
             name="idHardwareInterno"
             disabled
@@ -65,7 +65,7 @@ const EditarHardware = ({ idHardware, setSelectedComponent, onResponse , auth}) 
             variant="outlined"
             error={!!errors.nombre}
             helperText={errors.nombre && "Este campo es requerido"}
-            onChange={handleOnChangeInputTexto}
+            onChange={handleOnChangeInputTextoNumero}
             defaultValue={hardware.nombre}
             name="nombre"
           />

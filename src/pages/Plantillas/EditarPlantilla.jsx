@@ -32,7 +32,7 @@ import { useHardwareService } from "../../hooks/useHardwareService.jsx";
 import { useGaeService } from "../../hooks/useGaeServices.jsx";
 import LoadingComponent from "../LoadingComponent.jsx";
 import ModalGenerico from "../../components/ModalGenerico.jsx";
-import { handleOnChangeInputIds } from "../../utils.js";
+import { handleOnChangeInputTextoNumero } from "../../utils.js";
 import ModalAgregarNota from "./Componentes/ModalAgregarNota.jsx";
 import ListaPlantillas from "./ListaPlatillas.jsx";
 import UsuarioAutorizado from "../../components/UsuarioAutorizado.jsx";
@@ -186,7 +186,7 @@ const EditarPlantilla = ({
                   <Typography>Id de plantilla</Typography>
                   <TextField
                     disabled
-                    onChange={handleOnChangeInputIds}
+                    onChange={handleOnChangeInputTextoNumero}
                     size="small"
                     fullWidth
                     placeholder="Id plantilla"
@@ -202,6 +202,7 @@ const EditarPlantilla = ({
                   <TextField
                     {...register("nombrePlantilla", { required: true })}
                     disabled={estaCongelado}
+                    onChange={handleOnChangeInputTextoNumero}
                     size="small"
                     fullWidth
                     defaultValue={plantilla?.nombrePlantilla || ""}
@@ -320,6 +321,7 @@ const EditarPlantilla = ({
                 <Grid item xs={6}>
                   <Typography>Última nota</Typography>
                   <TextField
+                  onChange={handleOnChangeInputTextoNumero}
                     disabled
                     value={ultimaNota}
                     size="small"
