@@ -13,7 +13,7 @@ import {
 
 import HeaderContent from "../HeaderContent";
 import { handleOnChangeInputTextoNumero } from "../../utils.js";
-import ListaPlantillas from "./ListaPlatillas.jsx";
+import ListaParametros from "../Parametros/ListaParametros.jsx";
 import { usePlantillaService } from "../../hooks/usePlantillaService.jsx";
 import { useParametroService } from "../../hooks/useParametroService.jsx";
 import { useHardwareService } from "../../hooks/useHardwareService.jsx";
@@ -266,11 +266,11 @@ const AgregarPlantilla = ({ setSelectedComponent, onResponse, auth }) => {
                       variant="contained"
                       sx={{ height: "50px" }}
                       fullWidth
-                      onClick={() => setSelectedComponent(        <ListaPlantillas
+                      onClick={() => setSelectedComponent(        <ListaParametros
                         onResponse={onResponse}
                         auth={auth}
                         setSelectedComponent={setSelectedComponent}
-                      ></ListaPlantillas>)}
+                      ></ListaParametros>)}
                     >
                       Salir
                     </Button>

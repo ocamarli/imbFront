@@ -25,7 +25,6 @@ function ImprimirPlantilla(props) {
   useEffect(() => {
     fetchCodigos();
     fetchPlantilla(idPlantilla);
-
   }, [fetchCodigos, fetchPlantilla, idPlantilla]);
 
   const convertTextProgramacion = useCallback(() => {
@@ -51,10 +50,10 @@ function ImprimirPlantilla(props) {
             console.log("match", match);
             if (match === "{noProgramacion}") {
               return "" + noProgramacion + "";
-            }        
+            }
             if (match === "{idGae}") {
               return "" + plantilla.gae + "";
-            }                    
+            }
             const objetoEncontrado = parametrosCombinados.find(
               (obj) => obj.idParametroInterno === idParametroInterno
             );
@@ -69,9 +68,9 @@ function ImprimirPlantilla(props) {
       }
     );
 
-    console.log("Resultados", resultadosCodigoProgramaciones);
+    console.log("Resultados de Programaciones", resultadosCodigoProgramaciones);
 
-    // Generar y descargar un archivo para cada resultado
+    // Generar y descargar un archivo para cada resultado de programación
     resultadosCodigoProgramaciones.forEach(({ noProgramacion, resultado }) => {
       const blob = new Blob([resultado], { type: "text/plain;charset=utf-8" });
       saveAs(blob, `receta${noProgramacion}.txt`);
@@ -79,64 +78,48 @@ function ImprimirPlantilla(props) {
   }, [plantilla, codigos]);
 
   const convertTextGeneral = useCallback(() => {
-    console.log("plantilla",plantilla)
+    console.log("plantilla", plantilla);
     if (!plantilla) {
       console.log("No hay plantilla disponible");
       return;
     }
 
-    const resultadosCodigoGeneral = plantilla.programasHabilitados.map(
-      (noProgramacion) => {
-        const parametrosProgramacion = obtenerParametrosProgramacion(
-          plantilla,
-          noProgramacion
+    const parametrosCombinados = [
+      ...plantilla.parametrosGenerales,
+      ...plantilla.programasHabilitados.flatMap((noProgramacion) =>
+        obtenerParametrosProgramacion(plantilla, noProgramacion)
+      ),
+    ];
+
+    const resultado = codigos[0]?.valor.replace(
+      /\{(inicioSeleccionado|idPlantilla|\d+)\}/g,
+      (match, idParametroInterno) => {
+        console.log("match", match);
+
+        if (match === "{idPlantilla}") {
+          return parseInt(plantilla.idPlantillaInterno).toString(16).toUpperCase();
+        }
+        if (match === "{inicioSeleccionado}") {
+          return plantilla.programaSeleccionado;
+        }
+        const objetoEncontrado = parametrosCombinados.find(
+          (obj) => obj.idParametroInterno === idParametroInterno
         );
-        const parametrosCombinados = [
-          ...plantilla.parametrosGenerales,
-          ...parametrosProgramacion,
-        ];
-
-        const resultado = codigos[0]?.valor.replace(
-          
-          /\{(inicioSeleccionado|idPlantilla|\d+)\}/g,
-          (match, idParametroInterno) => {
-            console.log("match", match);
-
-            console.log("idPlantilla",plantilla.idPlantillaInterno)
-            if (match === "{idPlantilla}") {
-              console.log("Id Interno",plantilla.idPlantillaInterno)
-              console.log("HEX",parseInt(plantilla.idPlantillaInterno).toString(16))
-              return parseInt(plantilla.idPlantillaInterno).toString(16).toUpperCase();
-            }   
-            if (match === "{inicioSeleccionado}") {
-              return plantilla.programaSeleccionado;
-            }                
-            const objetoEncontrado = parametrosCombinados.find(
-              (obj) => obj.idParametroInterno === idParametroInterno
-            );
-            return objetoEncontrado ? objetoEncontrado.valor : match;
-          }
-        );
-
-        return {
-          resultado,
-        };
+        return objetoEncontrado ? objetoEncontrado.valor : match;
       }
     );
 
-    console.log("Resultados", resultadosCodigoGeneral);
+    console.log("Resultado General", resultado);
 
-    // Generar y descargar un archivo para cada resultado
-    resultadosCodigoGeneral.forEach(({ resultado }) => {
-      const blob = new Blob([resultado], { type: "text/plain;charset=utf-8" });
-      saveAs(blob, `configuracionGeneralDelEquipo.txt`);
-    });
+    // Generar y descargar el archivo de configuración general
+    const blob = new Blob([resultado], { type: "text/plain;charset=utf-8" });
+    saveAs(blob, `configuracionGeneralDelEquipo.txt`);
   }, [plantilla, codigos]);
 
   useEffect(() => {
     if (plantilla && codigos && open) {
-      convertTextProgramacion();
-      convertTextGeneral();
+      convertTextProgramacion(); // Descargar archivos para cada programación
+      convertTextGeneral(); // Descargar archivo general solo una vez
       handleClose();
     }
   }, [plantilla, codigos, open, convertTextGeneral, convertTextProgramacion, handleClose]);

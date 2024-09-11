@@ -136,7 +136,8 @@ function ListaParametros({setSelectedComponent, auth,onResponse }) {
   }
 
   const handleClickOpen = () => {
-    setSelectedComponent(<AgregarParametro></AgregarParametro>)
+    setSelectedComponent(<AgregarParametro       setSelectedComponent={setSelectedComponent}
+      auth={auth} ></AgregarParametro>)
     //setOpen(true);
   };
 
