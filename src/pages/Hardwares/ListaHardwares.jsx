@@ -175,6 +175,7 @@ const ListaHardwares = ({ setSelectedComponent, auth, onResponse }) => {
                 </Tabs>
               </UsuarioAutorizado>
             </Grid>
+            <UsuarioAutorizado usuario={auth} permisosRequeridos={["system"]}>
             <Grid
               item
               xs={4}
@@ -198,6 +199,7 @@ const ListaHardwares = ({ setSelectedComponent, auth, onResponse }) => {
                 <AddIcon />
               </IconButton>
             </Grid>
+            </UsuarioAutorizado>
             <Grid item xs={12}>
               <DataGrid
                 sx={{ maxHeight: "calc(100vh - 330px)", width: "100%" }}

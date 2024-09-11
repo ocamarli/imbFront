@@ -257,7 +257,7 @@ const AgregarPlantilla = ({ setSelectedComponent, onResponse, auth }) => {
                       sx={{ height: "50px" }}
                       fullWidth
                     >
-                      Guardar cambios y continuar
+                      AGREGAR
                     </Button>
                   </Grid>
                   <Grid item xs={6}>

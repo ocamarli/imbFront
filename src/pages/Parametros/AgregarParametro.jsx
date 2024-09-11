@@ -3,15 +3,15 @@ import { useForm } from 'react-hook-form';
 import { TextField, Button, Grid, Paper, FormLabel, FormControl, InputLabel, MenuItem, FormHelperText, Select, RadioGroup, FormControlLabel, Radio, Dialog, IconButton } from '@mui/material';
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import HeaderContent from '../HeaderContent';
-import Home from '../Home/Home';
+import ListaPlantillas from '../Plantillas/ListaPlatillas';
 import ModalGenerico from '../../components/ModalGenerico';
 import { useParametroService } from '../../hooks/useParametroService';
 import LoadingComponent from '../LoadingComponent';
 import AddOptions from './components/AddOptions';
 import ItemOptions from './components/ItemOptions';
-import { handleOnChangeInputTextoNumero } from '../../utils';
+import { handleOnChangeInputTextoNumero, handleOnChangeInputTextoNumeroMinusculas } from '../../utils';
 
-const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
+const AgregarParametro = ({ setSelectedComponent, onResponse, auth }) => {
   const {
     isLoading,
     estaActivoModalOk,
@@ -78,7 +78,6 @@ const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
     handleCrearParametro(newData);
   };
 
-  const handleOnCLickSalir = () => setSelectedComponent(<Home />);
 
   if (isLoading) {
     return <LoadingComponent />;
@@ -117,7 +116,7 @@ const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
             fullWidth
             label="Descripción"
             variant="outlined"
-            onChange={handleOnChangeInputTextoNumero}
+            onChange={handleOnChangeInputTextoNumeroMinusculas}
             error={errors.descripcion ? true : false}
             helperText={errors.descripcion ? "Este campo es requerido" : ""}
           />
@@ -362,9 +361,19 @@ const AgregarParametro = ({ setSelectedComponent, onResponse }) => {
               </Button>
             </Grid>
             <Grid item xs={6}>
-              <Button color="error" variant="contained" sx={{ height: "50px" }} fullWidth onClick={handleOnCLickSalir}>
-                Salir
-              </Button>
+            <Button
+                      color="error"
+                      variant="contained"
+                      sx={{ height: "50px" }}
+                      fullWidth
+                      onClick={() => setSelectedComponent(        <ListaPlantillas
+                        onResponse={onResponse}
+                        auth={auth}
+                        setSelectedComponent={setSelectedComponent}
+                      ></ListaPlantillas>)}
+                    >
+                      Salir
+                    </Button>
             </Grid>
           </Grid>
         </Grid>

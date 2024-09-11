@@ -68,6 +68,20 @@ export const formatearFecha = (fecha) => {
       event.target.value = inputValue.slice(0, -1);
     }
   };
+  export const handleOnChangeInputTextoNumeroMinusculas = (event) => {
+    // Expresión regular que permite letras, números, espacios, guiones bajos y guiones medios
+    const regex = /^[A-Za-zñÑáéíóúÁÉÍÓÚ0-9\s_-]*$/;
+    const inputValue = event.target.value;
+  
+    // Validar si el texto ingresado cumple con la expresión regular
+    if (regex.test(inputValue)) {
+      // Si cumple, eliminar los espacios en blanco al principio y convertir a mayúsculas
+      event.target.value = inputValue.replace(/^\s+/, '');
+    } else {
+      // Si no cumple, eliminar el último carácter ingresado
+      event.target.value = inputValue.slice(0, -1);
+    }
+  };
   export const handleOnChangeInputParametros = (event) => {
     // Expresión regular que permite letras (mayúsculas y minúsculas) y espacios en blanco
     const regex = /^\d{0,3}$/;

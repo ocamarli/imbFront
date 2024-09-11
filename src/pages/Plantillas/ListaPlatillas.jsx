@@ -140,9 +140,6 @@ const handleCloseListaNotas = (props) => {
     }
   }
 
-  const getHeaderName = () => {
-    return plantillas.some((plantilla) => plantilla.estaCongelado) ? "Descongelar" : "Congelar";
-  };  
   const columnsActivas = [
     { field: "id", headerName: "ID" },
     { field: "idPlantillaInterno", headerName: "ID plantilla" },    
@@ -180,7 +177,7 @@ const handleCloseListaNotas = (props) => {
     },
     {
       field: 'congelar',
-      headerName: getHeaderName(),
+      headerName: "Congelar/Descongelar",
       permisosRequeridos:["system","superusuario","electrico","laboratorio"],
       renderCell: (params) => (
         <Box justifyContent="center" alignItems="center">
