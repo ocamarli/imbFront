@@ -11,8 +11,10 @@ import { useNavigate } from "react-router-dom";
 import Paper from "@mui/material/Paper";
 import { authenticate } from "../../api/usuariosApi";
 import ImagenLogin from "../../imagenes/ImberaLogo.png";
+import ImagenPowered from "../../imagenes/powered.png";
 import ImagenFondo from "../../imagenes/fondo-login.png";
 import ModalGenerico from "../../components/ModalGenerico";
+
 function Copyright(props) {
   return (
     <Typography
@@ -23,13 +25,13 @@ function Copyright(props) {
     >
       {"Copyright © "}
       <Link color="inherit" href="https://vikkon.com.mx/">
-      Powered by vikkon
+        {new Date().getFullYear()}
+        {"."}
       </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
     </Typography>
   );
 }
+
 export default function Login() {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -137,8 +139,20 @@ export default function Login() {
                 Iniciar Sesión
               </Button>
             </form>
-            <Copyright sx={{ mt: 5 }} />
           </Box>
+          {/* Contenedor para centrar el logo "powered" */}
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "center",
+              alignItems: "center",
+              width: "80%",
+              mt: 29, 
+            }}
+          >
+            <img src={ImagenPowered} alt="Powered Logo" width={"40%"} />
+          </Box>
+          <Copyright sx={{ mt: 3 }} />
         </Box>
       </Grid>
       <ModalGenerico
@@ -148,9 +162,7 @@ export default function Login() {
         title={respuestaModal.status ? "Correcto" : "Advertencia"}
         message={respuestaModal.msg}
         autoCierre={true}
-      />      
-
+      />
     </Grid>
-    
   );
 }

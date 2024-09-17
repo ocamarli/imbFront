@@ -1,9 +1,8 @@
 
 
 export async function postData(url = "", data = {}, token = undefined) {
-  // Default options are marked with *
   const response = await fetch(url, {
-    method: "POST", // *GET, POST, PUT, DELETE, etc.
+    method: "POST", 
     mode: "cors",
     headers: new Headers({
       "Content-Type": "application/json",
@@ -12,16 +11,15 @@ export async function postData(url = "", data = {}, token = undefined) {
       Authorization: token !== undefined ? "Bearer " + token : "0",
     }),
     
-    body: JSON.stringify(data), // body data type must match "Content-Type" header
+    body: JSON.stringify(data),
     
   });
 
   return response;
 }
 export async function getData(url = "", token = undefined) {
-  // Default options are marked with *
   const response = await fetch(url, {
-    method: "GET", // *GET, POST, PUT, DELETE, etc.
+    method: "GET", 
     mode: "cors",
     headers: new Headers({
       "Content-Type": "application/json",

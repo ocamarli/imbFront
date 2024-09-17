@@ -6,7 +6,7 @@ import { usePlantillaService } from "../../../src/hooks/usePlantillaService";
 import LoadingComponent from "../LoadingComponent";
 
 function InputCodigo(props) {
-  const { setMatches, onResponse, tipoCodigo } = props;
+  const { onResponse, tipoCodigo } = props;
 
   const {
     isLoading,
@@ -63,10 +63,10 @@ function InputCodigo(props) {
             const foundValues = matches.map((match) =>
               match.substring(1, match.length - 1)
             );
-            setMatches(foundValues);
+
             console.log(foundValues);
           } else {
-            setMatches([]);
+
           }
         }
       }
@@ -76,7 +76,7 @@ function InputCodigo(props) {
     return () => {
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [codigo, setMatches]);
+  }, [codigo]);
 
   if (isLoading) {
     return <LoadingComponent />;
