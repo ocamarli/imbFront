@@ -57,10 +57,6 @@ function ImprimirPlantilla(props) {
       })
       .join('\n\n');
 
-    
-    
-    
-
     return `${recetasDefines}`;
   }, [plantilla]);
 
@@ -154,7 +150,10 @@ function ImprimirPlantilla(props) {
             .toUpperCase();
         }
         if (match === "{inicioSeleccionado}") {
-          return plantilla.programaSeleccionado;
+          const index = plantilla.programasHabilitados.findIndex(
+            programa => programa === plantilla.programaSeleccionado
+          );
+          return index;
         }
         // Manejar otros placeholders que sean solo números
         const objetoEncontrado = parametrosCombinados.find(
