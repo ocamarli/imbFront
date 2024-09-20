@@ -134,7 +134,7 @@ function ImprimirPlantilla(props) {
       /\{recetas\}|\{plantillasActivas\}|\{(inicioSeleccionado|idPlantilla|idFirmware|\d+)\}/g,
       (match, p1) => {
         if (match === "{idFirmware}") {
-          return recetasDefines;
+          return plantilla.firmware;
         }
         if (match === "{recetas}") {
           return recetasDefines;
@@ -153,7 +153,7 @@ function ImprimirPlantilla(props) {
           const index = plantilla.programasHabilitados.findIndex(
             programa => programa === plantilla.programaSeleccionado
           );
-          return index;
+          return index+1;
         }
         // Manejar otros placeholders que sean solo números
         const objetoEncontrado = parametrosCombinados.find(
