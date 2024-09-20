@@ -43,28 +43,25 @@ function ImprimirPlantilla(props) {
     // Generar las definiciones #define con numeración secuencial
     const recetasDefines = programacionesHabilitadas
       .map((prog, index) => {
-        // Obtener el valor del parametro 10 (idParametroInterno: "010")
         const parametro10 = prog.parametros.find(
           (param) => param.idParametroInterno === "010"
         );
         const idReceta = parametro10 ? parametro10.valor : "0";
 
-        // Obtener el noProgramacion original
         const noProgramacionOriginal = prog.noProgramacion;
 
-        // Numeración secuencial (1, 2, 3, ...)
         const numeroSecuencial = index + 1;
 
-        return `#define ID_RECETA_${numeroSecuencial}\t\t${idReceta}
-#define N_RECETA_ID_${numeroSecuencial}\t\t${noProgramacionOriginal}`;
+        return `#define ID_RECETA_CONTENEDOR_${numeroSecuencial}\t\t${idReceta}
+#define N_RECETA_CONTENEDOR_${numeroSecuencial}\t\t${noProgramacionOriginal}`;
       })
       .join('\n\n');
 
-    // Agregar la definición para NUMERO_PLANTILLAS_ACTIVAS
-    const numeroPlantillasActivas = programacionesHabilitadas.length;
-    const numeroPlantillasDefine = `#define NUMERO_PLANTILLAS_ACTIVAS\t\t${numeroPlantillasActivas}`;
+    
+    
+    
 
-    return `${recetasDefines}\n\n${numeroPlantillasDefine}`;
+    return `${recetasDefines}`;
   }, [plantilla]);
 
   const convertTextProgramacion = useCallback(() => {
@@ -74,7 +71,7 @@ function ImprimirPlantilla(props) {
     }
 
     const resultadosCodigoProgramaciones = plantilla.programasHabilitados.map(
-      (noProgramacion) => {
+      (noProgramacion,index) => {
         const parametrosProgramacion = obtenerParametrosProgramacion(
           plantilla,
           noProgramacion
@@ -85,9 +82,12 @@ function ImprimirPlantilla(props) {
         ];
 
         const resultado = codigos[1]?.valor.replace(
-          /\{(noProgramacion|idGae|\d+)\}/g,
+          /\{(index|noProgramacion|idGae|\d+)\}/g,
           (match, idParametroInterno) => {
             console.log("match", match);
+            if (match === "{index}") {
+              return `${index+1}`;
+            }
             if (match === "{noProgramacion}") {
               return `${noProgramacion}`;
             }
@@ -113,7 +113,7 @@ function ImprimirPlantilla(props) {
     // Generar y descargar un archivo para cada resultado de programación
     resultadosCodigoProgramaciones.forEach(({ resultado }, index) => {
       const blob = new Blob([resultado], { type: "text/plain;charset=utf-8" });
-      saveAs(blob, `receta${index+1}.txt`);
+      saveAs(blob, `contenedor${index+1}.txt`);
     });
   }, [plantilla, codigos]);
 
@@ -135,8 +135,11 @@ function ImprimirPlantilla(props) {
     ];
 
     const resultado = codigos[0]?.valor.replace(
-      /\{recetas\}|\{plantillasActivas\}|\{(inicioSeleccionado|idPlantilla|\d+)\}/g,
+      /\{recetas\}|\{plantillasActivas\}|\{(inicioSeleccionado|idPlantilla|idFirmware|\d+)\}/g,
       (match, p1) => {
+        if (match === "{idFirmware}") {
+          return recetasDefines;
+        }
         if (match === "{recetas}") {
           return recetasDefines;
         }
